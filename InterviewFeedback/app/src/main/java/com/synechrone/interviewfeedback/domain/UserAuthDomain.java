@@ -6,6 +6,8 @@ public class UserAuthDomain implements Serializable {
 
     private boolean authenticated = false;
 
+    private int errorCode;
+
     private String errorMessage = "";
 
 
@@ -23,5 +25,13 @@ public class UserAuthDomain implements Serializable {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 }

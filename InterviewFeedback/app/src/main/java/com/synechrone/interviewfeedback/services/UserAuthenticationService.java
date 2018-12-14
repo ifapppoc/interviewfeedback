@@ -48,6 +48,7 @@ public class UserAuthenticationService extends IntentService {
         UserAuthDomain authDomain = new UserAuthDomain();
         boolean authenticated = false;
         String errorMessage = "";
+        int errorCode = 0;
         if(credMap == null || credMap.size() == 0 ) {
             credMap = createMap(loadJSONFromAsset());
         }
@@ -55,6 +56,7 @@ public class UserAuthenticationService extends IntentService {
         {
             authenticated = false;
             errorMessage = "Username/Password can not be null !!!";
+            errorCode = 3;
         }
         else
         {
@@ -62,11 +64,13 @@ public class UserAuthenticationService extends IntentService {
             {
                 authenticated = false;
                 errorMessage = "UserName is not valid!!!";
+                errorCode = 1;
             }
             else if(!(credMap.get(userName).equals(password)))
             {
                 authenticated = false;
                 errorMessage = "Password is not valid!!!";
+                errorCode = 2;
             }
             else
             {
@@ -76,6 +80,7 @@ public class UserAuthenticationService extends IntentService {
         }
         authDomain.setAuthenticated(authenticated);
         authDomain.setErrorMessage(errorMessage);
+        authDomain.setErrorCode(errorCode);
         return authDomain;
     }
 
