@@ -4,4 +4,9 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="button_text_login">Login</string>
+    <string name="error_username">Enter valid username</string>
+    <string name="error_password">Enter valid password</string>
+    <string name="hint_main_topic">Main Topic</string>
+    <string name="hint_sub_topic">Sub Topic</string>
+    <string name="button_text_start">Start</string>
 </resources>

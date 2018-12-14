@@ -1,0 +1,213 @@
+{
+  "topiclist": [
+    {
+      "id": 1,
+      "name": "corejava",
+      "topic": "CoreJava",
+      "subtopics": [
+        "Abstract Class",
+        "Inner class",
+        "static inner class",
+        "Immutable class",
+        "Interface",
+        "Marker Interface",
+        "Exception handling",
+        "Garbage Collection",
+        "Class loader/ static and dynamic loading",
+        "Comparable-Comparator",
+        "String pool/Buffer/Builder",
+        "Constructor chaining",
+        "in case of abstract class/ interface",
+        "Serialization",
+        "Serializable",
+        "Externalizable",
+        "Iterator/List Iterator",
+        "Rules of overloading and overriding",
+        "Reflection",
+        "Finalize/clone",
+        "Cloneable"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "oops",
+      "topic": "OOPS",
+      "subtopics": [
+        "OOP",
+        "Procedural and Functional programming",
+        "Abstraction",
+        "Polymorphism",
+        "Encapusulation",
+        "Inheritance ",
+        "Design principles - SOLID",
+        "Encapsulate what varies"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "designpattern",
+      "topic": "Design Patterns",
+      "subtopics": [
+        "Abstract",
+        "Builder",
+        "Factory",
+        "Prototype",
+        "Singleton",
+        "Adaptor",
+        "Bridge",
+        "Composite",
+        "Decorator",
+        "Façade",
+        "Flyweight",
+        "Proxy",
+        "Chain of Responsibility",
+        "Command",
+        "Interpreter",
+        "Iterator",
+        "Mediator",
+        "Memento",
+        "Observer",
+        "State",
+        "Strategy",
+        "Template Method",
+        "Visitor"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "multithreading",
+      "topic": "MultiThreading",
+      "subtopics": [
+        "Concurrency vs Parallelism",
+        "Creating Threads",
+        "ThreadLocal",
+        "Volatile",
+        "Thread LifeCycle",
+        "Synchronized",
+        "Intrinsic Locks",
+        "Atomic Access",
+        "Lock API",
+        "ThreadLocal",
+        "DeadLock",
+        "Starvation",
+        "LiveLock",
+        "BlockingQueue",
+        "Producer Consumer",
+        "Cyclic Barrier",
+        "Countdown Latch",
+        "Semaphore",
+        "Executor Service",
+        "Fork Join",
+        "Concurrent Collections",
+        "Case Studies & Use Cases & Applications of MT"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "collections",
+      "topic": "Collections",
+      "subtopics": [
+        "ArrayList",
+        "LinkedList",
+        "Queue",
+        "Stack",
+        "CopyOnWriteArrayList",
+        "PriorityQueue",
+        "BlockingQueue",
+        "HashSet",
+        "HashMap",
+        "ConcurrentHashMap",
+        "ConcurrentSkipListMap",
+        "TreeSet",
+        "TreeMap",
+        "ConcurrentSkipListMap",
+        "LinkedHashMap",
+        "LinkedHashSet"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "springcore",
+      "topic": "Spring Core",
+      "subtopics": [
+        "Core",
+        "IOC",
+        "DI",
+        "Beans",
+        "Autowiring",
+        "AOP"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "springmvc",
+      "topic": "SpringMVC",
+      "subtopics": [
+        "Basics of MVC"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "hibernate",
+      "topic": "Hibernate",
+      "subtopics": [
+        "Basics of MVC"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "webservices",
+      "topic": "Web Services",
+      "subtopics": [
+        "SOAP",
+        "REST"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "database",
+      "topic": "Database",
+      "subtopics": [
+        "RDBMS Concepts",
+        "Normalization",
+        "DDL",
+        "DML",
+        "DCL",
+        "Types of Joins",
+        "Inner queries",
+        "Aggregate functions",
+        "Clustered vs NonClustered Indexes",
+        "Bitmap vs B-Tree Indexes",
+        "Materialized Views"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "springrest",
+      "topic": "Spring REST",
+      "subtopics": [
+        "SOAP vs REST",
+        "Spring REST"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "datastructureandalgo",
+      "topic": "Data Structure & Algo",
+      "subtopics": [
+        "Array",
+        "Stack",
+        "Queue",
+        "Vector",
+        "Binary Search",
+        "Complexity"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "problemsolving",
+      "topic": "Problem Solving",
+      "subtopics": []
+    }
+  ]
+}

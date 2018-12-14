@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +23,10 @@ import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
+    private TextInputLayout inputUsername;
+    private TextInputLayout inputPassword;
+    private EditText editTextUsername;
+    private EditText editTextPassword;
     private TextView textViewError;
     private ProgressBar progressBarLogin;
 
@@ -31,9 +34,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        usernameEditText = findViewById(R.id.username);
-        passwordEditText = findViewById(R.id.password);
+        inputUsername = findViewById(R.id.inputLayoutUsername);
+        editTextUsername = findViewById(R.id.username);
+        inputPassword = findViewById(R.id.inputLayoutPassword);
+        editTextPassword = findViewById(R.id.password);
         progressBarLogin = findViewById(R.id.progress_circular_login);
         textViewError = findViewById(R.id.textViewError);
         Button loginButton = findViewById(R.id.sign_in_button);
@@ -48,8 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void authenticateUser() {
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        String username = editTextUsername.getText().toString();
+        String password = editTextPassword.getText().toString();
         boolean isValidCredentials = validateCredentials(username, password);
         if (isValidCredentials) {
             progressBarLogin.setVisibility(View.VISIBLE);
@@ -61,7 +65,31 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean validateCredentials(String username, String password) {
-        return false;
+        if (username != null && !username.isEmpty()) {
+            inputUsername.setError(null);
+            editTextUsername.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputUsername.setErrorEnabled(false);
+            editTextUsername.clearFocus();
+        } else {
+            String message = getString(R.string.error_username);
+            inputUsername.setError(message);
+            editTextUsername.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
+        if (password != null && !password.isEmpty()) {
+            inputPassword.setError(null);
+            editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputPassword.setErrorEnabled(false);
+            editTextPassword.clearFocus();
+        } else {
+            String message = getString(R.string.error_password);
+            inputPassword.setError(message);
+            editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
+        return true;
     }
 
     private void registerAuthenticationListener() {
@@ -93,6 +121,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToNextScreen() {
+        Intent intent = new Intent(this, TopicsActivity.class);
+        intent.putExtra(AppConstants.KEY_TECHNOLOGY, "java");
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override

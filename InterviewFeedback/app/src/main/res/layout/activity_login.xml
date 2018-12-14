@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_black_transparent">
+    android:background="@color/color_black_transparent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,37 +30,28 @@
         android:layout_margin="@dimen/app_margin">
 
         <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/inputLayoutUsername"
+            style="@style/MyTextInputLayout">
 
             <EditText
                 android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/hint_username"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@android:color/white" />
+                style="@style/MyEditTextTheme"
+                android:inputType="textEmailAddress" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/inputLayoutPassword"
+            style="@style/MyTextInputLayout"
             android:layout_marginTop="@dimen/app_margin_top">
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
                 android:hint="@string/hint_password"
-                android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@android:color/white" />
+                style="@style/MyEditTextTheme" />
 
         </android.support.design.widget.TextInputLayout>
 
