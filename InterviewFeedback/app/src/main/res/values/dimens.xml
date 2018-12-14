@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="app_margin">20dp</dimen>
+    <dimen name="logo_height">60dp</dimen>
+    <dimen name="app_margin_top">15dp</dimen>
+    <dimen name="login_button_width">250dp</dimen>
+    <dimen name="login_button_text_size">15sp</dimen>
+    <dimen name="login_button_radius">20dp</dimen>
+</resources>
