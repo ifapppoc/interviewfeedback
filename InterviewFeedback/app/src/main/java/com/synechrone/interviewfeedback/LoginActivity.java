@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
+import com.synechrone.interviewfeedback.constants.AppConstants;
+import com.synechrone.interviewfeedback.services.UserAuthenticationService;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -24,7 +27,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void authenticateUser(String username, String password) {
+        Intent intent = new Intent(this, UserAuthenticationService.class);
+        intent.putExtra(AppConstants.KEY_USER_NAME, username);
+        intent.putExtra(AppConstants.KEY_USER_PASSWORD, password);
 
+        startService(intent);
     }
 
     private void registerAuthenticationListener() {

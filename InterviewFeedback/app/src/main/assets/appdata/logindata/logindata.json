@@ -1,0 +1,24 @@
+{
+  "credentials":[
+  {
+    "userName": "sample.user1@synechron.com",
+    "password": "randompassword"
+  },
+  {
+    "userName": "sample.user2@synechron.com",
+    "password": "randompassword"
+  },
+  {
+    "userName": "sample.user3@synechron.com",
+    "password": "randompassword"
+  },
+  {
+    "userName": "sample.user4@synechron.com",
+    "password": "randompassword"
+  },
+  {
+    "userName": "sample.user5@synechron.com",
+    "password": "randompassword"
+  }
+]
+}
