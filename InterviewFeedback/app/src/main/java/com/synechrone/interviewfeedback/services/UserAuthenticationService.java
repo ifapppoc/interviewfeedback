@@ -37,8 +37,8 @@ public class UserAuthenticationService extends IntentService {
           authDomain = authenticateUser(userName,password);
           Intent authIntent = new Intent();
           authIntent.setAction(AppConstants.KEY_LOGIN_BROADCAST_ACTION);
-          authIntent.putExtra("authDomain", authDomain);
-          sendBroadcast(intent);
+          authIntent.putExtra(AppConstants.KEY_AUTH_RESPONSE, authDomain);
+          sendBroadcast(authIntent);
       }
     }
 
@@ -102,6 +102,7 @@ public class UserAuthenticationService extends IntentService {
 
     public Map<String, String> createMap(String jsonData)
     {
+        credMap = new HashMap<String, String>();
         try {
             JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
             JSONArray jsonArray = jsonObject.getJSONArray("credentials");
@@ -109,7 +110,6 @@ public class UserAuthenticationService extends IntentService {
                 JSONObject jsonObj = jsonArray.getJSONObject(i);
                 String password = jsonObj.getString(AppConstants.KEY_USER_PASSWORD);
                 String userName = jsonObj.getString(AppConstants.KEY_USER_NAME);
-                credMap = new HashMap<String, String>();
                 credMap.put(userName, password);
             }
         } catch (JSONException e) {
