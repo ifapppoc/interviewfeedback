@@ -1,6 +1,7 @@
 package com.synechrone.interviewfeedback.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.CandidateDetails;
 
 import java.io.FileOutputStream;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
-public class CandidateDetailsActivity extends AppCompatActivity {
+public class CandidateDetailsActivity extends BaseActivity {
 
     private EditText panelistName;
     private EditText candidatesName;
@@ -38,6 +40,7 @@ public class CandidateDetailsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_candidatesinfo);
+        setToolbar(getString(R.string.activity_title_candidate_details));
         inputPanelName = findViewById(R.id.inputLayoutPanelName);
         inputCandidateName = findViewById(R.id.inputLayoutCandidateName);
         inputCandidateEmail = findViewById(R.id.inputLayoutCandidateEmail);
@@ -54,6 +57,9 @@ public class CandidateDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     boolean submittedSuccessfully = submitCandidateDetails();
+                    if (submittedSuccessfully) {
+                        navigateToNextScreen();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d("Persistent Error","Error in persisting candidates details");
@@ -62,8 +68,14 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         });
     }
 
+    private void navigateToNextScreen() {
+        Intent intent = new Intent(this, TopicsActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+    }
+
     private boolean submitCandidateDetails() throws IOException {
-       boolean submittedSuccessfully = false;
+        boolean submittedSuccessfully = false;
         String panel = panelistName.getText().toString();
         String candidateName = candidatesName.getText().toString();
         String candidateEmail = candidateEmailId.getText().toString();
@@ -93,11 +105,11 @@ public class CandidateDetailsActivity extends AppCompatActivity {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
         try {
-            fileOutputStream  = getApplicationContext().openFileOutput(CANDIDATES_INFO_FILE_PATH,Context.MODE_PRIVATE);
+            fileOutputStream  = getApplicationContext().openFileOutput(CANDIDATES_INFO_FILE_PATH, Context.MODE_PRIVATE);
             objectOutputStream  = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(candidateDetails);
             dataPersisted = true;
-            } catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if(objectOutputStream != null)

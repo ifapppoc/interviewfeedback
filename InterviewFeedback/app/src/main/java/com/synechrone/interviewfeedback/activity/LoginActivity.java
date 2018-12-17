@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
+import com.synechrone.interviewfeedback.domain.CandidateDetails;
 import com.synechrone.interviewfeedback.domain.UserAuthDomain;
 import com.synechrone.interviewfeedback.services.UserAuthenticationService;
 
@@ -34,6 +35,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initializeView();
+        registerAuthenticationListener();
+    }
+
+    private void initializeView() {
         inputUsername = findViewById(R.id.inputLayoutUsername);
         editTextUsername = findViewById(R.id.username);
         inputPassword = findViewById(R.id.inputLayoutPassword);
@@ -48,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerAuthenticationListener();
     }
 
     private void authenticateUser() {
@@ -114,15 +119,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showError(UserAuthDomain authDomain) {
         String error = authDomain.getErrorMessage();
-        if (!error.isEmpty()) {
-            textViewError.setVisibility(View.VISIBLE);
-            textViewError.setText(error);
+        switch (authDomain.getErrorCode()) {
+            case 1: {
+                inputUsername.setError(error);
+                editTextUsername.setBackgroundResource(R.drawable.edit_text_bg_error);
+            }
+            break;
+            case 2: {
+                inputPassword.setError(error);
+                editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_error);
+            }
+            break;
+            case 3: {
+                textViewError.setVisibility(View.VISIBLE);
+                textViewError.setText(error);
+            }
+            break;
         }
     }
 
     private void navigateToNextScreen() {
         Intent intent = new Intent(this, TopicsActivity.class);
-        intent.putExtra(AppConstants.KEY_TECHNOLOGY, "java");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }

@@ -6,6 +6,7 @@
     <string name="button_text_login">Login</string>
     <string name="error_username">Enter valid username</string>
     <string name="error_password">Enter valid password</string>
+    <string name="activity_title_candidate_details">Enter Candidate Details</string>
     <string name="activity_title_choose_topics">Choose Area of Discussion</string>
     <string name="hint_main_topic">Technology Area</string>
     <string name="hint_sub_topic">Concept Tested</string>
@@ -15,10 +16,9 @@
     <string name="activity_title_discussion">Discussion</string>
     <string name="hint_outcome">Outcome &amp; Comments</string>
     <string name="text_mode_of_discussion">Mode of Discussion :</string>
-    <string name="text_direct_theoritical">Direct Theoritical</string>
-    <string name="text_scenario_based">Scenario/Code</string>
-    <string name="text_prior_project_based">Prior Project</string>
-    <string name="button_text_start">Start</string>
+    <string name="text_direct_theoritical">Direct Theoritical Questions</string>
+    <string name="text_scenario_based">Scenario/Code Based Discussion</string>
+    <string name="text_prior_project_based">Prior Project Discussion</string>
     <string name="panelist_name">Interviewer Name</string>
     <string name="candidate_name">Candidate Name</string>
     <string name="interview_date">Interview Date(MM/DD/YYYY)</string>

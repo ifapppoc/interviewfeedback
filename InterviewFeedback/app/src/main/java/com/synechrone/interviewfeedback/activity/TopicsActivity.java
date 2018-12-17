@@ -162,7 +162,7 @@ public class TopicsActivity extends BaseActivity {
                     String topic = jsonObj.getString("topic");
                     JSONArray subtopicsArray = (JSONArray) jsonObj.get("subtopics");
                     for (int j = 0; j < subtopicsArray.length(); j++) {
-                        JSONObject jsonSubObj = subtopicsArray.getJSONObject(i);
+                        JSONObject jsonSubObj = subtopicsArray.getJSONObject(j);
                         subTopicList.add(jsonSubObj.getString("value"));
                     }
 
@@ -174,6 +174,7 @@ public class TopicsActivity extends BaseActivity {
                     scopeList.add(topics);
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
                 AppLogger.logError(e.getMessage());
             }
             return scopeList;
@@ -201,35 +202,23 @@ public class TopicsActivity extends BaseActivity {
             mainTopics.add(technologyScope.getTopic());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, mainTopics);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, mainTopics);
         autoMainTopic.setThreshold(0);//will start working from first character
         autoMainTopic.setAdapter(adapter);
-        autoMainTopic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                handleMainTopicSelection(position);
-            }
+        autoMainTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                handleMainTopicSelection(position);
             }
         });
     }
 
     private void handleMainTopicSelection(int position) {
         TechnologyScope technologyScope = technologyScopes.get(position);
-        final List<String> subTopics = technologyScope.getSubtopics();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, subTopics);
+        List<String> subTopics = technologyScope.getSubtopics();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, subTopics);
         autoSubTopic.setThreshold(0);//will start working from first character
         autoSubTopic.setAdapter(adapter);
-        autoSubTopic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
     }
 }

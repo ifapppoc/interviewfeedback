@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckedTextView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
@@ -22,9 +22,9 @@ public class InterviewOutcomeActivity extends BaseActivity {
 
     private void initializeView() {
         TextView textViewHeading = findViewById(R.id.textView_heading);
-        CheckedTextView checkboxDirect = findViewById(R.id.checkbox_direct);
-        CheckedTextView checkboxScenario = findViewById(R.id.checkbox_scenario);
-        CheckedTextView checkboxProject = findViewById(R.id.checkbox_project);
+        CheckBox checkboxDirect = findViewById(R.id.checkbox_direct);
+        CheckBox checkboxScenario = findViewById(R.id.checkbox_scenario);
+        CheckBox checkboxProject = findViewById(R.id.checkbox_project);
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
