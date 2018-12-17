@@ -18,10 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.CandidateDetailsActivity" />
         <activity android:name=".activity.TopicsActivity" />
         <activity android:name=".activity.InterviewOutcomeActivity" />
         <service android:name=".services.UserAuthenticationService" />
-        <activity android:name=".activity.CandidateDetailsActivity"/>
     </application>
 
 </manifest>
