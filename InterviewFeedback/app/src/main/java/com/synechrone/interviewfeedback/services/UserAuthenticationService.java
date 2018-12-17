@@ -104,7 +104,7 @@ public class UserAuthenticationService extends IntentService {
     {
         credMap = new HashMap<String, String>();
         try {
-            JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
+            JSONObject jsonObject = new JSONObject(jsonData);
             JSONArray jsonArray = jsonObject.getJSONArray("credentials");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObj = jsonArray.getJSONObject(i);
