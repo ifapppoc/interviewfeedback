@@ -1,6 +1,7 @@
 package com.synechrone.interviewfeedback.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -33,7 +34,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputTechnology;
     private TextInputLayout inputInterviewDate;
 
-    private static final String CANDIDATES_INFO_FILE_PATH = "appdata/logindata/candidateDetails.txt";
+    private static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +62,95 @@ public class CandidateDetailsActivity extends BaseActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveCandidateDetails();
+                submitCandidateDetails();
             }
         });
+    }
+
+    private boolean submitCandidateDetails() {
+        boolean submittedSuccessfully = false;
+        String panel = panelistName.getText().toString();
+        String candidateName = candidatesName.getText().toString();
+        String candidateEmail = candidateEmailId.getText().toString();
+        String technologyTested = technology.getText().toString();
+        String interviewDate = interviewTime.getText().toString();
+
+        CandidateDetails candidateDetails = new CandidateDetails();
+        candidateDetails.setCandidateEmail(candidateEmail);
+        candidateDetails.setCandidateName(candidateName);
+        candidateDetails.setInterviewerName(panel);
+        candidateDetails.setTechnologyTested(technologyTested);
+        candidateDetails.setInterviewDate(new Date(interviewDate));
+
+        if(validateCandidateDetails(candidateDetails)) {
+            saveCandidateDetails(candidateDetails);
+        }
+        else
+        {
+            Log.d("Input Error", "Please insert valid candidate data");
+        }
+
+        return  submittedSuccessfully;
+    }
+
+    private boolean validateCandidateDetails(CandidateDetails candidateDetails)
+    {
+        if (candidateDetails.getInterviewerName() != null && !candidateDetails.getInterviewerName().isEmpty()) {
+            inputPanelName.setError(null);
+            panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputPanelName.setErrorEnabled(false);
+            panelistName.clearFocus();
+        } else {
+            String message = getString(R.string.error_panelName);
+            inputPanelName.setError(message);
+            panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        if (candidateDetails.getCandidateName() != null && !candidateDetails.getCandidateName().isEmpty()) {
+            inputCandidateName.setError(null);
+            candidatesName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputCandidateName.setErrorEnabled(false);
+            candidatesName.clearFocus();
+        } else {
+            String message = getString(R.string.error_candidateName);
+            inputCandidateName.setError(message);
+            candidatesName.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        if (candidateDetails.getCandidateEmail() != null && !candidateDetails.getCandidateEmail().isEmpty()) {
+            inputCandidateEmail.setError(null);
+            candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputCandidateEmail.setErrorEnabled(false);
+            candidateEmailId.clearFocus();
+        } else {
+            String message = getString(R.string.error_candidateEmail);
+            inputCandidateEmail.setError(message);
+            candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        if (candidateDetails.getInterviewDate() != null) {
+            inputInterviewDate.setError(null);
+            interviewTime.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputInterviewDate.setErrorEnabled(false);
+            interviewTime.clearFocus();
+        } else {
+            String message = getString(R.string.error_interviewDate);
+            inputInterviewDate.setError(message);
+            interviewTime.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        if (candidateDetails.getTechnologyTested() != null && !candidateDetails.getTechnologyTested().isEmpty()) {
+            inputTechnology.setError(null);
+            technology.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputTechnology.setErrorEnabled(false);
+            technology.clearFocus();
+        } else {
+            String message = getString(R.string.error_technology);
+            inputTechnology.setError(message);
+            technology.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        return  true;
     }
 
     private String formatDate()
@@ -72,49 +159,26 @@ public class CandidateDetailsActivity extends BaseActivity {
         String formattedDate = dateFormat.format(new Date());
         return  formattedDate;
     }
-    private void saveCandidateDetails() {
+
+    private void saveCandidateDetails(CandidateDetails candidateDetails) {
         CandidateDetailsAsyncTask task = new CandidateDetailsAsyncTask();
-        task.execute();
+        task.execute(candidateDetails);
     }
 
-    private class CandidateDetailsAsyncTask extends AsyncTask<Void,Void,Void> {
+    private class CandidateDetailsAsyncTask extends AsyncTask<CandidateDetails,Void,Void> {
 
+        private Exception exception;
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(CandidateDetails... param) {
             try {
-                submitCandidateDetails();
+                writeDetailsOnFile(param[0]);
             } catch (IOException e) {
                 e.printStackTrace();
+                this.exception = e;
                 Log.d("Error","Error in persisting candidate's data");
             }
             return null;
-        }
-
-        private boolean submitCandidateDetails() throws IOException {
-            boolean submittedSuccessfully = false;
-            String panel = panelistName.getText().toString();
-            String candidateName = candidatesName.getText().toString();
-            String candidateEmail = candidateEmailId.getText().toString();
-            String technologyTested = technology.getText().toString();
-            String interviewDate = interviewTime.getText().toString();
-
-            CandidateDetails candidateDetails = new CandidateDetails();
-            candidateDetails.setCandidateEmail(candidateEmail);
-            candidateDetails.setCandidateName(candidateName);
-            candidateDetails.setInterviewerName(panel);
-            candidateDetails.setTechnologyTested(technologyTested);
-            candidateDetails.setInterviewDate(new Date(interviewDate));
-
-            if(validateCandidateDetails(candidateDetails)) {
-                submittedSuccessfully = writeDetailsOnFile(candidateDetails);
-            }
-            else
-            {
-                Log.d("Input Error", "Please insert valid candidate data");
-            }
-
-            return  submittedSuccessfully;
         }
 
         private boolean writeDetailsOnFile(CandidateDetails candidateDetails) throws IOException {
@@ -141,64 +205,17 @@ public class CandidateDetailsActivity extends BaseActivity {
             return dataPersisted;
         }
 
-        private boolean validateCandidateDetails(CandidateDetails candidateDetails)
-        {
-            if (candidateDetails.getInterviewerName() != null && !candidateDetails.getInterviewerName().isEmpty()) {
-                inputPanelName.setError(null);
-                panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                inputPanelName.setErrorEnabled(false);
-                panelistName.clearFocus();
-            } else {
-                String message = getString(R.string.error_panelName);
-                inputPanelName.setError(message);
-                panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
-                return false;
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (exception == null) {
+                navigateToTopicScreen();
             }
-            if (candidateDetails.getCandidateName() != null && !candidateDetails.getCandidateName().isEmpty()) {
-                inputCandidateName.setError(null);
-                candidatesName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                inputCandidateName.setErrorEnabled(false);
-                candidatesName.clearFocus();
-            } else {
-                String message = getString(R.string.error_candidateName);
-                inputCandidateName.setError(message);
-                candidatesName.setBackgroundResource(R.drawable.edit_text_bg_error);
-                return false;
-            }
-            if (candidateDetails.getCandidateEmail() != null && !candidateDetails.getCandidateEmail().isEmpty()) {
-                inputCandidateEmail.setError(null);
-                candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                inputCandidateEmail.setErrorEnabled(false);
-                candidateEmailId.clearFocus();
-            } else {
-                String message = getString(R.string.error_candidateEmail);
-                inputCandidateEmail.setError(message);
-                candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
-                return false;
-            }
-            if (candidateDetails.getInterviewDate() != null) {
-                inputInterviewDate.setError(null);
-                interviewTime.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                inputInterviewDate.setErrorEnabled(false);
-                interviewTime.clearFocus();
-            } else {
-                String message = getString(R.string.error_interviewDate);
-                inputInterviewDate.setError(message);
-                interviewTime.setBackgroundResource(R.drawable.edit_text_bg_error);
-                return false;
-            }
-            if (candidateDetails.getTechnologyTested() != null && !candidateDetails.getTechnologyTested().isEmpty()) {
-                inputTechnology.setError(null);
-                technology.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                inputTechnology.setErrorEnabled(false);
-                technology.clearFocus();
-            } else {
-                String message = getString(R.string.error_technology);
-                inputTechnology.setError(message);
-                technology.setBackgroundResource(R.drawable.edit_text_bg_error);
-                return false;
-            }
-            return  true;
         }
+    }
+
+    private void navigateToTopicScreen() {
+        Intent intent = new Intent(this, TopicsActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 }

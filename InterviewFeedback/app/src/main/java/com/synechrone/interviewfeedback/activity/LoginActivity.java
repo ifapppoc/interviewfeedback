@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToNextScreen() {
-        Intent intent = new Intent(this, TopicsActivity.class);
+        Intent intent = new Intent(this, CandidateDetailsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }

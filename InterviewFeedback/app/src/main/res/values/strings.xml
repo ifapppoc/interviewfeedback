@@ -30,4 +30,8 @@
     <string name="error_candidateEmail">Enter valid Candidate Email</string>
     <string name="error_technology">Enter valid Technology</string>
     <string name="error_interviewDate">Enter valid Interview Date</string>
+    <string-array name="technology">
+        <item>Java</item>
+        <item>Python</item>
+    </string-array>
 </resources>
