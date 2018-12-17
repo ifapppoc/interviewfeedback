@@ -18,5 +18,16 @@
     <string name="text_direct_theoritical">Direct Theoritical</string>
     <string name="text_scenario_based">Scenario/Code</string>
     <string name="text_prior_project_based">Prior Project</string>
-
+    <string name="button_text_start">Start</string>
+    <string name="panelist_name">Interviewer Name</string>
+    <string name="candidate_name">Candidate Name</string>
+    <string name="interview_date">Interview Date(MM/DD/YYYY)</string>
+    <string name="candidate_email">Candidate Email</string>
+    <string name="technologyTested">Technology</string>
+    <string name="button_text_submit">Submit</string>
+    <string name="error_panelName">Enter valid Interviewer Name</string>
+    <string name="error_candidateName">Enter valid Candidate Name</string>
+    <string name="error_candidateEmail">Enter valid Candidate Email</string>
+    <string name="error_technology">Enter valid Technology</string>
+    <string name="error_interviewDate">Enter valid Interview Date</string>
 </resources>

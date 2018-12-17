@@ -20,10 +20,9 @@
         </activity>
         <activity android:name=".activity.TopicsActivity" />
         <activity android:name=".activity.InterviewOutcomeActivity" />
-
         <service android:name=".services.UserAuthenticationService" />
-
-        <activity android:name=".activity.BaseActivity"></activity>
+        <service android:name=".services.UserAuthenticationService"/>
+        <activity android:name=".activity.CandidateDetailsActivity"/>
     </application>
 
 </manifest>
