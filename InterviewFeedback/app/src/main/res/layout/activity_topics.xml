@@ -51,7 +51,7 @@
         android:layout_marginTop="@dimen/app_margin"
         android:background="@drawable/login_button_selector"
         android:layout_gravity="center_horizontal"
-        android:text="@string/button_text_start"
+        android:text="@string/button_text_start_interview"
         android:textAllCaps="false"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/app_margin"

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black_transparent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary"/>
+
+    <LinearLayout
+        android:id="@+id/llBottomSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/app_margin">
+
+        <Button
+            android:id="@+id/button_continue"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin"
+            android:background="@drawable/login_button_selector"
+            android:text="@string/button_text_continue"
+            android:textAllCaps="false"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/login_button_text_size"
+            android:layout_marginRight="@dimen/app_margin_top"/>
+
+        <Button
+            android:id="@+id/button_finish"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin"
+            android:background="@drawable/login_button_selector"
+            android:text="@string/button_text_finish"
+            android:textAllCaps="false"
+            android:textColor="@color/color_black"
+            android:layout_marginLeft="@dimen/app_margin_top"
+            android:textSize="@dimen/login_button_text_size" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/toolbar"
+        android:layout_above="@id/llBottomSection"
+        android:layout_margin="@dimen/app_margin">
+
+        <TextView
+            android:id="@+id/textView_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Java >> Core Java"
+            android:textColor="@color/color_white"/>
+
+        <TextView
+            android:id="@+id/textViewModeOfDiscussion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_mode_of_discussion"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="@dimen/app_margin"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/app_margin_top">
+            <CheckedTextView
+                android:id="@+id/checkbox_direct"
+                android:drawableTop="@drawable/checkbox_selector"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/color_white"
+                android:layout_height="wrap_content"
+                android:text="@string/text_direct_theoritical"/>
+            <CheckedTextView
+                android:id="@+id/checkbox_scenario"
+                android:drawableTop="@drawable/checkbox_selector"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/color_white"
+                android:layout_height="wrap_content"
+                android:text="@string/text_scenario_based"/>
+            <CheckedTextView
+                android:id="@+id/checkbox_project"
+                android:drawableTop="@drawable/checkbox_selector"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/color_white"
+                android:layout_height="wrap_content"
+                android:text="@string/text_prior_project_based"/>
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayout_comments"
+            style="@style/MyTextInputLayout"
+            android:layout_marginTop="@dimen/app_margin">
+
+            <EditText
+                android:id="@+id/editText_comments"
+                android:hint="@string/hint_outcome"
+                style="@style/MyEditTextTheme"
+                android:inputType="textMultiLine"
+                android:lines="10"
+                android:gravity="left"
+                android:minLines="3"
+                android:scrollHorizontally="false"
+                android:scrollbars="vertical"/>
+
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_circular_topics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

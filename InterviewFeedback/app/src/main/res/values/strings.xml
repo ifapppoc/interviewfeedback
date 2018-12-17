@@ -6,7 +6,17 @@
     <string name="button_text_login">Login</string>
     <string name="error_username">Enter valid username</string>
     <string name="error_password">Enter valid password</string>
-    <string name="hint_main_topic">Main Topic</string>
-    <string name="hint_sub_topic">Sub Topic</string>
-    <string name="button_text_start">Start</string>
+    <string name="activity_title_choose_topics">Choose Area of Discussion</string>
+    <string name="hint_main_topic">Technology Area</string>
+    <string name="hint_sub_topic">Concept Tested</string>
+    <string name="button_text_start_interview">Start Interview</string>
+    <string name="button_text_continue">Continue</string>
+    <string name="button_text_finish">Finish</string>
+    <string name="activity_title_discussion">Discussion</string>
+    <string name="hint_outcome">Outcome &amp; Comments</string>
+    <string name="text_mode_of_discussion">Mode of Discussion :</string>
+    <string name="text_direct_theoritical">Direct Theoritical</string>
+    <string name="text_scenario_based">Scenario/Code</string>
+    <string name="text_prior_project_based">Prior Project</string>
+
 </resources>

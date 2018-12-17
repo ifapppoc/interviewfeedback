@@ -1,213 +1,436 @@
 {
-  "topiclist": [
-    {
-      "id": 1,
-      "name": "corejava",
-      "topic": "CoreJava",
-      "subtopics": [
-        "Abstract Class",
-        "Inner class",
-        "static inner class",
-        "Immutable class",
-        "Interface",
-        "Marker Interface",
-        "Exception handling",
-        "Garbage Collection",
-        "Class loader/ static and dynamic loading",
-        "Comparable-Comparator",
-        "String pool/Buffer/Builder",
-        "Constructor chaining",
-        "in case of abstract class/ interface",
-        "Serialization",
-        "Serializable",
-        "Externalizable",
-        "Iterator/List Iterator",
-        "Rules of overloading and overriding",
-        "Reflection",
-        "Finalize/clone",
-        "Cloneable"
-      ]
+  "topiclist": [{
+    "id": 1,
+    "name": "corejava",
+    "topic": "CoreJava",
+    "subtopics": [{
+      "value": "Abstract Class"
     },
+      {
+        "value": "Inner class"
+      },
+      {
+        "value": "static inner class"
+      },
+      {
+        "value": "Immutable class"
+      },
+      {
+        "value": "Interface"
+      },
+      {
+        "value": "Marker Interface"
+      },
+      {
+        "value": "Exception handling"
+      },
+      {
+        "value": "Garbage Collection"
+      },
+      {
+        "value": "Class loader/ static and dynamic loading"
+      },
+      {
+        "value": "Comparable-Comparator"
+      },
+      {
+        "value": "String pool/Buffer/Builder"
+      },
+      {
+        "value": "Constructor chaining"
+      },
+      {
+        "value": "in case of abstract class/ interface"
+      },
+      {
+        "value": "Serialization"
+      },
+      {
+        "value": "Serializable"
+      },
+      {
+        "value": "Externalizable"
+      },
+      {
+        "value": "Iterator/List Iterator"
+      },
+      {
+        "value": "Rules of overloading and overriding"
+      },
+      {
+        "value": "Reflection"
+      },
+      {
+        "value": "Finalize/clone"
+      },
+      {
+        "value": "Cloneable"
+      }
+    ]
+  },
     {
       "id": 2,
       "name": "oops",
       "topic": "OOPS",
-      "subtopics": [
-        "OOP",
-        "Procedural and Functional programming",
-        "Abstraction",
-        "Polymorphism",
-        "Encapusulation",
-        "Inheritance ",
-        "Design principles - SOLID",
-        "Encapsulate what varies"
+      "subtopics": [{
+        "value": "OOP"
+      },
+        {
+          "value": "Procedural and Functional programming"
+        },
+        {
+          "value": "Abstraction"
+        },
+        {
+          "value": "Polymorphism"
+        },
+        {
+          "value": "Encapusulation"
+        },
+        {
+          "value": "Inheritance"
+        },
+        {
+          "value": "Design principles - SOLID"
+        },
+        {
+          "value": "Encapsulate what varies"
+        }
       ]
     },
     {
       "id": 3,
       "name": "designpattern",
       "topic": "Design Patterns",
-      "subtopics": [
-        "Abstract",
-        "Builder",
-        "Factory",
-        "Prototype",
-        "Singleton",
-        "Adaptor",
-        "Bridge",
-        "Composite",
-        "Decorator",
-        "Façade",
-        "Flyweight",
-        "Proxy",
-        "Chain of Responsibility",
-        "Command",
-        "Interpreter",
-        "Iterator",
-        "Mediator",
-        "Memento",
-        "Observer",
-        "State",
-        "Strategy",
-        "Template Method",
-        "Visitor"
+      "subtopics": [{
+        "value": "Abstract"
+      },
+        {
+          "value": "Builder"
+        },
+        {
+          "value": "Factory"
+        },
+        {
+          "value": "Prototype"
+        },
+        {
+          "value": "Singleton"
+        },
+        {
+          "value": "Adaptor"
+        },
+        {
+          "value": "Bridge"
+        },
+        {
+          "value": "Composite"
+        },
+        {
+          "value": "Decorator"
+        },
+        {
+          "value": "Façade"
+        },
+        {
+          "value": "Flyweight"
+        },
+        {
+          "value": "Proxy"
+        },
+        {
+          "value": "Chain of Responsibility"
+        },
+        {
+          "value": "Command"
+        },
+        {
+          "value": "Interpreter"
+        },
+        {
+          "value": "Iterator"
+        },
+        {
+          "value": "Mediator"
+        },
+        {
+          "value": "Memento"
+        },
+        {
+          "value": "Observer"
+        },
+        {
+          "value": "State"
+        },
+        {
+          "value": "Strategy"
+        },
+        {
+          "value": "Template Method"
+        },
+        {
+          "value": "Visitor"
+        }
       ]
     },
     {
       "id": 4,
       "name": "multithreading",
       "topic": "MultiThreading",
-      "subtopics": [
-        "Concurrency vs Parallelism",
-        "Creating Threads",
-        "ThreadLocal",
-        "Volatile",
-        "Thread LifeCycle",
-        "Synchronized",
-        "Intrinsic Locks",
-        "Atomic Access",
-        "Lock API",
-        "ThreadLocal",
-        "DeadLock",
-        "Starvation",
-        "LiveLock",
-        "BlockingQueue",
-        "Producer Consumer",
-        "Cyclic Barrier",
-        "Countdown Latch",
-        "Semaphore",
-        "Executor Service",
-        "Fork Join",
-        "Concurrent Collections",
-        "Case Studies & Use Cases & Applications of MT"
+      "subtopics": [{
+        "value": "Concurrency vs Parallelism"
+      },
+        {
+          "value": "Creating Threads"
+        },
+        {
+          "value": "ThreadLocal"
+        },
+        {
+          "value": "Volatile"
+        },
+        {
+          "value": "Thread LifeCycle"
+        },
+        {
+          "value": "Synchronized"
+        },
+        {
+          "value": "Intrinsic Locks"
+        },
+        {
+          "value": "Atomic Access"
+        },
+        {
+          "value": "Lock API"
+        },
+        {
+          "value": "ThreadLocal"
+        },
+        {
+          "value": "DeadLock"
+        },
+        {
+          "value": "Starvation"
+        },
+        {
+          "value": "LiveLock"
+        },
+        {
+          "value": "BlockingQueue"
+        },
+        {
+          "value": "Producer Consumer"
+        },
+        {
+          "value": "Cyclic Barrier"
+        },
+        {
+          "value": "Countdown Latch"
+        },
+        {
+          "value": "Semaphore"
+        },
+        {
+          "value": "Executor Service"
+        },
+        {
+          "value": "Fork Join"
+        },
+        {
+          "value": "Concurrent Collections"
+        },
+        {
+          "value": "Case Studies & Use Cases & Applications of MT"
+        }
       ]
     },
     {
       "id": 5,
       "name": "collections",
       "topic": "Collections",
-      "subtopics": [
-        "ArrayList",
-        "LinkedList",
-        "Queue",
-        "Stack",
-        "CopyOnWriteArrayList",
-        "PriorityQueue",
-        "BlockingQueue",
-        "HashSet",
-        "HashMap",
-        "ConcurrentHashMap",
-        "ConcurrentSkipListMap",
-        "TreeSet",
-        "TreeMap",
-        "ConcurrentSkipListMap",
-        "LinkedHashMap",
-        "LinkedHashSet"
+      "subtopics": [{
+        "value": "ArrayList"
+      },
+        {
+          "value": "LinkedList"
+        },
+        {
+          "value": "Queue"
+        },
+        {
+          "value": "Stack"
+        },
+        {
+          "value": "CopyOnWriteArrayList"
+        },
+        {
+          "value": "PriorityQueue"
+        },
+        {
+          "value": "BlockingQueue"
+        },
+        {
+          "value": "HashSet"
+        },
+        {
+          "value": "HashMap"
+        },
+        {
+          "value": "ConcurrentHashMap"
+        },
+        {
+          "value": "ConcurrentSkipListMap"
+        },
+        {
+          "value": "TreeSet"
+        },
+        {
+          "value": "TreeMap"
+        },
+        {
+          "value": "ConcurrentSkipListMap"
+        },
+        {
+          "value": "LinkedHashMap"
+        },
+        {
+          "value": "LinkedHashSet"
+        }
       ]
     },
     {
       "id": 6,
       "name": "springcore",
       "topic": "Spring Core",
-      "subtopics": [
-        "Core",
-        "IOC",
-        "DI",
-        "Beans",
-        "Autowiring",
-        "AOP"
+      "subtopics": [{
+        "value": "Core"
+      },
+        {
+          "value": "IOC"
+        },
+        {
+          "value": "DI"
+        },
+        {
+          "value": "Beans"
+        },
+        {
+          "value": "Autowiring"
+        },
+        {
+          "value": "AOP"
+        }
       ]
     },
     {
       "id": 7,
       "name": "springmvc",
       "topic": "SpringMVC",
-      "subtopics": [
-        "Basics of MVC"
-      ]
+      "subtopics": [{
+        "value": "Basics of MVC"
+      }]
     },
     {
       "id": 8,
       "name": "hibernate",
       "topic": "Hibernate",
-      "subtopics": [
-        "Basics of MVC"
-      ]
+      "subtopics": [{
+        "value": "Basics of MVC"
+      }]
     },
     {
       "id": 9,
       "name": "webservices",
       "topic": "Web Services",
-      "subtopics": [
-        "SOAP",
-        "REST"
+      "subtopics": [{
+        "value": "SOAP"
+      },
+        {
+          "value": "REST"
+        }
       ]
     },
     {
       "id": 10,
       "name": "database",
       "topic": "Database",
-      "subtopics": [
-        "RDBMS Concepts",
-        "Normalization",
-        "DDL",
-        "DML",
-        "DCL",
-        "Types of Joins",
-        "Inner queries",
-        "Aggregate functions",
-        "Clustered vs NonClustered Indexes",
-        "Bitmap vs B-Tree Indexes",
-        "Materialized Views"
+      "subtopics": [{
+        "value": "RDBMS Concepts"
+      },
+        {
+          "value": "Normalization"
+        },
+        {
+          "value": "DDL"
+        },
+        {
+          "value": "DML"
+        },
+        {
+          "value": "DCL"
+        },
+        {
+          "value": "Types of Joins"
+        },
+        {
+          "value": "Inner queries"
+        },
+        {
+          "value": "Aggregate functions"
+        },
+        {
+          "value": "Clustered vs NonClustered Indexes"
+        },
+        {
+          "value": "Bitmap vs B-Tree Indexes"
+        },
+        {
+          "value": "Materialized Views"
+        }
       ]
     },
     {
       "id": 11,
       "name": "springrest",
       "topic": "Spring REST",
-      "subtopics": [
-        "SOAP vs REST",
-        "Spring REST"
+      "subtopics": [{
+        "value": "SOAP vs REST"
+      },
+        {
+          "value": "Spring REST"
+        }
       ]
     },
     {
       "id": 12,
       "name": "datastructureandalgo",
       "topic": "Data Structure & Algo",
-      "subtopics": [
-        "Array",
-        "Stack",
-        "Queue",
-        "Vector",
-        "Binary Search",
-        "Complexity"
+      "subtopics": [{
+        "value": "Array"
+      },
+        {
+          "value": "Stack"
+        },
+        {
+          "value": "Queue"
+        },
+        {
+          "value": "Vector"
+        },
+        {
+          "value": "Binary Search"
+        },
+        {
+          "value": "Complexity"
+        }
       ]
     },
     {
       "id": 13,
       "name": "problemsolving",
       "topic": "Problem Solving",
-      "subtopics": []
+      "subtopics": null
     }
   ]
 }
