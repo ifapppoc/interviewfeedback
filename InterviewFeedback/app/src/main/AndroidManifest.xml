@@ -23,7 +23,6 @@
 
         <service android:name=".services.UserAuthenticationService" />
 
-        <activity android:name=".activity.BaseActivity"></activity>
     </application>
 
 </manifest>
