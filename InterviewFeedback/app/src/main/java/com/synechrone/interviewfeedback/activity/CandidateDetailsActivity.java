@@ -4,16 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.CandidateDetails;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -25,8 +30,8 @@ public class CandidateDetailsActivity extends BaseActivity {
     private EditText panelistName;
     private EditText candidatesName;
     private EditText candidateEmailId;
-    private EditText interviewTime;
-    private EditText technology;
+    private TextView interviewTime;
+    private AutoCompleteTextView technology;
     private Button submitButton;
     private TextInputLayout inputPanelName;
     private TextInputLayout inputCandidateName;
@@ -35,6 +40,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputInterviewDate;
 
     private static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         interviewTime = findViewById(R.id.interviewDate);
         interviewTime.setText(interviewDate);
         technology = findViewById(R.id.technologyTested);
+        enableAutoSuggest();
         submitButton = findViewById(R.id.submit_Button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +72,14 @@ public class CandidateDetailsActivity extends BaseActivity {
                 submitCandidateDetails();
             }
         });
+    }
+
+    private void enableAutoSuggest()
+    {
+        String[] technologyList = getApplicationContext().getResources().getStringArray(R.array.technology);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, technologyList);
+        technology.setThreshold(0);
+        technology.setAdapter(adapter);
     }
 
     private boolean submitCandidateDetails() {
@@ -215,6 +230,7 @@ public class CandidateDetailsActivity extends BaseActivity {
 
     private void navigateToTopicScreen() {
         Intent intent = new Intent(this, TopicsActivity.class);
+        intent.putExtra(AppConstants.KEY_TECHNOLOGY,technology.getText());
         startActivity(intent);
         CandidateDetailsActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
