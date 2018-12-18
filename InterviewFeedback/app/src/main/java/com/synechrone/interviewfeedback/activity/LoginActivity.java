@@ -16,11 +16,8 @@ import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
-import com.synechrone.interviewfeedback.domain.CandidateDetails;
 import com.synechrone.interviewfeedback.domain.UserAuthDomain;
 import com.synechrone.interviewfeedback.services.UserAuthenticationService;
-
-import org.w3c.dom.Text;
 
 public class LoginActivity extends AppCompatActivity {
 

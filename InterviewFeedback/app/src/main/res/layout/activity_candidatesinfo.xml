@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_white">
 
     <android.support.v7.widget.Toolbar
@@ -19,89 +18,61 @@
         android:orientation="vertical"
         android:layout_margin="@dimen/app_margin">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayoutPanelName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/interviewerName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/panelist_name"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textSize="15sp"
-            android:textColor="@android:color/black"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayoutCandidateName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/candidateName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/candidate_name"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textSize="15sp"
-            android:textColor="@android:color/black"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayoutCandidateEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/candidateEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/candidate_email"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:textSize="15sp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayoutTechnologyTested"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <AutoCompleteTextView
-            android:id="@+id/technologyTested"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/technologyTested"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textSize="15sp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"/>
-    </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/inputLayoutInterviewDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/inputLayoutPanelName"
+            style="@style/MyTextInputLayout">
+            <EditText
+                android:id="@+id/interviewerName"
+                android:hint="@string/panelist_name"
+                style="@style/MyEditTextTheme"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutCandidateName"
+            style="@style/MyTextInputLayout"
+            android:layout_marginTop="@dimen/app_margin_top">
+            <EditText
+                android:id="@+id/candidateName"
+                style="@style/MyEditTextTheme"
+                android:hint="@string/candidate_name"
+                />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutCandidateEmail"
+            style="@style/MyTextInputLayout"
+            android:layout_marginTop="@dimen/app_margin_top">
+            <EditText
+                android:id="@+id/candidateEmail"
+                style="@style/MyEditTextTheme"
+                android:hint="@string/candidate_email"
+                android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutTechnologyTested"
+            style="@style/MyTextInputLayout"
+            android:layout_marginTop="@dimen/app_margin_top">
+            <AutoCompleteTextView
+                android:id="@+id/technologyTested"
+                style="@style/MyEditTextTheme"
+                android:hint="@string/technologyTested" />
+        </android.support.design.widget.TextInputLayout>
+
         <TextView
             android:id="@+id/interviewDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="15sp"
-            android:layout_marginLeft="5sp"
-            android:textColor="@android:color/black"/>
-        </android.support.design.widget.TextInputLayout>
-    <Button
-        android:id="@+id/submit_Button"
-        android:layout_width="@dimen/login_button_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/app_margin"
-        android:background="@drawable/login_button_selector"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/button_text_submit"
-        android:textAllCaps="false"
-        android:textColor="@color/color_black"
-        android:textSize="@dimen/login_button_text_size" />
+            android:textSize="@dimen/text_size_primary"
+            android:layout_marginTop="@dimen/app_margin_top"
+            android:textColor="@color/color_black"/>
+        <Button
+            android:id="@+id/submit_Button"
+            android:layout_width="@dimen/login_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin"
+            android:background="@drawable/login_button_selector"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/button_text_submit"
+            android:textAllCaps="false"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/login_button_text_size" />
     </LinearLayout>
 </RelativeLayout>

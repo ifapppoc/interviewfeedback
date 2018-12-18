@@ -1,9 +1,8 @@
 package com.synechrone.interviewfeedback.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,9 +15,6 @@ import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.InterviewSummary;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +23,11 @@ public class InterviewOutcomeActivity extends BaseActivity {
     private CheckBox checkboxDirect;
     private CheckBox checkboxScenario;
     private CheckBox checkboxProject;
+    private TextInputLayout inputOutcome;
     private EditText editTextComments;
 
     private String mainTopic;
     private String subTopic;
-
-    private static final String INTERVIEW_SUMMARY_FILE_PATH = "interviewSummary.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +42,7 @@ public class InterviewOutcomeActivity extends BaseActivity {
         checkboxDirect = findViewById(R.id.checkbox_direct);
         checkboxScenario = findViewById(R.id.checkbox_scenario);
         checkboxProject = findViewById(R.id.checkbox_project);
+        inputOutcome = findViewById(R.id.inputLayout_comments);
         editTextComments = findViewById(R.id.editText_comments);
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
@@ -74,13 +70,38 @@ public class InterviewOutcomeActivity extends BaseActivity {
     }
 
     private void saveInterviewSummary(int requestCode) {
-        InterviewSummary interviewSummary = prepareInterviewSummary();
-        Intent intent = new Intent();
-        intent.putExtra(AppConstants.KEY_REQUEST_CODE, requestCode);
-        intent.putExtra(AppConstants.KEY_INTERVIEW_SUMMARY, interviewSummary);
-        setResult(RESULT_OK, intent);
-        this.finish();
-        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        boolean isValid = validateInterviewSummary();
+        if (isValid) {
+            InterviewSummary interviewSummary = prepareInterviewSummary();
+            Intent intent = new Intent();
+            intent.putExtra(AppConstants.KEY_REQUEST_CODE, requestCode);
+            intent.putExtra(AppConstants.KEY_INTERVIEW_SUMMARY, interviewSummary);
+            setResult(RESULT_OK, intent);
+            this.finish();
+            overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        }
+    }
+
+    private boolean validateInterviewSummary() {
+        String comments = editTextComments.getText().toString();
+        if (!comments.isEmpty()) {
+            inputOutcome.setError(null);
+            editTextComments.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputOutcome.setErrorEnabled(false);
+            editTextComments.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_comments);
+            inputOutcome.setError(message);
+            editTextComments.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
+        if (!(checkboxDirect.isChecked() || checkboxScenario.isChecked() || checkboxProject.isChecked())) {
+            Toast.makeText(this, getString(R.string.error_select_mode_of_discussion), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private InterviewSummary prepareInterviewSummary() {

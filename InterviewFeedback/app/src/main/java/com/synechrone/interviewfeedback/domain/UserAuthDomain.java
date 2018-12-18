@@ -10,7 +10,6 @@ public class UserAuthDomain implements Serializable {
 
     private String errorMessage = "";
 
-
     public boolean isAuthenticated() {
         return authenticated;
     }

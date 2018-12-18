@@ -33,10 +33,8 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputCandidateName;
     private TextInputLayout inputCandidateEmail;
     private TextInputLayout inputTechnology;
-    private TextInputLayout inputInterviewDate;
 
     private static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,6 @@ public class CandidateDetailsActivity extends BaseActivity {
         inputPanelName = findViewById(R.id.inputLayoutPanelName);
         inputCandidateName = findViewById(R.id.inputLayoutCandidateName);
         inputCandidateEmail = findViewById(R.id.inputLayoutCandidateEmail);
-        inputInterviewDate = findViewById(R.id.inputLayoutInterviewDate);
         inputTechnology = findViewById(R.id.inputLayoutTechnologyTested);
         panelistName = findViewById(R.id.interviewerName);
         panelistName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -187,17 +184,7 @@ public class CandidateDetailsActivity extends BaseActivity {
             candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
             return false;
         }
-        if (candidateDetails.getInterviewDate() != null) {
-            inputInterviewDate.setError(null);
-            interviewTime.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputInterviewDate.setErrorEnabled(false);
-            interviewTime.clearFocus();
-        } else {
-            String message = getString(R.string.error_interviewDate);
-            inputInterviewDate.setError(message);
-            interviewTime.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
+
         if (candidateDetails.getTechnologyTested() != null && !candidateDetails.getTechnologyTested().isEmpty()) {
             inputTechnology.setError(null);
             technology.setBackgroundResource(R.drawable.edit_text_bg_selector);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,7 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TopicsActivity extends BaseActivity {
+    private TextInputLayout inputLayoutMainTopic;
     private AutoCompleteTextView autoMainTopic;
+    private TextInputLayout inputLayoutSubTopic;
     private AutoCompleteTextView autoSubTopic;
     private ProgressBar progressBarTopics;
     private Button buttonStartInterview;
@@ -58,6 +61,7 @@ public class TopicsActivity extends BaseActivity {
     }
 
     private void initializeView() {
+        inputLayoutMainTopic = findViewById(R.id.inputLayoutMainTopic);
         autoMainTopic = findViewById(R.id.autoTextMainTopic);
         autoMainTopic.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -66,7 +70,7 @@ public class TopicsActivity extends BaseActivity {
                 return false;
             }
         });
-
+        inputLayoutSubTopic = findViewById(R.id.inputLayoutSubTopic);
         autoSubTopic = findViewById(R.id.autoTextSubTopic);
         autoSubTopic.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -87,11 +91,43 @@ public class TopicsActivity extends BaseActivity {
     }
 
     private void startInterview() {
-        Intent intent = new Intent(this, InterviewOutcomeActivity.class);
-        intent.putExtra(AppConstants.KEY_MAIN_TOPIC, autoMainTopic.getText().toString());
-        intent.putExtra(AppConstants.KEY_SUB_TOPIC, autoSubTopic.getText().toString());
-        startActivityForResult(intent, AppConstants.KEY_REQUEST_START_INTERVIEW);
-        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        boolean isValid = validateTopics();
+        if (isValid) {
+            Intent intent = new Intent(this, InterviewOutcomeActivity.class);
+            intent.putExtra(AppConstants.KEY_MAIN_TOPIC, autoMainTopic.getText().toString());
+            intent.putExtra(AppConstants.KEY_SUB_TOPIC, autoSubTopic.getText().toString());
+            startActivityForResult(intent, AppConstants.KEY_REQUEST_START_INTERVIEW);
+            overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        }
+    }
+
+    private boolean validateTopics() {
+        String mainTopic = autoMainTopic.getText().toString();
+        if (!mainTopic.isEmpty()) {
+            inputLayoutMainTopic.setError(null);
+            autoMainTopic.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputLayoutMainTopic.setErrorEnabled(false);
+            autoMainTopic.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_ta);
+            inputLayoutMainTopic.setError(message);
+            autoMainTopic.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
+        String subTopic = autoSubTopic.getText().toString();
+        if (!subTopic.isEmpty()) {
+            inputLayoutSubTopic.setError(null);
+            autoSubTopic.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputLayoutSubTopic.setErrorEnabled(false);
+            autoSubTopic.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_ct);
+            inputLayoutSubTopic.setError(message);
+            autoSubTopic.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+        return true;
     }
 
     private void getTopics(String technology) {
