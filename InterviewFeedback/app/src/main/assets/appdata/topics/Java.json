@@ -2,7 +2,7 @@
   "topiclist": [{
     "id": 1,
     "name": "corejava",
-    "topic": "CoreJava",
+    "topic": "Core Java",
     "subtopics": [{
       "value": "Abstract Class"
     },
@@ -72,10 +72,9 @@
       "id": 2,
       "name": "oops",
       "topic": "OOPS",
-      "subtopics": [
-        {
-          "value": "OOP"
-        },
+      "subtopics": [{
+        "value": "OOP"
+      },
         {
           "value": "Object Oriented paradigm vs Procedural vs Functional programming"
         },
@@ -328,11 +327,10 @@
     {
       "id": 7,
       "name": "springmvc",
-      "topic": "SpringMVC",
+      "topic": "Spring MVC",
       "subtopics": [{
         "value": "Basics of MVC"
-      }
-      ]
+      }]
     },
     {
       "id": 8,

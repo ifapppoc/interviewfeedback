@@ -3,10 +3,9 @@
     "id": 1,
     "name": "angular2",
     "topic": "Angular 2.X OR Higher",
-    "subtopics": [
-	    {
-	      "value": "Angular Core Concepts"
-	    },
+    "subtopics": [{
+      "value": "Angular Core Concepts"
+    },
       {
         "value": "RxJs concepts"
       },
@@ -28,24 +27,22 @@
       "id": 2,
       "name": "angular1",
       "topic": "Angular 1.X",
-      "subtopics": [
-	      {
-	        "value": "Custom Directives"
-	      },
+      "subtopics": [{
+        "value": "Custom Directives"
+      },
         {
           "value": "Two-Way Binding"
         },
         {
           "value": "Digest Cycle"
         }
-       ]
+      ]
     },
     {
       "id": 3,
       "name": "testing",
       "topic": "Testing",
-      "subtopics": [
-      {
+      "subtopics": [{
         "value": "Jasmine Test Cases"
       },
         {
@@ -57,8 +54,7 @@
       "id": 4,
       "name": "html_css",
       "topic": "HTML/CSS",
-      "subtopics": [
-      {
+      "subtopics": [{
         "value": "SCSS"
       },
         {
@@ -82,8 +78,7 @@
       "id": 5,
       "name": "javascript",
       "topic": "JavaScript",
-      "subtopics": [
-      {
+      "subtopics": [{
         "value": "JavaScript"
       },
         {
@@ -95,8 +90,7 @@
       "id": 6,
       "name": "others",
       "topic": "Others",
-      "subtopics": [
-      {
+      "subtopics": [{
         "value": "Bootstrap"
       },
         {

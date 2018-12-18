@@ -32,9 +32,6 @@
     <string name="error_interviewDate">Enter valid Interview Date</string>
     <string-array name="technology">
         <item>Java</item>
-        <item>Python</item>
-        <item>Data Structures</item>
-        <item>DBMS</item>
-        <item>DevOps</item>
+        <item>Angular</item>
     </string-array>
 </resources>
