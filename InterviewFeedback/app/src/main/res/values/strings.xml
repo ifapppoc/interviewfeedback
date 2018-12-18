@@ -13,7 +13,7 @@
     <string name="button_text_start_interview">Start Interview</string>
     <string name="button_text_continue">Continue</string>
     <string name="button_text_finish">Finish</string>
-    <string name="activity_title_discussion">Discussion</string>
+    <string name="activity_title_discussion">Outcome &amp; Comments</string>
     <string name="hint_outcome">Outcome &amp; Comments</string>
     <string name="text_mode_of_discussion">Mode of Discussion :</string>
     <string name="text_direct_theoritical">Direct Theoritical Questions</string>

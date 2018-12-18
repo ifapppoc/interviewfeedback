@@ -11,4 +11,6 @@ public class AppConstants {
     public static final String KEY_SUB_TOPIC = "sub_topic";
     public static final int KEY_REQUEST_START_INTERVIEW = 101;
     public static final String KEY_REQUEST_CODE = "requestCode";
+    public static final String KEY_INTERVIEW_SUMMARY = "interviewSummary";
+    public static final String KEY_INTERVIEW_SUMMARIES = "interviewSummaries";
 }

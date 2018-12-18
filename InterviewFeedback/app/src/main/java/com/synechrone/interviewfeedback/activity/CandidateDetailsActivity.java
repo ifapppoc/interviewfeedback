@@ -230,7 +230,7 @@ public class CandidateDetailsActivity extends BaseActivity {
 
     private void navigateToTopicScreen() {
         Intent intent = new Intent(this, TopicsActivity.class);
-        intent.putExtra(AppConstants.KEY_TECHNOLOGY,technology.getText());
+        intent.putExtra(AppConstants.KEY_TECHNOLOGY, technology.getText().toString());
         startActivity(intent);
         CandidateDetailsActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);

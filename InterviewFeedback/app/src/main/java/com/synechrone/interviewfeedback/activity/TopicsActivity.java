@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
+import com.synechrone.interviewfeedback.domain.InterviewSummary;
 import com.synechrone.interviewfeedback.domain.TechnologyScope;
 import com.synechrone.interviewfeedback.logger.AppLogger;
 
@@ -33,10 +34,14 @@ public class TopicsActivity extends BaseActivity {
     private AutoCompleteTextView autoSubTopic;
     private ProgressBar progressBarTopics;
     private Button buttonStartInterview;
-    private List<TechnologyScope> technologyScopes;
+    private TechnologyScope technologyScope;
+    private String selectedMainTopic;
 
     private static final String JAVA_JSON_FILE_PATH = "appdata/topics/Java.json";
     private static final String ANGULAR_JSON_FILE_PATH = "appdata/topics/Angular.json";
+    private static int index = -1;
+
+    private ArrayList<InterviewSummary> interviewSummaries = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +103,18 @@ public class TopicsActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == AppConstants.KEY_REQUEST_START_INTERVIEW && resultCode == Activity.RESULT_OK && data != null) {
             int resultData = data.getIntExtra(AppConstants.KEY_REQUEST_CODE, 0);
+            InterviewSummary interviewSummary = (InterviewSummary) data.getSerializableExtra(AppConstants.KEY_INTERVIEW_SUMMARY);
+            if (interviewSummary != null) {
+                interviewSummaries.add(interviewSummary);
+            }
+
             if (resultData == 1) {
-                buttonStartInterview.setText(getString(R.string.button_text_start_interview));
+                buttonStartInterview.setText(getString(R.string.button_text_continue));
                 autoMainTopic.setText("");
                 autoSubTopic.setText("");
             } else if (resultData == 2) {
                 Intent intent = new Intent(this, InterviewSummaryActivity.class);
+                intent.putParcelableArrayListExtra(AppConstants.KEY_INTERVIEW_SUMMARIES, interviewSummaries);
                 startActivity(intent);
                 TopicsActivity.this.finish();
                 overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
@@ -215,9 +226,8 @@ public class TopicsActivity extends BaseActivity {
         Toast.makeText(this, "Something went wrong...", Toast.LENGTH_LONG).show();
     }
 
-    private void updateUI(List<TechnologyScope> technologyScopes) {
-        this.technologyScopes = technologyScopes;
-        List<String> mainTopics = new ArrayList<>();
+    private void updateUI(final List<TechnologyScope> technologyScopes) {
+        final List<String> mainTopics = new ArrayList<>();
         for (TechnologyScope technologyScope : technologyScopes) {
             mainTopics.add(technologyScope.getTopic());
         }
@@ -226,19 +236,19 @@ public class TopicsActivity extends BaseActivity {
         autoMainTopic.setThreshold(0);//will start working from first character
         autoMainTopic.setAdapter(adapter);
         autoMainTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                handleMainTopicSelection(position);
+                selectedMainTopic = parent != null ? (String) parent.getItemAtPosition(position) : null;
+                index = mainTopics.indexOf(selectedMainTopic);
+                technologyScope = technologyScopes.get(index);
+                handleMainTopicSelection();
             }
         });
     }
 
-    private void handleMainTopicSelection(int position) {
-        TechnologyScope technologyScope = technologyScopes.get(position);
+    private void handleMainTopicSelection() {
         List<String> subTopics = technologyScope.getSubtopics();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, subTopics);
-        autoSubTopic.setThreshold(0);//will start working from first character
         autoSubTopic.setAdapter(adapter);
     }
 }

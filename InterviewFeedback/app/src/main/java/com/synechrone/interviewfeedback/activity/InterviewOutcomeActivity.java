@@ -75,8 +75,12 @@ public class InterviewOutcomeActivity extends BaseActivity {
 
     private void saveInterviewSummary(int requestCode) {
         InterviewSummary interviewSummary = prepareInterviewSummary();
-        SaveInterviewSummaryAsyncTask task = new SaveInterviewSummaryAsyncTask(requestCode);
-        task.execute(interviewSummary);
+        Intent intent = new Intent();
+        intent.putExtra(AppConstants.KEY_REQUEST_CODE, requestCode);
+        intent.putExtra(AppConstants.KEY_INTERVIEW_SUMMARY, interviewSummary);
+        setResult(RESULT_OK, intent);
+        this.finish();
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 
     private InterviewSummary prepareInterviewSummary() {
@@ -97,59 +101,9 @@ public class InterviewOutcomeActivity extends BaseActivity {
         }
 
         String modeOfDiscussion = TextUtils.join(",", modeOfDiscussions);
-        interviewSummary.setOutcomeAndComments(modeOfDiscussion);
+        interviewSummary.setModeOfDiscussion(modeOfDiscussion);
         interviewSummary.setOutcomeAndComments(editTextComments.getText().toString());
 
         return interviewSummary;
-    }
-
-    private class SaveInterviewSummaryAsyncTask extends AsyncTask<InterviewSummary, Void, Void> {
-
-        private Exception exception;
-        private int requestCode;
-
-        SaveInterviewSummaryAsyncTask(int requestCode) {
-            this.requestCode = requestCode;
-        }
-
-        @Override
-        protected Void doInBackground(InterviewSummary... params) {
-            try {
-                writeSummaryOnFile(params[0]);
-            } catch (IOException e) {
-                this.exception = e;
-            }
-            return null;
-        }
-
-        private void writeSummaryOnFile(InterviewSummary interviewSummary) throws IOException {
-            try (FileOutputStream fileOutputStream  = getApplicationContext().openFileOutput(INTERVIEW_SUMMARY_FILE_PATH, Context.MODE_PRIVATE);
-                 ObjectOutputStream objectOutputStream  = new ObjectOutputStream(fileOutputStream)) {
-                 objectOutputStream.writeObject(interviewSummary);
-            } catch (IOException e) {
-                throw new IOException("Something went wrong while writing summary into file");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            if (exception == null) {
-                navigateToNextScreen(requestCode);
-            } else {
-                showError(exception.getMessage());
-            }
-        }
-    }
-
-    private void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    private void navigateToNextScreen(int requestCode) {
-        Intent intent = new Intent();
-        intent.putExtra(AppConstants.KEY_REQUEST_CODE, requestCode);
-        setResult(RESULT_OK, intent);
-        this.finish();
-        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 }
