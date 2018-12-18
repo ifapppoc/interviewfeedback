@@ -33,5 +33,8 @@
     <string-array name="technology">
         <item>Java</item>
         <item>Python</item>
+        <item>Data Structures</item>
+        <item>DBMS</item>
+        <item>DevOps</item>
     </string-array>
 </resources>
