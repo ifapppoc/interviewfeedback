@@ -106,7 +106,7 @@ public class CandidateDetailsActivity extends BaseActivity {
             }
         });
         interviewTime = findViewById(R.id.interviewDate);
-        interviewTime.setText(interviewDate);
+        interviewTime.setText("Interview Date : "+interviewDate);
         technology = findViewById(R.id.technologyTested);
         enableAutoSuggest();
         submitButton = findViewById(R.id.submit_Button);
@@ -133,13 +133,18 @@ public class CandidateDetailsActivity extends BaseActivity {
         String candidateEmail = candidateEmailId.getText().toString();
         String technologyTested = technology.getText().toString();
         String interviewDate = interviewTime.getText().toString();
-
         CandidateDetails candidateDetails = new CandidateDetails();
         candidateDetails.setCandidateEmail(candidateEmail);
         candidateDetails.setCandidateName(candidateName);
         candidateDetails.setInterviewerName(panel);
         candidateDetails.setTechnologyTested(technologyTested);
-        candidateDetails.setInterviewDate(new Date(interviewDate));
+        if(interviewDate != null && !(interviewDate.equals("")))
+        {
+            String[] strArray = interviewDate.split(":");
+            String realDate = strArray[1].trim();
+            candidateDetails.setInterviewDate(new Date(realDate));
+        }
+
 
         if(validateCandidateDetails(candidateDetails)) {
             saveCandidateDetails(candidateDetails);
