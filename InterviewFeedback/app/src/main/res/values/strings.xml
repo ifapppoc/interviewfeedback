@@ -34,6 +34,8 @@
     <string name="error_enter_ct">Enter Concept Tested</string>
     <string name="error_enter_comments">Enter your Outcome/Comments</string>
     <string name="error_select_mode_of_discussion">Please select atleast one Mode of Discussion</string>
+    <string name="submit_assessment">Submit Assesment</string>
+    <string name="activity_summary_title">Assesment Summary</string>
     <string-array name="technology">
         <item>Java</item>
         <item>Angular</item>

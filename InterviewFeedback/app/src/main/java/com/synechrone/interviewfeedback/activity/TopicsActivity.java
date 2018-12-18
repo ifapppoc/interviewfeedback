@@ -139,7 +139,7 @@ public class TopicsActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == AppConstants.KEY_REQUEST_START_INTERVIEW && resultCode == Activity.RESULT_OK && data != null) {
             int resultData = data.getIntExtra(AppConstants.KEY_REQUEST_CODE, 0);
-            InterviewSummary interviewSummary = (InterviewSummary) data.getSerializableExtra(AppConstants.KEY_INTERVIEW_SUMMARY);
+            InterviewSummary interviewSummary = data.getParcelableExtra(AppConstants.KEY_INTERVIEW_SUMMARY);
             if (interviewSummary != null) {
                 interviewSummaries.add(interviewSummary);
             }
