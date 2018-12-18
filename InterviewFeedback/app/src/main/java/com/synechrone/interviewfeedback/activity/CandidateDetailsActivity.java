@@ -216,6 +216,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     private void navigateToTopicScreen() {
         Intent intent = new Intent(this, TopicsActivity.class);
         startActivity(intent);
+        CandidateDetailsActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 }

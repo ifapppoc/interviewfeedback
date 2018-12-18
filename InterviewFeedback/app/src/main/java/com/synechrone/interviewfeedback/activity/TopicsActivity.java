@@ -36,6 +36,7 @@ public class TopicsActivity extends BaseActivity {
     private List<TechnologyScope> technologyScopes;
 
     private static final String JAVA_JSON_FILE_PATH = "appdata/topics/Java.json";
+    private static final String ANGULAR_JSON_FILE_PATH = "appdata/topics/Angular.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,12 @@ public class TopicsActivity extends BaseActivity {
         setContentView(R.layout.activity_topics);
         setToolbar(getString(R.string.activity_title_choose_topics));
         initializeView();
-        getTopics();
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            String technology = extras.getString(AppConstants.KEY_TECHNOLOGY);
+            getTopics(technology);
+        }
     }
 
     private void initializeView() {
@@ -83,20 +89,30 @@ public class TopicsActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 
-    private void getTopics() {
+    private void getTopics(String technology) {
         TopicsAsyncTask task = new TopicsAsyncTask();
-        task.execute();
+        task.execute(technology);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == AppConstants.KEY_REQUEST_START_INTERVIEW && resultCode == Activity.RESULT_OK) {
-            buttonStartInterview.setText(getString(R.string.button_text_start_interview));
+        if (requestCode == AppConstants.KEY_REQUEST_START_INTERVIEW && resultCode == Activity.RESULT_OK && data != null) {
+            int resultData = data.getIntExtra(AppConstants.KEY_REQUEST_CODE, 0);
+            if (resultData == 1) {
+                buttonStartInterview.setText(getString(R.string.button_text_start_interview));
+                autoMainTopic.setText("");
+                autoSubTopic.setText("");
+            } else if (resultData == 2) {
+                Intent intent = new Intent(this, InterviewSummaryActivity.class);
+                startActivity(intent);
+                TopicsActivity.this.finish();
+                overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class TopicsAsyncTask extends AsyncTask<Void, Void, List<TechnologyScope>> {
+    private class TopicsAsyncTask extends AsyncTask<String, Void, List<TechnologyScope>> {
         private Exception exception;
 
         @Override
@@ -105,10 +121,10 @@ public class TopicsActivity extends BaseActivity {
         }
 
         @Override
-        protected List<TechnologyScope> doInBackground(Void... voids) {
+        protected List<TechnologyScope> doInBackground(String... params) {
             List<TechnologyScope> scopeList = null;
             try {
-                scopeList = loadJson(1);
+                scopeList = loadJson(params[0]);
             } catch (Exception exception) {
                 this.exception = exception;
             }
@@ -117,12 +133,16 @@ public class TopicsActivity extends BaseActivity {
         }
 
         //Loads JSON File according to Technology Id
-        private List<TechnologyScope> loadJson(int tech_id) {
+        private List<TechnologyScope> loadJson(String tech_id) {
             List<TechnologyScope> scopeList = null;
 
             switch(tech_id){
-                case 1: {
+                case "Java": {
                     scopeList = parseJson(JAVA_JSON_FILE_PATH);
+                }
+                break;
+                case "Angular": {
+                    scopeList = parseJson(ANGULAR_JSON_FILE_PATH);
                 }
                 break;
             }
@@ -130,7 +150,7 @@ public class TopicsActivity extends BaseActivity {
         }
 
         private String loadJSONFromAsset(String json_file) {
-            String jsonString = null;
+            String jsonString;
             try {
                 InputStream inputStream = getApplicationContext().getAssets().open(json_file);
                 int size = inputStream.available();

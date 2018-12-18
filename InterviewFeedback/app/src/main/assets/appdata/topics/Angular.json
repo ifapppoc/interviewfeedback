@@ -1,0 +1,153 @@
+{
+  "topiclist": [{
+    "id": 1,
+    "name": "angular2",
+    "topic": "Angular 2.X OR Higher",
+    "subtopics": [
+	    {
+	      "value": "Angular Core Concepts"
+	    },
+      {
+        "value": "RxJs concepts"
+      },
+      {
+        "value": "NgRx"
+      },
+      {
+        "value": "Angular CLI"
+      },
+      {
+        "value": "Webpack TypeScript"
+      },
+      {
+        "value": "ES6"
+      }
+    ]
+  },
+    {
+      "id": 2,
+      "name": "angular1",
+      "topic": "Angular 1.X",
+      "subtopics": [
+	      {
+	        "value": "Custom Directives"
+	      },
+        {
+          "value": "Two-Way Binding"
+        },
+        {
+          "value": "Digest Cycle"
+        }
+       ]
+    },
+    {
+      "id": 3,
+      "name": "testing",
+      "topic": "Testing",
+      "subtopics": [
+      {
+        "value": "Jasmine Test Cases"
+      },
+        {
+          "value": "Automated Testing"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "html_css",
+      "topic": "HTML/CSS",
+      "subtopics": [
+      {
+        "value": "SCSS"
+      },
+        {
+          "value": "CSS3"
+        },
+        {
+          "value": "HTML5"
+        },
+        {
+          "value": "Responsive Page Development HTML5 APIs"
+        },
+        {
+          "value": "Session Storage"
+        },
+        {
+          "value": "Service Worker"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "javascript",
+      "topic": "JavaScript",
+      "subtopics": [
+      {
+        "value": "JavaScript"
+      },
+        {
+          "value": "OOJS"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "others",
+      "topic": "Others",
+      "subtopics": [
+      {
+        "value": "Bootstrap"
+      },
+        {
+          "value": "AG-Grid"
+        },
+        {
+          "value": "PrimeNG"
+        },
+        {
+          "value": "Material Design 3rd Party JavaScript Libraries"
+        },
+        {
+          "value": "Grunt"
+        },
+        {
+          "value": "Gulp"
+        },
+        {
+          "value": "Package.json"
+        },
+        {
+          "value": "Node Modules Cross Browser"
+        },
+        {
+          "value": "Cross Origins"
+        },
+        {
+          "value": "Performance"
+        },
+        {
+          "value": "Browser related Version Controls"
+        },
+        {
+          "value": "SVN"
+        },
+        {
+          "value": "GIT"
+        },
+        {
+          "value": "Code Quality"
+        },
+        {
+          "value": "Review Process Accessibility Aria"
+        },
+        {
+          "value": "W3C Standards"
+        },
+        {
+          "value": "Problem Solving (Data Structure Based)"
+        }
+      ]
+    }
+  ]
+}

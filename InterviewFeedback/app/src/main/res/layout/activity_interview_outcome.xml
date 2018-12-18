@@ -61,6 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_primary"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/color_black"/>
 
@@ -69,6 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_mode_of_discussion"
+            android:textSize="@dimen/text_size_primary"
             android:textColor="@color/colorPrimary"
             android:layout_marginTop="@dimen/app_margin"/>
 
@@ -83,12 +86,14 @@
                 android:focusable="true"
                 android:textColor="@color/color_black"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_primary"
                 android:text="@string/text_direct_theoritical"/>
             <CheckBox
                 android:id="@+id/checkbox_scenario"
                 android:layout_width="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:textSize="@dimen/text_size_primary"
                 android:textColor="@color/color_black"
                 android:layout_height="wrap_content"
                 android:text="@string/text_scenario_based"/>
@@ -97,6 +102,7 @@
                 android:layout_width="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:textSize="@dimen/text_size_primary"
                 android:textColor="@color/color_black"
                 android:layout_height="wrap_content"
                 android:text="@string/text_prior_project_based"/>

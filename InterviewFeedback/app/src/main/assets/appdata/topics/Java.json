@@ -72,11 +72,12 @@
       "id": 2,
       "name": "oops",
       "topic": "OOPS",
-      "subtopics": [{
-        "value": "OOP"
-      },
+      "subtopics": [
         {
-          "value": "Procedural and Functional programming"
+          "value": "OOP"
+        },
+        {
+          "value": "Object Oriented paradigm vs Procedural vs Functional programming"
         },
         {
           "value": "Abstraction"
@@ -96,6 +97,7 @@
         {
           "value": "Encapsulate what varies"
         }
+
       ]
     },
     {
@@ -103,7 +105,7 @@
       "name": "designpattern",
       "topic": "Design Patterns",
       "subtopics": [{
-        "value": "Abstract"
+        "value": "Abstract Factory"
       },
         {
           "value": "Builder"
@@ -329,14 +331,15 @@
       "topic": "SpringMVC",
       "subtopics": [{
         "value": "Basics of MVC"
-      }]
+      }
+      ]
     },
     {
       "id": 8,
       "name": "hibernate",
       "topic": "Hibernate",
       "subtopics": [{
-        "value": "Basics of MVC"
+        "value": "Basics of Hibernate"
       }]
     },
     {

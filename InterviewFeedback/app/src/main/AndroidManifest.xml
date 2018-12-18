@@ -11,17 +11,27 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LoginActivity"
-            android:theme="@style/AppFullScreenTheme">
+            android:theme="@style/AppFullScreenTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CandidateDetailsActivity" />
-        <activity android:name=".activity.TopicsActivity" />
-        <activity android:name=".activity.InterviewOutcomeActivity" />
+        <activity
+            android:name=".activity.CandidateDetailsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".activity.TopicsActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".activity.InterviewOutcomeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
         <service android:name=".services.UserAuthenticationService" />
+
+        <activity android:name=".activity.InterviewSummaryActivity"></activity>
     </application>
 
 </manifest>
