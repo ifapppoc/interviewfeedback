@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.View;
@@ -13,12 +12,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.CandidateDetails;
-
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -59,8 +55,56 @@ public class CandidateDetailsActivity extends BaseActivity {
         inputInterviewDate = findViewById(R.id.inputLayoutInterviewDate);
         inputTechnology = findViewById(R.id.inputLayoutTechnologyTested);
         panelistName = findViewById(R.id.interviewerName);
+        panelistName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String panel = panelistName.getText().toString();
+                if(!hasFocus && (panel == null || !(panel.matches(AppConstants.VALID_TEXT_PATTERN)))) {
+                    String message = getString(R.string.error_panelName);
+                    inputPanelName.setError(message);
+                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
+                }else
+                {
+                    inputPanelName.setError(null);
+                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputPanelName.setErrorEnabled(false);;
+                }
+            }
+        });
         candidatesName = findViewById(R.id.candidateName);
+        candidatesName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String candidateName = candidatesName.getText().toString();
+                if(!hasFocus && (candidateName == null || !(candidateName.matches(AppConstants.VALID_TEXT_PATTERN)))) {
+                    String message = getString(R.string.error_candidateName);
+                    inputCandidateName.setError(message);
+                    candidatesName.setBackgroundResource(R.drawable.edit_text_bg_error);
+                }else
+                {
+                    inputCandidateName.setError(null);
+                    candidatesName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputCandidateName.setErrorEnabled(false);;
+                }
+            }
+        });
         candidateEmailId = findViewById(R.id.candidateEmail);
+        candidateEmailId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String candidateEmail = candidateEmailId.getText().toString();
+                if(!hasFocus && (candidateEmail == null || !(candidateEmail.matches(AppConstants.VALID_EMAIL_PATTERN)))) {
+                    String message = getString(R.string.error_candidateEmail);
+                    inputCandidateEmail.setError(message);
+                    candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
+                }else
+                {
+                    inputCandidateEmail.setError(null);
+                    candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputCandidateEmail.setErrorEnabled(false);
+                }
+            }
+        });
         interviewTime = findViewById(R.id.interviewDate);
         interviewTime.setText(interviewDate);
         technology = findViewById(R.id.technologyTested);
@@ -201,7 +245,7 @@ public class CandidateDetailsActivity extends BaseActivity {
             FileOutputStream fileOutputStream = null;
             ObjectOutputStream objectOutputStream = null;
             try {
-                fileOutputStream  = getApplicationContext().openFileOutput(CANDIDATES_INFO_FILE_PATH,Context.MODE_PRIVATE);
+                fileOutputStream  = getApplicationContext().openFileOutput(CANDIDATES_INFO_FILE_PATH,Context.MODE_APPEND);
                 objectOutputStream  = new ObjectOutputStream(fileOutputStream);
                 objectOutputStream.writeObject(candidateDetails);
                 dataPersisted = true;
