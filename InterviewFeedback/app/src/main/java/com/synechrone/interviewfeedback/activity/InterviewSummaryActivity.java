@@ -9,14 +9,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.adapter.TopicsAdaptor;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.InterviewSummary;
 
@@ -33,7 +31,7 @@ public class InterviewSummaryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interview_summary);
-        setToolbar(getString(R.string.activity_summary_title));
+        setToolbar(getString(R.string.activity_summary_title), false);
         initializeView();
     }
 
@@ -43,9 +41,9 @@ public class InterviewSummaryActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
             Bundle extras = intent.getExtras();
-            final List<InterviewSummary> summaryModelList = extras.getParcelableArrayList(AppConstants.KEY_INTERVIEW_SUMMARIES);
-            if (summaryModelList != null && summaryModelList.size() > 0) {
-                TopicsAdaptor tAdapter = new TopicsAdaptor(summaryModelList);
+            final List<InterviewSummary> summaryList = extras.getParcelableArrayList(AppConstants.KEY_INTERVIEW_SUMMARIES);
+            if (summaryList != null && summaryList.size() > 0) {
+                TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -55,49 +53,10 @@ public class InterviewSummaryActivity extends BaseActivity {
                 buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        writeInterviewSummary(summaryModelList);
+                        writeInterviewSummary(summaryList);
                     }
                 });
             }
-        }
-    }
-
-    private class TopicsAdaptor extends RecyclerView.Adapter<TopicsAdaptor.MyViewHolder> {
-        private List<InterviewSummary> summaryModelList;
-
-        class MyViewHolder extends RecyclerView.ViewHolder {
-            private TextView topics, modeOfDiscussion, comments;
-
-            MyViewHolder(View view) {
-                super(view);
-                topics = view.findViewById(R.id.textViewTopicWithSubtopics);
-                modeOfDiscussion = view.findViewById(R.id.textViewModeOfDiscussion);
-                comments = view.findViewById(R.id.text_comments);
-            }
-        }
-
-        TopicsAdaptor(List<InterviewSummary> summaryModelList) {
-            this.summaryModelList = summaryModelList;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_summary_topics, parent, false);
-
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            InterviewSummary summaryModel = summaryModelList.get(position);
-            holder.topics.setText(summaryModel.getMainTopic() + " >> " + summaryModel.getSubTopic());
-            holder.modeOfDiscussion.setText("Mode: "+summaryModel.getModeOfDiscussion());
-            holder.comments.setText("Feedback : "+summaryModel.getOutcomeAndComments());
-        }
-
-        @Override
-        public int getItemCount() {
-            return summaryModelList.size();
         }
     }
 

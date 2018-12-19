@@ -40,7 +40,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_candidatesinfo);
-        setToolbar(getString(R.string.activity_title_candidate_details));
+        setToolbar(getString(R.string.activity_title_candidate_details), false);
         initializeView();
     }
 

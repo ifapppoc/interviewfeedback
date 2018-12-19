@@ -50,7 +50,7 @@ public class TopicsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topics);
-        setToolbar(getString(R.string.activity_title_choose_topics));
+        setToolbar(getString(R.string.activity_title_choose_topics), false);
         initializeView();
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
@@ -96,6 +96,7 @@ public class TopicsActivity extends BaseActivity {
             Intent intent = new Intent(this, InterviewOutcomeActivity.class);
             intent.putExtra(AppConstants.KEY_MAIN_TOPIC, autoMainTopic.getText().toString());
             intent.putExtra(AppConstants.KEY_SUB_TOPIC, autoSubTopic.getText().toString());
+            intent.putParcelableArrayListExtra(AppConstants.KEY_INTERVIEW_SUMMARIES, interviewSummaries);
             startActivityForResult(intent, AppConstants.KEY_REQUEST_START_INTERVIEW);
             overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
         }

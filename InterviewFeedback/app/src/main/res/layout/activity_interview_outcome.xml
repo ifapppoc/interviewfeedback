@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:focusableInTouchMode="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:id="@+id/rlParent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
