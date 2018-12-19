@@ -18,14 +18,13 @@ import com.synechrone.interviewfeedback.adapter.TopicsAdaptor;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.InterviewSummary;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 public class InterviewSummaryActivity extends BaseActivity {
 
-    private static final String DISCUSSION_SUMMARY_FILE = "discussionSummary.txt";
-    private static final String FILE_HEADER = "Main Topic | Sub Topic | Mode Of Discussion | Feedback";
-    private StringBuffer stringBuffer = new StringBuffer(FILE_HEADER);
+    private StringBuffer stringBuffer = new StringBuffer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +82,16 @@ public class InterviewSummaryActivity extends BaseActivity {
 
         private void writeDiscussionSummaryToDisk(List<InterviewSummary> summaryList) throws IOException {
             FileOutputStream fileOutputStream = null;
+            File file = new File(getApplicationContext().getFilesDir(),AppConstants.DISCUSSION_SUMMARY_FILE);
+            if(!(file.exists()) || file.isDirectory())
+            {
+                stringBuffer.append(AppConstants.INTERVIEW_SUMMARY_FILE_HEADER);
+            }else
+            {
+                Log.d("File Not Found Error : ", AppConstants.DISCUSSION_SUMMARY_FILE+" not found!!");
+            }
             try {
-                fileOutputStream  = getApplicationContext().openFileOutput(DISCUSSION_SUMMARY_FILE, Context.MODE_APPEND);
+                fileOutputStream  = getApplicationContext().openFileOutput(AppConstants.DISCUSSION_SUMMARY_FILE, Context.MODE_APPEND);
                 for (InterviewSummary interviewSummary: summaryList) {
                     stringBuffer.append("\n");
                     stringBuffer.append(interviewSummary.getMainTopic());
