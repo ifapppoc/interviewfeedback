@@ -16,4 +16,8 @@ public class AppConstants {
     public static final String KEY_REQUEST_CODE = "requestCode";
     public static final String KEY_INTERVIEW_SUMMARY = "interviewSummary";
     public static final String KEY_INTERVIEW_SUMMARIES = "interviewSummaries";
+    public static final String CANDIDATE_DETAILS_FILE_HEADER = "Panelist Name | Candidate Name | Candidate Email | Technology Tested | Interview Date";
+    public static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
+    public static final String INTERVIEW_SUMMARY_FILE_HEADER = "Main Topic | Sub Topic | Mode Of Discussion | Feedback";
+    public static final String DISCUSSION_SUMMARY_FILE = "discussionSummary.txt";
 }

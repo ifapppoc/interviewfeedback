@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.CandidateDetails;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,8 +33,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputCandidateName;
     private TextInputLayout inputCandidateEmail;
     private TextInputLayout inputTechnology;
-
-    private static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
+    private StringBuffer stringBuffer = new StringBuffer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +205,7 @@ public class CandidateDetailsActivity extends BaseActivity {
 
     private String formatDate()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = dateFormat.format(new Date());
         return  formattedDate;
     }
@@ -232,28 +231,38 @@ public class CandidateDetailsActivity extends BaseActivity {
             return null;
         }
 
-        private boolean writeDetailsOnFile(CandidateDetails candidateDetails) throws IOException {
-            boolean dataPersisted = false;
+        private void writeDetailsOnFile(CandidateDetails candidateDetails) throws IOException {
             FileOutputStream fileOutputStream = null;
-            ObjectOutputStream objectOutputStream = null;
+            File file = new File(getApplicationContext().getFilesDir(),AppConstants.CANDIDATES_INFO_FILE_PATH);
+            if(!(file.exists()) || file.isDirectory())
+            {
+                stringBuffer.append(AppConstants.CANDIDATE_DETAILS_FILE_HEADER);
+            }else
+            {
+                Log.d("File Not Found Error : ", AppConstants.CANDIDATES_INFO_FILE_PATH+" not found!!");
+            }
             try {
-                fileOutputStream  = getApplicationContext().openFileOutput(CANDIDATES_INFO_FILE_PATH,Context.MODE_APPEND);
-                objectOutputStream  = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(candidateDetails);
-                dataPersisted = true;
+                fileOutputStream  = getApplicationContext().openFileOutput(AppConstants.CANDIDATES_INFO_FILE_PATH, Context.MODE_APPEND);
+                    stringBuffer.append("\n");
+                    stringBuffer.append(candidateDetails.getInterviewerName());
+                    stringBuffer.append(" | ");
+                    stringBuffer.append(candidateDetails.getCandidateName());
+                    stringBuffer.append(" | ");
+                    stringBuffer.append(candidateDetails.getCandidateEmail());
+                    stringBuffer.append(" | ");
+                    stringBuffer.append(candidateDetails.getTechnologyTested());
+                    stringBuffer.append(" | ");
+                    stringBuffer.append(candidateDetails.getInterviewDate());
+                    fileOutputStream.write(stringBuffer.toString().getBytes());
+                    stringBuffer.setLength(0);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if(objectOutputStream != null)
-                {
-                    objectOutputStream.close();
-                }
                 if(fileOutputStream != null)
                 {
                     fileOutputStream.close();
                 }
             }
-            return dataPersisted;
         }
 
         @Override
