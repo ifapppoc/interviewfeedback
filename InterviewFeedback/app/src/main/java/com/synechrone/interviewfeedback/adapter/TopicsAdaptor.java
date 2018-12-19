@@ -16,12 +16,14 @@ public class TopicsAdaptor extends RecyclerView.Adapter<TopicsAdaptor.MyViewHold
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView topics, modeOfDiscussion, comments;
+        private View divider;
 
         MyViewHolder(View view) {
             super(view);
             topics = view.findViewById(R.id.textViewTopicWithSubtopics);
             modeOfDiscussion = view.findViewById(R.id.textViewModeOfDiscussion);
             comments = view.findViewById(R.id.text_comments);
+            divider = view.findViewById(R.id.divider);
         }
     }
 
@@ -42,6 +44,7 @@ public class TopicsAdaptor extends RecyclerView.Adapter<TopicsAdaptor.MyViewHold
         holder.topics.setText(summaryModel.getMainTopic() + " >> " + summaryModel.getSubTopic());
         holder.modeOfDiscussion.setText("Mode: "+summaryModel.getModeOfDiscussion());
         holder.comments.setText("Feedback : "+summaryModel.getOutcomeAndComments());
+        holder.divider.setVisibility((position == getItemCount() - 1) ? View.GONE : View.VISIBLE);
     }
 
     @Override

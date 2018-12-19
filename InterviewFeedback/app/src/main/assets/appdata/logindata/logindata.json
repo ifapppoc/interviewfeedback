@@ -1,24 +1,31 @@
 {
-  "credentials":[
-  {
-    "userName": "sample.user1@synechron.com",
-    "password": "randompassword"
+  "credentials": [{
+    "userName": "ujjaval.gupta@synechron.com",
+    "password": "syne@1234"
   },
-  {
-    "userName": "sample.user2@synechron.com",
-    "password": "randompassword"
-  },
-  {
-    "userName": "sample.user3@synechron.com",
-    "password": "randompassword"
-  },
-  {
-    "userName": "sample.user4@synechron.com",
-    "password": "randompassword"
-  },
-  {
-    "userName": "sample.user5@synechron.com",
-    "password": "randompassword"
-  }
-]
+    {
+      "userName": "wilky.kumar@synechron.com",
+      "password": "syne@1234"
+    },
+    {
+      "userName": "amitabh.sharma@synechron.com",
+      "password": "syne@1234"
+    },
+    {
+      "userName": "roly.sharma@synechron.com",
+      "password": "syne@1234"
+    },
+    {
+      "userName": "priya.singh@synechron.com",
+      "password": "syne@1234"
+    },
+    {
+      "userName": "chandramani.soni@synechron.com",
+      "password": "syne@1234"
+    },
+    {
+      "userName": "nishant.kumar1@synechron.com",
+      "password": "syne@1234"
+    }
+  ]
 }

@@ -177,16 +177,14 @@ public class InterviewOutcomeActivity extends BaseActivity {
         TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(tAdapter);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int displayWidth = displayMetrics.widthPixels;
         int displayHeight = displayMetrics.heightPixels;
-        int dialogWindowWidth = (int) (displayWidth * 0.85f);
-        int dialogWindowHeight = (int) (displayHeight * 0.75f);
+        int dialogWindowWidth = (int) (displayWidth * 0.80f);
+        int dialogWindowHeight = (int) (displayHeight * 0.50f);
 
         final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, dialogWindowHeight, true);
         pw.setTouchable(true);

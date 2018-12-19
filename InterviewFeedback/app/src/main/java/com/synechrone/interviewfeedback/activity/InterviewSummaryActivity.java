@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -45,8 +43,6 @@ public class InterviewSummaryActivity extends BaseActivity {
                 TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
                 recyclerView.setAdapter(tAdapter);
 
                 buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
