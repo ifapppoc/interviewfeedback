@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -17,19 +15,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.adapter.CommentsAndOutcomeAdapter;
+import com.synechrone.interviewfeedback.adapter.KeywordAdapter;
 import com.synechrone.interviewfeedback.adapter.TopicsAdaptor;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.InterviewSummary;
+import com.synechrone.interviewfeedback.uimodel.Keyword;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +41,15 @@ public class InterviewOutcomeActivity extends BaseActivity {
     private CheckBox checkboxDirect;
     private CheckBox checkboxScenario;
     private CheckBox checkboxProject;
-    private TextInputLayout inputOutcome;
-    private EditText editTextComments;
+    private Button buttonOutcome;
+    private LinearLayout llOutcomeSection;
+    private RecyclerView recyclerView;
 
     private String mainTopic;
     private String subTopic;
 
     private List<InterviewSummary> summaryList;
+    private List<Keyword> selectedKeywords = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +65,15 @@ public class InterviewOutcomeActivity extends BaseActivity {
         checkboxDirect = findViewById(R.id.checkbox_direct);
         checkboxScenario = findViewById(R.id.checkbox_scenario);
         checkboxProject = findViewById(R.id.checkbox_project);
-        inputOutcome = findViewById(R.id.inputLayout_comments);
-        editTextComments = findViewById(R.id.editText_comments);
+        buttonOutcome = findViewById(R.id.button_outcome);
+        buttonOutcome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOutcomeKeywords();
+            }
+        });
+        llOutcomeSection = findViewById(R.id.ll_outcome);
+        recyclerView = findViewById(R.id.recycler_view);
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +104,22 @@ public class InterviewOutcomeActivity extends BaseActivity {
         }
     }
 
+    private void updateCommentsAndOutcomes(List<Keyword> keywords) {
+        buttonOutcome.setVisibility(View.GONE);
+        llOutcomeSection.setVisibility(View.VISIBLE);
+        selectedKeywords.clear();
+        selectedKeywords = keywords;
+        CommentsAndOutcomeAdapter commentsAndOutcomeAdapter = new CommentsAndOutcomeAdapter(this, selectedKeywords);
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(commentsAndOutcomeAdapter);
+    }
+
+    public void showOutcomeButton() {
+        buttonOutcome.setVisibility(View.VISIBLE);
+        llOutcomeSection.setVisibility(View.GONE);
+    }
+
     private void saveInterviewSummary(int requestCode) {
         boolean isValid = validateInterviewSummary();
         if (isValid) {
@@ -107,19 +134,6 @@ public class InterviewOutcomeActivity extends BaseActivity {
     }
 
     private boolean validateInterviewSummary() {
-        String comments = editTextComments.getText().toString();
-        if (!comments.isEmpty()) {
-            inputOutcome.setError(null);
-            editTextComments.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputOutcome.setErrorEnabled(false);
-            editTextComments.clearFocus();
-        } else {
-            String message = getString(R.string.error_enter_comments);
-            inputOutcome.setError(message);
-            editTextComments.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
-
         if (!(checkboxDirect.isChecked() || checkboxScenario.isChecked() || checkboxProject.isChecked())) {
             Toast.makeText(this, getString(R.string.error_select_mode_of_discussion), Toast.LENGTH_SHORT).show();
             return false;
@@ -147,7 +161,7 @@ public class InterviewOutcomeActivity extends BaseActivity {
 
         String modeOfDiscussion = TextUtils.join(",", modeOfDiscussions);
         interviewSummary.setModeOfDiscussion(modeOfDiscussion);
-        interviewSummary.setOutcomeAndComments(editTextComments.getText().toString());
+        interviewSummary.setOutcomeAndComments("fghgf");
 
         return interviewSummary;
     }
@@ -201,5 +215,56 @@ public class InterviewOutcomeActivity extends BaseActivity {
             }
         });
         pw.showAtLocation(rlParent, Gravity.CENTER, 0, 0);
+    }
+
+    private void showOutcomeKeywords(){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog_keywords_layout,null);
+        RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
+        ImageButton buttonDone = layout.findViewById(R.id.button_done);
+        String[] keywords = {
+                "adkjoasfjqofj","akskjdfqwf","dw","awrwtgegjh awfiwhgi","askhfi hsbd sjfbsf","ajshfdjafsf huagfj hghgas ahggwvd","Crimson",
+                "Red","Green","Blue","Yellow","Magenta","Cyan","Orange",
+                "Aqua","Azure","Beige","Bisque","Brown","Coral","Crimson"
+        };
+
+        List<Keyword> keywordList = new ArrayList<>();
+        for (String keyword : keywords) {
+            keywordList.add(new Keyword(keyword));
+        }
+        final KeywordAdapter keywordsAdapter = new KeywordAdapter(this, keywordList);
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(keywordsAdapter);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayWidth = displayMetrics.widthPixels;
+        int dialogWindowWidth = (int) (displayWidth * 0.80f);
+
+        final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        pw.setTouchable(true);
+        pw.setOutsideTouchable(true);
+        pw.setContentView(layout);
+        pw.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        pw.setTouchInterceptor(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    pw.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        pw.showAtLocation(rlParent, Gravity.CENTER, 0, 0);
+
+        buttonDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+                List<Keyword> selectedKeywords = keywordsAdapter.getSelectedKeywords();
+                updateCommentsAndOutcomes(selectedKeywords);
+            }
+        });
     }
 }
