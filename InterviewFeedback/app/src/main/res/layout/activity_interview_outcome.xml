@@ -28,7 +28,6 @@
             android:layout_width="0dp"
             android:layout_weight=".5"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_margin"
             android:background="@drawable/login_button_selector"
             android:text="@string/button_text_continue"
             android:textAllCaps="false"
@@ -41,7 +40,6 @@
             android:layout_width="0dp"
             android:layout_weight=".5"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_margin"
             android:background="@drawable/login_button_selector"
             android:text="@string/button_text_finish"
             android:textAllCaps="false"
@@ -55,7 +53,9 @@
         android:orientation="vertical"
         android:layout_below="@id/toolbar"
         android:layout_above="@id/llBottomSection"
-        android:layout_margin="@dimen/app_margin">
+        android:layout_marginTop="@dimen/app_margin"
+        android:layout_marginLeft="@dimen/app_margin"
+        android:layout_marginRight="@dimen/app_margin">
 
         <TextView
             android:id="@+id/textView_heading"
@@ -139,8 +139,8 @@
                     android:textColor="@color/colorPrimary"/>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scrollbars="horizontal"
                     />
             </LinearLayout>

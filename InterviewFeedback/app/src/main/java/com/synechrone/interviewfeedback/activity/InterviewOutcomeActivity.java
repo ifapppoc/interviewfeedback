@@ -110,7 +110,7 @@ public class InterviewOutcomeActivity extends BaseActivity {
         selectedKeywords.clear();
         selectedKeywords = keywords;
         CommentsAndOutcomeAdapter commentsAndOutcomeAdapter = new CommentsAndOutcomeAdapter(this, selectedKeywords);
-        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.HORIZONTAL);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(commentsAndOutcomeAdapter);
     }
@@ -233,16 +233,17 @@ public class InterviewOutcomeActivity extends BaseActivity {
             keywordList.add(new Keyword(keyword));
         }
         final KeywordAdapter keywordsAdapter = new KeywordAdapter(this, keywordList);
-        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.HORIZONTAL);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(keywordsAdapter);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
         int dialogWindowWidth = (int) (displayWidth * 0.80f);
-
-        final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        int dialogWindowHeight = (int) (displayHeight * 0.50f);
+        final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, dialogWindowHeight, true);
         pw.setTouchable(true);
         pw.setOutsideTouchable(true);
         pw.setContentView(layout);

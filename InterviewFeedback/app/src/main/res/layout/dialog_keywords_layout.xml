@@ -6,32 +6,25 @@
     <RelativeLayout
         android:id="@+id/topSection"
         android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/app_margin_top"
+        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_size"
+            android:background="@color/colorAccent"/>
         <ImageButton
             android:id="@+id/button_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_content_paste_black_24dp"
-            android:layout_alignParentEnd="true"/>
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Keywords"
-            android:gravity="center_vertical"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/app_margin_top"
-            android:layout_centerVertical="true"/>
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_content_paste_black_24dp" />
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/app_margin_top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/app_margin_top"
         android:scrollbars="horizontal"
-        android:layout_below="@id/topSection"/>
+        android:layout_above="@id/topSection"/>
 </RelativeLayout>
