@@ -146,7 +146,7 @@ public class TopicsActivity extends BaseActivity {
             }
 
             if (resultData == 1) {
-                buttonStartInterview.setText(getString(R.string.button_text_continue));
+                buttonStartInterview.setText(getString(R.string.button_text_continue_for_topics));
                 autoMainTopic.setText("");
                 autoSubTopic.setText("");
             } else if (resultData == 2) {

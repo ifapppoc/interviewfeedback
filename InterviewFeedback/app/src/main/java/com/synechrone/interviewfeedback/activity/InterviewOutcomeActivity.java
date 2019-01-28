@@ -95,7 +95,7 @@ public class InterviewOutcomeActivity extends BaseActivity {
             Bundle extras = intent.getExtras();
             this.mainTopic = extras.getString(AppConstants.KEY_MAIN_TOPIC);
             this.subTopic = extras.getString(AppConstants.KEY_SUB_TOPIC);
-            textViewHeading.setText(mainTopic + " >> " + subTopic);
+            textViewHeading.setText(mainTopic + ": " + subTopic);
 
             List<InterviewSummary> summaryModelList = extras.getParcelableArrayList(AppConstants.KEY_INTERVIEW_SUMMARIES);
             if (summaryModelList != null && summaryModelList.size() > 0) {
@@ -161,7 +161,11 @@ public class InterviewOutcomeActivity extends BaseActivity {
 
         String modeOfDiscussion = TextUtils.join(",", modeOfDiscussions);
         interviewSummary.setModeOfDiscussion(modeOfDiscussion);
-        interviewSummary.setOutcomeAndComments("fghgf");
+        StringBuilder s=new StringBuilder();
+        for(Keyword keyword:selectedKeywords){
+            s.append(","+keyword.getKeyword());
+        }
+        interviewSummary.setOutcomeAndComments(s.toString());
 
         return interviewSummary;
     }
@@ -188,7 +192,7 @@ public class InterviewOutcomeActivity extends BaseActivity {
         LayoutInflater inflater = (LayoutInflater) InterviewOutcomeActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_summary_layout,null);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
-        TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList);
+        TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(tAdapter);
