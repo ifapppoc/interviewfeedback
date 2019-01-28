@@ -20,4 +20,7 @@ public class AppConstants {
     public static final String CANDIDATES_INFO_FILE_PATH = "candidateDetails.txt";
     public static final String INTERVIEW_SUMMARY_FILE_HEADER = "Main Topic | Sub Topic | Mode Of Discussion | Feedback";
     public static final String DISCUSSION_SUMMARY_FILE = "discussionSummary.txt";
+    public static final String BASE_URL = "localhost:8080//";
+    public static final String TAG = "SyneHIRE";
+
 }

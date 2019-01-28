@@ -15,11 +15,23 @@ import android.widget.TextView;
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.CandidateDetails;
+import com.synechrone.interviewfeedback.domain.TechnologyScope;
+import com.synechrone.interviewfeedback.ws.response.Technology;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public class CandidateDetailsActivity extends BaseActivity {
 
@@ -34,6 +46,9 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputCandidateEmail;
     private TextInputLayout inputTechnology;
     private StringBuffer stringBuffer = new StringBuffer();
+
+    private static Retrofit retrofit = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +125,29 @@ public class CandidateDetailsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 submitCandidateDetails();
+            }
+        });
+    }
+
+    public void connectAndGetApiData() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(AppConstants.BASE_URL + "technologies/all")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        TechnologyService movieApiService = retrofit.create(TechnologyService.class);
+        Call<List<Technology>> call = movieApiService.getAllTechnology();
+        call.enqueue(new Callback<List<Technology>>() {
+            @Override
+            public void onResponse(Call<List<Technology>> call, Response<List<Technology>> response) {
+                List<Technology> technologies = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<Technology>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
             }
         });
     }
@@ -280,4 +318,9 @@ public class CandidateDetailsActivity extends BaseActivity {
         CandidateDetailsActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
+}
+
+interface TechnologyService {
+    @GET("group/{id}/users")
+    Call<List<Technology>> getAllTechnology();
 }
