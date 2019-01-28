@@ -24,7 +24,32 @@
             <EditText
                 android:id="@+id/interviewerName"
                 android:hint="@string/panelist_name"
-                style="@style/MyEditTextTheme"/>
+                style="@style/MyEditTextTheme"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutRecriuterName"
+            style="@style/MyTextInputLayout">
+            <EditText
+                android:id="@+id/RecriuterName"
+                android:hint="@string/recruiter_name"
+                style="@style/MyEditTextTheme"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:imeOptions="actionNext"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutLevel"
+            style="@style/MyTextInputLayout">
+            <EditText
+                android:id="@+id/level"
+                android:hint="@string/level_name"
+                style="@style/MyEditTextTheme"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:imeOptions="actionNext"/>
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@+id/inputLayoutCandidateName"
@@ -34,6 +59,9 @@
                 android:id="@+id/candidateName"
                 style="@style/MyEditTextTheme"
                 android:hint="@string/candidate_name"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:imeOptions="actionNext"
                 />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
@@ -44,7 +72,8 @@
                 android:id="@+id/candidateEmail"
                 style="@style/MyEditTextTheme"
                 android:hint="@string/candidate_email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"/>
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@+id/inputLayoutTechnologyTested"

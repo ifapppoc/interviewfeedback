@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
@@ -22,16 +23,19 @@ public class KeywordAdapter extends RecyclerView.Adapter<KeywordAdapter.ViewHold
     public KeywordAdapter(Context context, List<Keyword> keywords){
         this.context = context;
         this.keywords = keywords;
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private CardView cardView;
         private TextView textViewKeyword;
+        private ImageView image_cross;
 
         ViewHolder(View v){
             super(v);
             cardView = v.findViewById(R.id.card_view);
             textViewKeyword = v.findViewById(R.id.text_view_keyword);
+            image_cross=v.findViewById(R.id.image_cross);
         }
     }
 
@@ -50,6 +54,7 @@ public class KeywordAdapter extends RecyclerView.Adapter<KeywordAdapter.ViewHold
         boolean isSelected = keyword.isSelected();
         holder.cardView.setCardBackgroundColor(isSelected ? ActivityCompat.getColor(context, R.color.color_black) : ActivityCompat.getColor(context, R.color.color_white));
         holder.textViewKeyword.setTextColor(isSelected ? ActivityCompat.getColor(context, R.color.color_white): ActivityCompat.getColor(context, R.color.color_black));
+        holder.image_cross.setVisibility(View.INVISIBLE);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

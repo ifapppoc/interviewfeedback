@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.synechrone.interviewfeedback">
+   <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -8,6 +9,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/app_launcher"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LoginActivity"
@@ -32,6 +34,11 @@
         <service android:name=".services.UserAuthenticationService" />
 
         <activity android:name=".activity.InterviewSummaryActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f28caca17b22d66d66df584c8d448673155dc62b"
+            />
     </application>
+
 
 </manifest>

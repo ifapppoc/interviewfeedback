@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,9 @@ import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.domain.UserAuthDomain;
 import com.synechrone.interviewfeedback.services.UserAuthenticationService;
+import com.synechrone.interviewfeedback.utility.PrefManager;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,10 +31,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private TextView textViewError;
     private ProgressBar progressBarLogin;
+    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
         initializeView();
         registerAuthenticationListener();
@@ -50,19 +56,35 @@ public class LoginActivity extends AppCompatActivity {
                 authenticateUser();
             }
         });
+        prefManager=new PrefManager(this);
+        if ( prefManager.isVerified()) {
+            Log.d("58Login",Boolean.toString(prefManager.isVerified()));
+            Log.d("59LoginUserPassword",prefManager.getUserId()+" "+prefManager.getUserPassword());
+            progressBarLogin.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(this, UserAuthenticationService.class);
+            intent.putExtra(AppConstants.KEY_USER_NAME, prefManager.getUserId());
+            intent.putExtra(AppConstants.KEY_USER_PASSWORD, prefManager.getUserPassword());
+            startService(intent);
+        }
 
     }
 
     private void authenticateUser() {
         String username = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
-        boolean isValidCredentials = validateCredentials(username, password);
-        if (isValidCredentials) {
+        prefManager.saveloginData(username,password);
+        boolean isValidCredentials=false;
+        isValidCredentials = validateCredentials(username, password);
+        //code change
+        if (isValidCredentials || prefManager.isVerified()) {
+            Log.d("67Login",Boolean.toString(prefManager.isVerified()));
+            prefManager.saveVerificationData(isValidCredentials);
             progressBarLogin.setVisibility(View.VISIBLE);
             Intent intent = new Intent(this, UserAuthenticationService.class);
             intent.putExtra(AppConstants.KEY_USER_NAME, username);
             intent.putExtra(AppConstants.KEY_USER_PASSWORD, password);
             startService(intent);
+
         }
     }
 

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -102,8 +103,15 @@ public class CandidateDetailsActivity extends BaseActivity {
             }
         });
         interviewTime = findViewById(R.id.interviewDate);
-        interviewTime.setText("Interview Date : "+interviewDate);
+        interviewTime.setText("Interview Date: "+interviewDate);
         technology = findViewById(R.id.technologyTested);
+        technology.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                technology.showDropDown();
+                return false;
+            }
+        });
         enableAutoSuggest();
         submitButton = findViewById(R.id.submit_Button);
         submitButton.setOnClickListener(new View.OnClickListener() {

@@ -176,8 +176,8 @@
     },
     {
       "id": 4,
-      "name": "multithreading",
-      "topic": "MultiThreading",
+      "name": "multihreading",
+      "topic": "Multi-Threading",
       "subtopics": [{
         "value": "Concurrency vs Parallelism"
       },

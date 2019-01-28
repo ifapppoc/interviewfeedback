@@ -23,14 +23,28 @@
             android:textColor="@color/color_black"
             android:textSize="@dimen/text_size_secondary"
             android:layout_marginTop="@dimen/text_padding_small"/>
-
-        <TextView
-            android:id="@+id/text_comments"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/text_size_secondary"
-            android:layout_marginTop="@dimen/text_padding_small"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:id="@+id/text_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_padding_small"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/text_size_secondary" />
+
+            <ImageView
+                android:id="@+id/text_editCommentsButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@id/text_comments"
+                android:background="@color/color_white"
+                android:src="@drawable/ic_edit_black_24dp"
+                android:visibility="visible" />
+        </RelativeLayout>
     </LinearLayout>
     <View
         android:id="@+id/divider"

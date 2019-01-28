@@ -40,7 +40,7 @@ public class InterviewSummaryActivity extends BaseActivity {
             Bundle extras = intent.getExtras();
             final List<InterviewSummary> summaryList = extras.getParcelableArrayList(AppConstants.KEY_INTERVIEW_SUMMARIES);
             if (summaryList != null && summaryList.size() > 0) {
-                TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList);
+                TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList,this);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(tAdapter);
