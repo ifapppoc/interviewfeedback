@@ -56,95 +56,111 @@
         android:layout_marginTop="@dimen/app_margin"
         android:layout_marginLeft="@dimen/app_margin"
         android:layout_marginRight="@dimen/app_margin">
-
-        <TextView
-            android:id="@+id/textView_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_primary"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/color_black"/>
-
-        <TextView
-            android:id="@+id/textViewModeOfDiscussion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_mode_of_discussion"
-            android:textSize="@dimen/text_size_primary"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginTop="@dimen/app_margin"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <CheckBox
-                android:id="@+id/checkbox_direct"
-                android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:textColor="@color/color_black"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_primary"
-                android:text="@string/text_direct_theoritical"/>
-            <CheckBox
-                android:id="@+id/checkbox_scenario"
-                android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:textSize="@dimen/text_size_primary"
-                android:textColor="@color/color_black"
-                android:layout_height="wrap_content"
-                android:text="@string/text_scenario_based"/>
-            <CheckBox
-                android:id="@+id/checkbox_project"
-                android:layout_width="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:textSize="@dimen/text_size_primary"
-                android:textColor="@color/color_black"
-                android:layout_height="wrap_content"
-                android:text="@string/text_prior_project_based"/>
+            android:orientation="vertical"
+            android:id="@+id/llTopicAndSubtopicSection">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputLayoutMainTopic"
+                style="@style/MyTextInputLayout"
+                android:imeOptions="actionNext">
+                <AutoCompleteTextView
+                    android:id="@+id/autoTextMainTopic"
+                    android:hint="@string/hint_main_topic"
+                    style="@style/MyEditTextTheme"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    android:imeOptions="actionNext"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputLayoutSubTopic"
+                style="@style/MyTextInputLayout"
+                android:layout_marginTop="@dimen/app_margin_top">
+                <AutoCompleteTextView
+                    android:id="@+id/autoTextSubTopic"
+                    android:hint="@string/hint_sub_topic"
+                    style="@style/MyEditTextTheme"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    android:imeOptions="actionDone"/>
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
-        <RelativeLayout
+
+        <LinearLayout
+            android:id="@+id/llDiscussionDetailsSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_margin_top"
-            android:layout_marginBottom="@dimen/app_margin_top">
-            <Button
-                android:id="@+id/button_outcome"
-                android:layout_width="@dimen/login_button_width"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textView_heading"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/login_button_selector"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/button_outcome_comment"
-                android:textAllCaps="false"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/login_button_text_size" />
+                android:textColor="@color/color_black"/>
+
+            <TextView
+                android:id="@+id/textViewModeOfDiscussion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_mode_of_discussion"
+                android:textSize="@dimen/text_size_primary"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="@dimen/app_margin"/>
+
             <LinearLayout
-                android:id="@+id/ll_outcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <TextView
-                    android:id="@+id/textViewOutcome"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/checkbox_1"
                     android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@color/color_black"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_outcome_comment"
+                    android:textSize="@dimen/text_size_primary"/>
+                <CheckBox
+                    android:id="@+id/checkbox_2"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:textSize="@dimen/text_size_primary"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/color_black"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:id="@+id/checkbox_3"
+                    android:layout_width="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textSize="@dimen/text_size_primary"
+                    android:textColor="@color/color_black"
+                    android:layout_height="wrap_content"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/inputLayoutOutcome"
+                    style="@style/MyTextInputLayout"
+                    android:layout_marginTop="@dimen/app_margin_top">
+                    <AutoCompleteTextView
+                        android:id="@+id/autoTextOutcome"
+                        android:hint="@string/text_outcome_comment"
+                        style="@style/MyEditTextTheme"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"
+                        android:imeOptions="actionDone"/>
+                </android.support.design.widget.TextInputLayout>
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="vertical"
-                    />
+                    android:scrollbars="vertical" />
             </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ProgressBar

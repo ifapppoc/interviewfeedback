@@ -1,28 +1,30 @@
 package com.synechrone.interviewfeedback.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.synechrone.interviewfeedback.R;
-import com.synechrone.interviewfeedback.adapter.TopicsAdaptor;
+import com.synechrone.interviewfeedback.adapter.InterviewSummaryAdaptor;
 import com.synechrone.interviewfeedback.constants.AppConstants;
-import com.synechrone.interviewfeedback.domain.InterviewSummary;
+import com.synechrone.interviewfeedback.utility.PrefManager;
+import com.synechrone.interviewfeedback.ws.APIClient;
+import com.synechrone.interviewfeedback.ws.APIService;
+import com.synechrone.interviewfeedback.ws.response.InterviewSummary;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class InterviewSummaryActivity extends BaseActivity {
 
-    private StringBuffer stringBuffer = new StringBuffer();
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,91 +32,51 @@ public class InterviewSummaryActivity extends BaseActivity {
         setContentView(R.layout.activity_interview_summary);
         setToolbar(getString(R.string.activity_summary_title), false);
         initializeView();
+        getInterviewSummary();
     }
 
     private void initializeView() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        Button buttonSubmitAssessment = findViewById(R.id.submit_assessment);
-        Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            Bundle extras = intent.getExtras();
-            final List<InterviewSummary> summaryList = extras.getParcelableArrayList(AppConstants.KEY_INTERVIEW_SUMMARIES);
-            if (summaryList != null && summaryList.size() > 0) {
-                TopicsAdaptor tAdapter = new TopicsAdaptor(summaryList,this);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setAdapter(tAdapter);
-
-                buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        writeInterviewSummary(summaryList);
-                    }
-                });
+        recyclerView = findViewById(R.id.recycler_view);
+        Button buttonSave = findViewById(R.id.buttonSave);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToRecommendation();
             }
-        }
+        });
     }
 
-    private void writeInterviewSummary(List<InterviewSummary> interviewSummaries) {
-        SaveInterviewSummaryAsyncTask task = new SaveInterviewSummaryAsyncTask();
-        task.execute(interviewSummaries);
+    private void getInterviewSummary() {
+        long interviewId = PrefManager.getInterviewId(InterviewSummaryActivity.this);
+        APIService apiService = APIClient.getInstance();
+        Call<List<InterviewSummary>> call = apiService.getInterviewSummaries(interviewId);
+        call.enqueue(new Callback<List<InterviewSummary>>() {
+            @Override
+            public void onResponse(Call<List<InterviewSummary>> call, Response<List<InterviewSummary>> response) {
+                List<InterviewSummary> interviewSummaries = response.body();
+                if (interviewSummaries != null && interviewSummaries.size() > 0) {
+                    updateInterviewSummaries(interviewSummaries);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
     }
 
-    private class SaveInterviewSummaryAsyncTask extends AsyncTask<List<InterviewSummary>,Void,Void> {
+    private void updateInterviewSummaries(List<InterviewSummary> interviewSummaries) {
+        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(interviewSummaries,this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(tAdapter);
+    }
 
-        private Exception exception;
-
-        @Override
-        protected Void doInBackground(List<InterviewSummary>... param) {
-            try {
-                writeDiscussionSummaryToDisk(param[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                this.exception = e;
-                Log.d("Error","Error in persisting candidate's data");
-            }
-            return null;
-        }
-
-        private void writeDiscussionSummaryToDisk(List<InterviewSummary> summaryList) throws IOException {
-            FileOutputStream fileOutputStream = null;
-            File file = new File(getApplicationContext().getFilesDir(),AppConstants.DISCUSSION_SUMMARY_FILE);
-            if(!(file.exists()) || file.isDirectory())
-            {
-                stringBuffer.append(AppConstants.INTERVIEW_SUMMARY_FILE_HEADER);
-            }else
-            {
-                Log.d("File Not Found Error : ", AppConstants.DISCUSSION_SUMMARY_FILE+" not found!!");
-            }
-            try {
-                fileOutputStream  = getApplicationContext().openFileOutput(AppConstants.DISCUSSION_SUMMARY_FILE, Context.MODE_APPEND);
-                for (InterviewSummary interviewSummary: summaryList) {
-                    stringBuffer.append("\n");
-                    stringBuffer.append(interviewSummary.getMainTopic());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(interviewSummary.getSubTopic());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(interviewSummary.getModeOfDiscussion());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(interviewSummary.getOutcomeAndComments());
-                    fileOutputStream.write(stringBuffer.toString().getBytes());
-                    stringBuffer.setLength(0);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if(fileOutputStream != null)
-                {
-                    fileOutputStream.close();
-                }
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (exception == null) {
-                Toast.makeText(InterviewSummaryActivity.this, "Feedback has been submitted successfully.", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void navigateToRecommendation() {
+        Intent intent = new Intent(this, RecommendationActivity.class);
+        startActivity(intent);
+        InterviewSummaryActivity.this.finish();
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 }

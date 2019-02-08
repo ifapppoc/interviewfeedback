@@ -1,12 +1,19 @@
-package com.synechrone.interviewfeedback.ws.request;
+package com.synechrone.interviewfeedback.ws.response;
+
+import com.google.gson.annotations.SerializedName;
 
 public class Candidate {
-
+    @SerializedName("candidateEmailID")
     private String candidateEmailID;
+    @SerializedName("firstName")
     private String firstName;
+    @SerializedName("lastName")
     private String lastName;
+    @SerializedName("techId")
     private int techId;
+    @SerializedName("primaryContactNumber")
     private String primaryContactNumber;
+    @SerializedName("alternateContactNumber")
     private String alternateContactNumber;
 
     public String getCandidateEmailID() {
@@ -55,17 +62,5 @@ public class Candidate {
 
     public void setAlternateContactNumber(String alternateContactNumber) {
         this.alternateContactNumber = alternateContactNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "Candidate{" +
-                "candidateEmailID='" + candidateEmailID + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", techId=" + techId +
-                ", primaryContactNumber='" + primaryContactNumber + '\'' +
-                ", alternateContactNumber='" + alternateContactNumber + '\'' +
-                '}';
     }
 }

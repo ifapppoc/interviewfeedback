@@ -1,27 +1,31 @@
 package com.synechrone.interviewfeedback.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.adapter.SuggestionAdapter;
 import com.synechrone.interviewfeedback.constants.AppConstants;
-import com.synechrone.interviewfeedback.domain.CandidateDetails;
-import com.synechrone.interviewfeedback.domain.TechnologyScope;
+import com.synechrone.interviewfeedback.utility.PrefManager;
+import com.synechrone.interviewfeedback.ws.APIClient;
+import com.synechrone.interviewfeedback.ws.APIService;
+import com.synechrone.interviewfeedback.ws.request.InterviewPostRequest;
+import com.synechrone.interviewfeedback.ws.response.Candidate;
+import com.synechrone.interviewfeedback.ws.response.InterviewLevel;
+import com.synechrone.interviewfeedback.ws.response.InterviewMode;
+import com.synechrone.interviewfeedback.ws.response.Employee;
 import com.synechrone.interviewfeedback.ws.response.Technology;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,27 +33,29 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
 
 public class CandidateDetailsActivity extends BaseActivity {
 
-    private EditText panelistName;
-    private EditText candidatesName;
+    private EditText candidateFirstName;
     private EditText candidateEmailId;
-    private TextView interviewTime;
     private AutoCompleteTextView technology;
-    private Button submitButton;
-    private TextInputLayout inputPanelName;
-    private TextInputLayout inputCandidateName;
+    private AutoCompleteTextView panelistName;
+    private AutoCompleteTextView recruiterName;
+    private AutoCompleteTextView level;
+    private AutoCompleteTextView mode;
+    private TextInputLayout inputCandidateFirstName;
     private TextInputLayout inputCandidateEmail;
     private TextInputLayout inputTechnology;
-    private StringBuffer stringBuffer = new StringBuffer();
+    private TextInputLayout inputPanelName;
+    private TextInputLayout inputRecruiter;
+    private TextInputLayout inputLevel;
+    private TextInputLayout inputMode;
 
-    private static Retrofit retrofit = null;
-
+    private int selectedTechnologyId = -1;
+    private String selectedPanelId = null;
+    private String selectedRecruiterId = null;
+    private int selectedLevelId = -1;
+    private int selectedModeId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,69 +63,79 @@ public class CandidateDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_candidatesinfo);
         setToolbar(getString(R.string.activity_title_candidate_details), false);
         initializeView();
+        getTechnologies();
+        getRecruiters();
+        getInterviewLevels();
+        getInterviewModes();
     }
 
-    private void initializeView()
-    {
-        String interviewDate = formatDate();
-        inputPanelName = findViewById(R.id.inputLayoutPanelName);
-        inputCandidateName = findViewById(R.id.inputLayoutCandidateName);
+    private void initializeView() {
+        inputCandidateFirstName = findViewById(R.id.inputLayoutCandidateFirstName);
         inputCandidateEmail = findViewById(R.id.inputLayoutCandidateEmail);
         inputTechnology = findViewById(R.id.inputLayoutTechnologyTested);
-        panelistName = findViewById(R.id.interviewerName);
-        panelistName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        inputPanelName = findViewById(R.id.inputLayoutPanelName);
+        inputRecruiter = findViewById(R.id.inputLayoutRecruiterName);
+        inputLevel = findViewById(R.id.inputLayoutLevel);
+        inputMode = findViewById(R.id.inputLayoutMode);
+        candidateFirstName = findViewById(R.id.candidateFirstName);
+        candidateFirstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                String panel = panelistName.getText().toString();
-                if(!hasFocus && (panel == null || !(panel.matches(AppConstants.VALID_TEXT_PATTERN)))) {
-                    String message = getString(R.string.error_panelName);
-                    inputPanelName.setError(message);
-                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
-                }else
-                {
-                    inputPanelName.setError(null);
-                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                    inputPanelName.setErrorEnabled(false);;
+                String candidateName = candidateFirstName.getText().toString();
+                if (!hasFocus && !(candidateName.matches(AppConstants.VALID_TEXT_PATTERN))) {
+                    String message = getString(R.string.error_candidate_name);
+                    inputCandidateFirstName.setError(message);
+                    candidateFirstName.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputCandidateFirstName.setError(null);
+                    candidateFirstName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputCandidateFirstName.setErrorEnabled(false);
                 }
             }
         });
-        candidatesName = findViewById(R.id.candidateName);
-        candidatesName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                String candidateName = candidatesName.getText().toString();
-                if(!hasFocus && (candidateName == null || !(candidateName.matches(AppConstants.VALID_TEXT_PATTERN)))) {
-                    String message = getString(R.string.error_candidateName);
-                    inputCandidateName.setError(message);
-                    candidatesName.setBackgroundResource(R.drawable.edit_text_bg_error);
-                }else
-                {
-                    inputCandidateName.setError(null);
-                    candidatesName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                    inputCandidateName.setErrorEnabled(false);;
-                }
-            }
-        });
+
         candidateEmailId = findViewById(R.id.candidateEmail);
         candidateEmailId.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 String candidateEmail = candidateEmailId.getText().toString();
-                if(!hasFocus && (candidateEmail == null || !(candidateEmail.matches(AppConstants.VALID_EMAIL_PATTERN)))) {
-                    String message = getString(R.string.error_candidateEmail);
+                if (!hasFocus && !(candidateEmail.matches(AppConstants.VALID_EMAIL_PATTERN))) {
+                    String message = getString(R.string.error_candidate_email);
                     inputCandidateEmail.setError(message);
                     candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
-                }else
-                {
+                } else {
                     inputCandidateEmail.setError(null);
                     candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_selector);
                     inputCandidateEmail.setErrorEnabled(false);
                 }
             }
         });
-        interviewTime = findViewById(R.id.interviewDate);
-        interviewTime.setText("Interview Date: "+interviewDate);
+
         technology = findViewById(R.id.technologyTested);
+        technology.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String technologyName = technology.getText().toString();
+                if (!hasFocus) {
+                    ListAdapter listAdapter = technology.getAdapter();
+                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                        String temp = listAdapter.getItem(i).toString();
+                        if(technologyName.compareTo(temp) == 0) {
+                            return;
+                        }
+                    }
+
+                    technology.setText("");
+                    String message = getString(R.string.error_technology);
+                    inputTechnology.setError(message);
+                    technology.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputTechnology.setError(null);
+                    technology.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputTechnology.setErrorEnabled(false);
+                }
+            }
+        });
         technology.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -127,8 +143,139 @@ public class CandidateDetailsActivity extends BaseActivity {
                 return false;
             }
         });
-        enableAutoSuggest();
-        submitButton = findViewById(R.id.submit_Button);
+
+        panelistName = findViewById(R.id.interviewerName);
+        panelistName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String panel = panelistName.getText().toString();
+                if (!hasFocus) {
+                    ListAdapter listAdapter = panelistName.getAdapter();
+                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                        String temp = listAdapter.getItem(i).toString();
+                        if(panel.compareTo(temp) == 0) {
+                            return;
+                        }
+                    }
+                    panelistName.setText("");
+                    String message = getString(R.string.error_panel_name);
+                    inputPanelName.setError(message);
+                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputPanelName.setError(null);
+                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputPanelName.setErrorEnabled(false);
+                }
+            }
+        });
+        panelistName.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                panelistName.showDropDown();
+                return false;
+            }
+        });
+
+        recruiterName = findViewById(R.id.recruiterName);
+        recruiterName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String recruiter = recruiterName.getText().toString();
+                if (!hasFocus) {
+                    ListAdapter listAdapter = recruiterName.getAdapter();
+                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                        String temp = listAdapter.getItem(i).toString();
+                        if(recruiter.compareTo(temp) == 0) {
+                            return;
+                        }
+                    }
+                    recruiterName.setText("");
+                    String message = getString(R.string.error_recruiter_name);
+                    inputRecruiter.setError(message);
+                    recruiterName.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputRecruiter.setError(null);
+                    recruiterName.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputRecruiter.setErrorEnabled(false);
+                }
+            }
+        });
+        recruiterName.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                recruiterName.showDropDown();
+                return false;
+            }
+        });
+
+        level = findViewById(R.id.interviewLevel);
+        level.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String interviewLevel = level.getText().toString();
+                if (!hasFocus) {
+                    ListAdapter listAdapter = level.getAdapter();
+                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                        String temp = listAdapter.getItem(i).toString();
+                        if(interviewLevel.compareTo(temp) == 0) {
+                            return;
+                        }
+                    }
+                    level.setText("");
+                    String message = getString(R.string.error_interview_level);
+                    inputLevel.setError(message);
+                    level.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputLevel.setError(null);
+                    level.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputLevel.setErrorEnabled(false);
+                }
+            }
+        });
+        level.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                level.showDropDown();
+                return false;
+            }
+        });
+
+        mode = findViewById(R.id.interviewMode);
+        mode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                String interviewMode = mode.getText().toString();
+                if (!hasFocus) {
+                    ListAdapter listAdapter = mode.getAdapter();
+                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                        String temp = listAdapter.getItem(i).toString();
+                        if(interviewMode.compareTo(temp) == 0) {
+                            return;
+                        }
+                    }
+                    mode.setText("");
+                    String message = getString(R.string.error_interview_mode);
+                    inputMode.setError(message);
+                    mode.setBackgroundResource(R.drawable.edit_text_bg_error);
+                } else {
+                    inputMode.setError(null);
+                    mode.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                    inputMode.setErrorEnabled(false);;
+                }
+            }
+        });
+        mode.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                mode.showDropDown();
+                return false;
+            }
+        });
+
+        TextView interviewTime = findViewById(R.id.interviewDate);
+        interviewTime.setText("Interview Date: " + formatDate());
+
+        Button submitButton = findViewById(R.id.submit_Button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,20 +284,22 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
     }
 
-    public void connectAndGetApiData() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(AppConstants.BASE_URL + "technologies/all")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
+    private String formatDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = dateFormat.format(new Date());
+        return  formattedDate;
+    }
 
-        TechnologyService movieApiService = retrofit.create(TechnologyService.class);
-        Call<List<Technology>> call = movieApiService.getAllTechnology();
+    public void getTechnologies() {
+        APIService apiService = APIClient.getInstance();
+        Call<List<Technology>> call = apiService.getTechnologies();
         call.enqueue(new Callback<List<Technology>>() {
             @Override
             public void onResponse(Call<List<Technology>> call, Response<List<Technology>> response) {
                 List<Technology> technologies = response.body();
+                if (technologies != null && technologies.size() > 0) {
+                    enableTechnologyAutoSuggestion(technologies);
+                }
             }
 
             @Override
@@ -160,175 +309,200 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
     }
 
-    private void enableAutoSuggest()
-    {
-        String[] technologyList = getApplicationContext().getResources().getStringArray(R.array.technology);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.list_item, technologyList);
-        technology.setThreshold(0);
-        technology.setAdapter(adapter);
-    }
-
-    private boolean submitCandidateDetails() {
-        boolean submittedSuccessfully = false;
-        String panel = panelistName.getText().toString();
-        String candidateName = candidatesName.getText().toString();
-        String candidateEmail = candidateEmailId.getText().toString();
-        String technologyTested = technology.getText().toString();
-        String interviewDate = interviewTime.getText().toString();
-        CandidateDetails candidateDetails = new CandidateDetails();
-        candidateDetails.setCandidateEmail(candidateEmail);
-        candidateDetails.setCandidateName(candidateName);
-        candidateDetails.setInterviewerName(panel);
-        candidateDetails.setTechnologyTested(technologyTested);
-        if(interviewDate != null && !(interviewDate.equals("")))
-        {
-            String[] strArray = interviewDate.split(":");
-            String realDate = strArray[1].trim();
-            candidateDetails.setInterviewDate(new Date(realDate));
-        }
-
-
-        if(validateCandidateDetails(candidateDetails)) {
-            saveCandidateDetails(candidateDetails);
-        }
-        else
-        {
-            Log.d("Input Error", "Please insert valid candidate data");
-        }
-
-        return  submittedSuccessfully;
-    }
-
-    private boolean validateCandidateDetails(CandidateDetails candidateDetails)
-    {
-        if (candidateDetails.getInterviewerName() != null && !candidateDetails.getInterviewerName().isEmpty()) {
-            inputPanelName.setError(null);
-            panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputPanelName.setErrorEnabled(false);
-            panelistName.clearFocus();
-        } else {
-            String message = getString(R.string.error_panelName);
-            inputPanelName.setError(message);
-            panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
-        if (candidateDetails.getCandidateName() != null && !candidateDetails.getCandidateName().isEmpty()) {
-            inputCandidateName.setError(null);
-            candidatesName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputCandidateName.setErrorEnabled(false);
-            candidatesName.clearFocus();
-        } else {
-            String message = getString(R.string.error_candidateName);
-            inputCandidateName.setError(message);
-            candidatesName.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
-        if (candidateDetails.getCandidateEmail() != null && !candidateDetails.getCandidateEmail().isEmpty()) {
-            inputCandidateEmail.setError(null);
-            candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputCandidateEmail.setErrorEnabled(false);
-            candidateEmailId.clearFocus();
-        } else {
-            String message = getString(R.string.error_candidateEmail);
-            inputCandidateEmail.setError(message);
-            candidateEmailId.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
-
-        if (candidateDetails.getTechnologyTested() != null && !candidateDetails.getTechnologyTested().isEmpty()) {
-            inputTechnology.setError(null);
-            technology.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputTechnology.setErrorEnabled(false);
-            technology.clearFocus();
-        } else {
-            String message = getString(R.string.error_technology);
-            inputTechnology.setError(message);
-            technology.setBackgroundResource(R.drawable.edit_text_bg_error);
-            return false;
-        }
-        return  true;
-    }
-
-    private String formatDate()
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = dateFormat.format(new Date());
-        return  formattedDate;
-    }
-
-    private void saveCandidateDetails(CandidateDetails candidateDetails) {
-        CandidateDetailsAsyncTask task = new CandidateDetailsAsyncTask();
-        task.execute(candidateDetails);
-    }
-
-    private class CandidateDetailsAsyncTask extends AsyncTask<CandidateDetails,Void,Void> {
-
-        private Exception exception;
-
-        @Override
-        protected Void doInBackground(CandidateDetails... param) {
-            try {
-                writeDetailsOnFile(param[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                this.exception = e;
-                Log.d("Error","Error in persisting candidate's data");
-            }
-            return null;
-        }
-
-        private void writeDetailsOnFile(CandidateDetails candidateDetails) throws IOException {
-            FileOutputStream fileOutputStream = null;
-            File file = new File(getApplicationContext().getFilesDir(),AppConstants.CANDIDATES_INFO_FILE_PATH);
-            if(!(file.exists()) || file.isDirectory())
-            {
-                stringBuffer.append(AppConstants.CANDIDATE_DETAILS_FILE_HEADER);
-            }else
-            {
-                Log.d("File Not Found Error : ", AppConstants.CANDIDATES_INFO_FILE_PATH+" not found!!");
-            }
-            try {
-                fileOutputStream  = getApplicationContext().openFileOutput(AppConstants.CANDIDATES_INFO_FILE_PATH, Context.MODE_APPEND);
-                    stringBuffer.append("\n");
-                    stringBuffer.append(candidateDetails.getInterviewerName());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(candidateDetails.getCandidateName());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(candidateDetails.getCandidateEmail());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(candidateDetails.getTechnologyTested());
-                    stringBuffer.append(" | ");
-                    stringBuffer.append(candidateDetails.getInterviewDate());
-                    fileOutputStream.write(stringBuffer.toString().getBytes());
-                    stringBuffer.setLength(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if(fileOutputStream != null)
-                {
-                    fileOutputStream.close();
+    public void getPanelists(int selectedTechnologyId) {
+        APIService apiService = APIClient.getInstance();
+        Call<List<Employee>> call = apiService.getPanelist(selectedTechnologyId);
+        call.enqueue(new Callback<List<Employee>>() {
+            @Override
+            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+                List<Employee> interviewPanelists = response.body();
+                if (interviewPanelists != null && interviewPanelists.size() > 0) {
+                    enablePanelistAutoSuggestion(interviewPanelists);
                 }
             }
-        }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (exception == null) {
-                navigateToTopicScreen();
+            @Override
+            public void onFailure(Call<List<Employee>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
             }
-        }
+        });
+    }
+
+    public void getRecruiters() {
+        APIService apiService = APIClient.getInstance();
+        Call<List<Employee>> call = apiService.getRecruiters();
+        call.enqueue(new Callback<List<Employee>>() {
+            @Override
+            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
+                List<Employee> recruiters = response.body();
+                if (recruiters != null && recruiters.size() > 0) {
+                    enableRecruiterAutoSuggestion(recruiters);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Employee>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
+    }
+
+    public void getInterviewLevels() {
+        APIService apiService = APIClient.getInstance();
+        Call<List<InterviewLevel>> call = apiService.getInterviewLevels();
+        call.enqueue(new Callback<List<InterviewLevel>>() {
+            @Override
+            public void onResponse(Call<List<InterviewLevel>> call, Response<List<InterviewLevel>> response) {
+                List<InterviewLevel> interviewLevels = response.body();
+                if (interviewLevels != null && interviewLevels.size() > 0) {
+                    enableInterviewLevelAutoSuggestion(interviewLevels);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InterviewLevel>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
+    }
+
+    public void getInterviewModes() {
+        APIService apiService = APIClient.getInstance();
+        Call<List<InterviewMode>> call = apiService.getInterviewModes();
+        call.enqueue(new Callback<List<InterviewMode>>() {
+            @Override
+            public void onResponse(Call<List<InterviewMode>> call, Response<List<InterviewMode>> response) {
+                List<InterviewMode> interviewModes = response.body();
+                if (interviewModes != null && interviewModes.size() > 0) {
+                    enableInterviewModeAutoSuggestion(interviewModes);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InterviewMode>> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
+    }
+
+    private void enableTechnologyAutoSuggestion(List<Technology> technologies) {
+        SuggestionAdapter<Technology> adapter = new SuggestionAdapter<>(this, technologies);
+        technology.setThreshold(0);
+        technology.setAdapter(adapter);
+
+        technology.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Technology selectedTechnology = parent != null ? (Technology) parent.getItemAtPosition(position) : null;
+                selectedTechnologyId = selectedTechnology != null ? selectedTechnology.getTechId() : -1;
+                getPanelists(selectedTechnologyId);
+            }
+        });
+    }
+
+    private void enablePanelistAutoSuggestion(List<Employee> interviewPanelists) {
+        SuggestionAdapter<Employee> adapter = new SuggestionAdapter<>(this, interviewPanelists);
+        panelistName.setThreshold(0);
+        panelistName.setAdapter(adapter);
+
+        panelistName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Employee selectedPanelist = parent != null ? (Employee) parent.getItemAtPosition(position) : null;
+                selectedPanelId = selectedPanelist != null ? selectedPanelist.getEmployeeId() : null;
+            }
+        });
+    }
+
+    private void enableRecruiterAutoSuggestion(List<Employee> recruiters) {
+        SuggestionAdapter<Employee> adapter = new SuggestionAdapter<>(this, recruiters);
+        recruiterName.setThreshold(0);
+        recruiterName.setAdapter(adapter);
+
+        recruiterName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Employee selectedRecruiter = parent != null ? (Employee) parent.getItemAtPosition(position) : null;
+                selectedRecruiterId = selectedRecruiter != null ? selectedRecruiter.getEmployeeId() : null;
+            }
+        });
+    }
+
+    private void enableInterviewLevelAutoSuggestion(List<InterviewLevel> interviewLevels) {
+        SuggestionAdapter<InterviewLevel> adapter = new SuggestionAdapter<>(this, interviewLevels);
+        level.setThreshold(0);
+        level.setAdapter(adapter);
+
+        level.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                InterviewLevel selectedLevel = parent != null ? (InterviewLevel) parent.getItemAtPosition(position) : null;
+                selectedLevelId = selectedLevel != null ? selectedLevel.getLevelId() : -1;
+            }
+        });
+    }
+
+    private void enableInterviewModeAutoSuggestion(List<InterviewMode> interviewModes) {
+        SuggestionAdapter<InterviewMode> adapter = new SuggestionAdapter<>(this, interviewModes);
+        mode.setThreshold(0);
+        mode.setAdapter(adapter);
+
+        mode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                InterviewMode selectedMode = parent != null ? (InterviewMode) parent.getItemAtPosition(position) : null;
+                selectedModeId = selectedMode != null ? selectedMode.getId() : -1;
+            }
+        });
+    }
+
+    private void submitCandidateDetails() {
+        InterviewPostRequest request = new InterviewPostRequest();
+        request.setTechId(selectedTechnologyId);
+        request.setPanelId(selectedPanelId);
+        request.setRecruiterId(selectedRecruiterId);
+        request.setLevelId(selectedLevelId);
+        request.setInterviewModeId(selectedModeId);
+
+        Candidate candidate = new Candidate();
+        candidate.setCandidateEmailID(candidateEmailId.getText().toString());
+        candidate.setFirstName(candidateFirstName.getText().toString());
+        candidate.setLastName("");
+        candidate.setTechId(selectedTechnologyId);
+        candidate.setPrimaryContactNumber("");
+        candidate.setAlternateContactNumber("");
+
+        request.setCandidate(candidate);
+
+        submitInterview(request);
+    }
+
+    private void submitInterview(InterviewPostRequest request) {
+        APIService apiService = APIClient.getInstance();
+        Call<Long> call = apiService.saveInterviewDetails(request);
+        call.enqueue(new Callback<Long>() {
+            @Override
+            public void onResponse(Call<Long> call, Response<Long> response) {
+                Long interviewId = response.body();
+                if (interviewId != null && interviewId > 0) {
+                    PrefManager.saveInterviewLevelId(CandidateDetailsActivity.this, selectedLevelId);
+                    PrefManager.saveInterviewId(CandidateDetailsActivity.this, interviewId);
+                    navigateToTopicScreen();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Long> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
     }
 
     private void navigateToTopicScreen() {
-        Intent intent = new Intent(this, TopicsActivity.class);
-        intent.putExtra(AppConstants.KEY_TECHNOLOGY, technology.getText().toString());
+        Intent intent = new Intent(this, DiscussionDetailsActivity.class);
+        intent.putExtra(AppConstants.KEY_TECHNOLOGY, selectedTechnologyId);
         startActivity(intent);
         CandidateDetailsActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
-}
-
-interface TechnologyService {
-    @GET("group/{id}/users")
-    Call<List<Technology>> getAllTechnology();
 }

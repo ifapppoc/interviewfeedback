@@ -26,6 +26,7 @@ public class UserAuthenticationService extends IntentService {
     {
         super("UserAuthenticationService");
     }
+    
     @Override
     protected void onHandleIntent(Intent intent) {
       Bundle extraValues = intent.getExtras();
@@ -41,7 +42,6 @@ public class UserAuthenticationService extends IntentService {
           sendBroadcast(authIntent);
       }
     }
-
 
     public UserAuthDomain authenticateUser(String userName, String password)
     {

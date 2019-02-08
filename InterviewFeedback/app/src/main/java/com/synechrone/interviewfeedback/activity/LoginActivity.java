@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     private void authenticateUser() {
         String username = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
-        prefManager.saveloginData(username,password);
+        prefManager.saveLoginData(username,password);
         boolean isValidCredentials=false;
         isValidCredentials = validateCredentials(username, password);
         //code change

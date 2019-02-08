@@ -1,15 +1,21 @@
 package com.synechrone.interviewfeedback.ws.response;
 
-public class Technology {
-    private int id;
-    private String technologyName;
+import com.google.gson.annotations.SerializedName;
 
-    public int getId() {
-        return id;
+public class Technology {
+    @SerializedName("techId")
+    private int techId;
+    @SerializedName("technologyName")
+    private String technologyName;
+    @SerializedName("description")
+    private String description;
+
+    public int getTechId() {
+        return techId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTechId(int techId) {
+        this.techId = techId;
     }
 
     public String getTechnologyName() {
@@ -20,11 +26,16 @@ public class Technology {
         this.technologyName = technologyName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
-        return "Technology{" +
-                "id=" + id +
-                ", technologyName='" + technologyName + '\'' +
-                '}';
+        return technologyName;
     }
 }

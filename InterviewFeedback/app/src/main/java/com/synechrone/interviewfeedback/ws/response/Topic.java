@@ -1,9 +1,13 @@
 package com.synechrone.interviewfeedback.ws.response;
 
-public class Topic {
+import com.google.gson.annotations.SerializedName;
 
+public class Topic {
+    @SerializedName("topicId")
     private int topicId;
+    @SerializedName("techId")
     private int techId;
+    @SerializedName("topicName")
     private String topicName;
 
     public int getTopicId() {
@@ -32,10 +36,6 @@ public class Topic {
 
     @Override
     public String toString() {
-        return "Topic{" +
-                "topicId=" + topicId +
-                ", techId=" + techId +
-                ", topicName='" + topicName + '\'' +
-                '}';
+        return topicName;
     }
 }

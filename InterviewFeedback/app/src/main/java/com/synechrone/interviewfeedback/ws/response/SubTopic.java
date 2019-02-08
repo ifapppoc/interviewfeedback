@@ -1,9 +1,13 @@
 package com.synechrone.interviewfeedback.ws.response;
 
-public class SubTopic {
+import com.google.gson.annotations.SerializedName;
 
+public class SubTopic {
+    @SerializedName("subtopicId")
     private int subtopicId;
+    @SerializedName("topicId")
     private int topicId;
+    @SerializedName("subTopicName")
     private String subTopicName;
 
     public int getSubtopicId() {
@@ -32,10 +36,6 @@ public class SubTopic {
 
     @Override
     public String toString() {
-        return "SubTopic{" +
-                "subtopicId=" + subtopicId +
-                ", topicId=" + topicId +
-                ", subTopicName='" + subTopicName + '\'' +
-                '}';
+        return subTopicName;
     }
 }
