@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.ws.response.DiscussionOutcome;
+import com.synechrone.interviewfeedback.ws.response.EmailId;
 import com.synechrone.interviewfeedback.ws.response.InterviewLevel;
 import com.synechrone.interviewfeedback.ws.response.InterviewMode;
 import com.synechrone.interviewfeedback.ws.response.Employee;
@@ -54,6 +55,8 @@ public class SuggestionAdapter<T> extends ArrayAdapter<T> {
             label = ((InterviewMode) currentItem).getModeName();
         } else if (currentItem instanceof DiscussionOutcome) {
             label = ((DiscussionOutcome) currentItem).getOutcome();
+        } else if (currentItem instanceof EmailId) {
+            label = ((EmailId) currentItem).getEmailId();
         }
 
         TextView textView = rowView.findViewById(R.id.text1);

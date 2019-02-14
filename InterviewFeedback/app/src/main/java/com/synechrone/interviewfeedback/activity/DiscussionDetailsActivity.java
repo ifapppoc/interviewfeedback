@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
@@ -27,9 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.synechrone.interviewfeedback.R;
+import com.synechrone.interviewfeedback.adapter.InterviewSummaryAdaptor;
 import com.synechrone.interviewfeedback.adapter.OutcomeAdapter;
 import com.synechrone.interviewfeedback.adapter.SuggestionAdapter;
-import com.synechrone.interviewfeedback.adapter.InterviewSummaryAdaptor;
 import com.synechrone.interviewfeedback.constants.AppConstants;
 import com.synechrone.interviewfeedback.utility.PrefManager;
 import com.synechrone.interviewfeedback.ws.APIClient;
@@ -56,12 +57,12 @@ public class DiscussionDetailsActivity extends BaseActivity {
     private CheckBox checkbox1;
     private CheckBox checkbox2;
     private CheckBox checkbox3;
-    private TextInputLayout inputLayoutOutcome;
     private AutoCompleteTextView autoTextOutcome;
     private TextInputLayout inputLayoutMainTopic;
     private AutoCompleteTextView autoMainTopic;
     private TextInputLayout inputLayoutSubTopic;
     private AutoCompleteTextView autoSubTopic;
+    private EditText editTextComment;
 
     private int selectedSubTopicId = -1;
     private ArrayList<InterviewSummary> interviewSummaries = new ArrayList<>();
@@ -92,9 +93,9 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 String mainTopic = autoMainTopic.getText().toString();
                 if (!hasFocus) {
                     ListAdapter listAdapter = autoMainTopic.getAdapter();
-                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                    for (int i = 0; i < listAdapter.getCount(); i++) {
                         String temp = listAdapter.getItem(i).toString();
-                        if(mainTopic.compareTo(temp) == 0) {
+                        if (mainTopic.compareTo(temp) == 0) {
                             return;
                         }
                     }
@@ -125,7 +126,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 String subTopic = autoSubTopic.getText().toString();
                 if (!hasFocus) {
                     ListAdapter listAdapter = autoSubTopic.getAdapter();
-                    for(int i = 0; i < listAdapter.getCount(); i++) {
+                    for (int i = 0; i < listAdapter.getCount(); i++) {
                         String temp = listAdapter.getItem(i).toString();
                         if(subTopic.compareTo(temp) == 0) {
                             return;
@@ -138,7 +139,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 } else {
                     inputLayoutSubTopic.setError(null);
                     autoSubTopic.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                    inputLayoutMainTopic.setErrorEnabled(false);
+                    inputLayoutSubTopic.setErrorEnabled(false);
                 }
             }
         });
@@ -154,7 +155,6 @@ public class DiscussionDetailsActivity extends BaseActivity {
         checkbox1 = findViewById(R.id.checkbox_1);
         checkbox2 = findViewById(R.id.checkbox_2);
         checkbox3 = findViewById(R.id.checkbox_3);
-        inputLayoutOutcome = findViewById(R.id.inputLayoutOutcome);
         autoTextOutcome = findViewById(R.id.autoTextOutcome);
         autoTextOutcome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -169,13 +169,6 @@ public class DiscussionDetailsActivity extends BaseActivity {
                         }
                     }
                     autoTextOutcome.setText("");
-                    String message = getString(R.string.error_enter_ct);
-                    inputLayoutOutcome.setError(message);
-                    autoTextOutcome.setBackgroundResource(R.drawable.edit_text_bg_error);
-                } else {
-                    inputLayoutOutcome.setError(null);
-                    autoTextOutcome.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                    inputLayoutMainTopic.setErrorEnabled(false);
                 }
             }
         });
@@ -191,6 +184,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
+        editTextComment = findViewById(R.id.editTextComment);
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,6 +221,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         autoMainTopic.setText("");
         autoSubTopic.setText("");
         autoTextOutcome.setText("");
+        editTextComment.setText("");
         checkbox1.setChecked(false);
         checkbox2.setChecked(false);
         checkbox3.setChecked(false);
@@ -377,16 +372,17 @@ public class DiscussionDetailsActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 DiscussionOutcome discussionOutcome = parent != null ? (DiscussionOutcome) parent.getItemAtPosition(position) : null;
                 if (discussionOutcome != null) {
-                    suggestionOutcomes.remove(discussionOutcome);
+                    adapter.remove(discussionOutcome);
                     adapter.notifyDataSetChanged();
                     selectedOutcomes.add(discussionOutcome);
+                    autoTextOutcome.setText("");
                 }
             }
         });
     }
 
     public void addOutcomeToSuggestion(DiscussionOutcome discussionOutcome) {
-        suggestionOutcomes.add(discussionOutcome);
+        adapter.add(discussionOutcome);
         adapter.notifyDataSetChanged();
     }
 
@@ -402,7 +398,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
     private InterviewSummary prepareInterviewSummary() {
         InterviewSummary interviewSummary = new InterviewSummary();
-        interviewSummary.setTopic(textViewHeading.getText().toString());
+        interviewSummary.setTopic(autoMainTopic.getText().toString() + ": " + autoSubTopic.getText().toString());
         List<DiscussionMode> discussionModes = new ArrayList<>();
         if (checkbox1.isChecked()) {
             discussionModes.add((DiscussionMode) checkbox1.getTag());
@@ -417,6 +413,8 @@ public class DiscussionDetailsActivity extends BaseActivity {
         }
         interviewSummary.setDiscussionModes(discussionModes);
         interviewSummary.setDiscussionOutcomes(selectedOutcomes);
+        String comment = editTextComment.getText() != null ? editTextComment.getText().toString() : "";
+        interviewSummary.setComment(comment);
         return interviewSummary;
     }
 
@@ -429,19 +427,15 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
     private void submitDiscussionDetails(DiscussionDetails request, final int requestCode) {
         APIService apiService = APIClient.getInstance();
-        Call<Long> call = apiService.saveDiscussions(request);
-        call.enqueue(new Callback<Long>() {
+        Call<Void> call = apiService.saveDiscussions(request);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Long> call, Response<Long> response) {
-                Long discussionDetailId = response.body();
-                if (discussionDetailId != null && discussionDetailId > 0) {
-                    PrefManager.saveDiscussionDetailsId(DiscussionDetailsActivity.this, discussionDetailId);
-                    handleNavigation(requestCode);
-                }
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                handleNavigation(requestCode);
             }
 
             @Override
-            public void onFailure(Call<Long> call, Throwable throwable) {
+            public void onFailure(Call<Void> call, Throwable throwable) {
                 Log.e(AppConstants.TAG, throwable.toString());
             }
         });
@@ -498,7 +492,8 @@ public class DiscussionDetailsActivity extends BaseActivity {
             discussionOutcomeIds.add(discussionOutcome.getId());
         }
         discussionDetails.setOutcomesIds(discussionOutcomeIds);
-
+        String comment = editTextComment.getText() != null ? editTextComment.getText().toString() : "";
+        discussionDetails.setComment(comment);
         return discussionDetails;
     }
 
@@ -524,7 +519,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         LayoutInflater inflater = (LayoutInflater) DiscussionDetailsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_summary_layout,null);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
-        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(interviewSummaries,this);
+        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(tAdapter);

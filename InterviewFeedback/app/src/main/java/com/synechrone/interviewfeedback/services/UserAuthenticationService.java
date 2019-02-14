@@ -30,12 +30,11 @@ public class UserAuthenticationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
       Bundle extraValues = intent.getExtras();
-      UserAuthDomain authDomain = null;
-      if(extraValues != null)
-      {
+      UserAuthDomain authDomain;
+      if(extraValues != null) {
           String userName = extraValues.getString(AppConstants.KEY_USER_NAME);
           String password = extraValues.getString(AppConstants.KEY_USER_PASSWORD);
-          authDomain = authenticateUser(userName,password);
+          authDomain = authenticateUser(userName, password);
           Intent authIntent = new Intent();
           authIntent.setAction(AppConstants.KEY_LOGIN_BROADCAST_ACTION);
           authIntent.putExtra(AppConstants.KEY_AUTH_RESPONSE, authDomain);
@@ -43,8 +42,7 @@ public class UserAuthenticationService extends IntentService {
       }
     }
 
-    public UserAuthDomain authenticateUser(String userName, String password)
-    {
+    public UserAuthDomain authenticateUser(String userName, String password) {
         UserAuthDomain authDomain = new UserAuthDomain();
         boolean authenticated = false;
         String errorMessage = "";
@@ -52,28 +50,18 @@ public class UserAuthenticationService extends IntentService {
         if(credMap == null || credMap.size() == 0 ) {
             credMap = createMap(loadJSONFromAsset());
         }
-        if(userName == null || userName.equals("") || password.equals("") || password == null)
-        {
-            authenticated = false;
+
+        if (userName == null || userName.equals("") || password == null || password.equals("")) {
             errorMessage = "Username/Password can not be null !!!";
             errorCode = 3;
-        }
-        else
-        {
-            if(!credMap.containsKey(userName))
-            {
-                authenticated = false;
+        } else {
+            if (!credMap.containsKey(userName)) {
                 errorMessage = "UserName is not valid!!!";
                 errorCode = 1;
-            }
-            else if(!(credMap.get(userName).equals(password)))
-            {
-                authenticated = false;
+            } else if (!(credMap.get(userName).equals(password))) {
                 errorMessage = "Password is not valid!!!";
                 errorCode = 2;
-            }
-            else
-            {
+            } else {
                 authenticated = true;
                 errorMessage = "Logged In Successfully !!!";
             }
@@ -85,7 +73,7 @@ public class UserAuthenticationService extends IntentService {
     }
 
     public String loadJSONFromAsset() {
-        String jsonString = null;
+        String jsonString;
         try {
             InputStream inputStream = getApplicationContext().getAssets().open(JSON_FILE_PATH);
             int size = inputStream.available();
@@ -100,9 +88,8 @@ public class UserAuthenticationService extends IntentService {
         return jsonString;
     }
 
-    public Map<String, String> createMap(String jsonData)
-    {
-        credMap = new HashMap<String, String>();
+    public Map<String, String> createMap(String jsonData) {
+        credMap = new HashMap<>();
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
             JSONArray jsonArray = jsonObject.getJSONArray("credentials");

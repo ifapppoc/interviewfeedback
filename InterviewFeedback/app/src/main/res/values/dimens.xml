@@ -6,10 +6,10 @@
     <dimen name="text_padding_normal">10dp</dimen>
     <dimen name="login_button_width">250dp</dimen>
     <dimen name="login_button_text_size">16sp</dimen>
-    <dimen name="text_size_primary">16sp</dimen>
+    <dimen name="text_size_primary">15sp</dimen>
     <dimen name="line_size">1dp</dimen>
     <dimen name="text_padding_small">5dp</dimen>
-    <dimen name="text_size_secondary">14sp</dimen>
+    <dimen name="text_size_secondary">13sp</dimen>
     <dimen name="login_button_radius">20dp</dimen>
     <dimen name="card_radius">10dp</dimen>
     <dimen name="card_margin">6dp</dimen>

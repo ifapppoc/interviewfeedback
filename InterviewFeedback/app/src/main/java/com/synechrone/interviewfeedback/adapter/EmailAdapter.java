@@ -10,19 +10,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
-import com.synechrone.interviewfeedback.activity.DiscussionDetailsActivity;
-import com.synechrone.interviewfeedback.ws.response.DiscussionOutcome;
+import com.synechrone.interviewfeedback.activity.RecruiterActionActivity;
+import com.synechrone.interviewfeedback.ws.response.EmailId;
 
 import java.util.List;
 
-public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHolder> {
-    private List<DiscussionOutcome> discussionOutcomes;
+public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> {
+    private List<EmailId> emailIds;
     private Context context;
 
 
-    public OutcomeAdapter(Context context, List<DiscussionOutcome> keywords){
+    public EmailAdapter(Context context, List<EmailId> emails){
         this.context = context;
-        this.discussionOutcomes = keywords;
+        this.emailIds = emails;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -37,7 +37,7 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
     }
 
     @Override
-    public OutcomeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         // Create a new View
         View v = LayoutInflater.from(context).inflate(R.layout.outcome_keywords, parent,false);
         ViewHolder viewHolder = new ViewHolder(v);
@@ -46,8 +46,8 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position){
-        DiscussionOutcome keyword = discussionOutcomes.get(position);
-        holder.textViewKeyword.setText(keyword.getOutcome() + " ");
+        EmailId emailId = emailIds.get(position);
+        holder.textViewKeyword.setText(emailId.getEmailId());
         holder.cardView.setCardBackgroundColor(ActivityCompat.getColor(context, R.color.color_gray));
         holder.textViewKeyword.setTextColor(ActivityCompat.getColor(context, R.color.color_black));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -59,16 +59,16 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
     }
 
     private void handleCommentRemoval(int position) {
-        DiscussionOutcome discussionOutcome = discussionOutcomes.get(position);
-        discussionOutcomes.remove(position);
+        EmailId emailId = emailIds.get(position);
+        emailIds.remove(position);
         notifyItemRemoved(position);
-        int size = discussionOutcomes.size();
+        int size = emailIds.size();
         notifyItemRangeChanged(position, size);
-        ((DiscussionDetailsActivity)context).addOutcomeToSuggestion(discussionOutcome);
+        ((RecruiterActionActivity)context).addEmailToSuggestion(emailId);
     }
 
     @Override
     public int getItemCount(){
-        return discussionOutcomes.size();
+        return emailIds.size();
     }
 }

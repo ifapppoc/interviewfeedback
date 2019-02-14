@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 public class DiscussionDetails {
+    @SerializedName("id")
+    private long id;
     @SerializedName("subTopicId")
     private int subTopicId;
     @SerializedName("interviewId")
@@ -14,6 +16,14 @@ public class DiscussionDetails {
     private List<Integer> outcomesIds;
     @SerializedName("comment")
     private String comment;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getSubTopicId() {
         return subTopicId;

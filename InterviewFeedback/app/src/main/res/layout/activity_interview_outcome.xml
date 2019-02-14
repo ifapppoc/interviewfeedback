@@ -61,14 +61,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/llTopicAndSubtopicSection">
+            <TextView
+                android:id="@+id/textViewWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_padding_normal"
+                android:textSize="@dimen/text_size_secondary"
+                android:textColor="@color/color_text_gray"
+                android:text="@string/activity_title_choose_topics"/>
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/inputLayoutMainTopic"
                 style="@style/MyTextInputLayout"
-                android:imeOptions="actionNext">
+                android:imeOptions="actionNext"
+                android:layout_marginTop="@dimen/text_padding_normal">
                 <AutoCompleteTextView
                     android:id="@+id/autoTextMainTopic"
                     android:hint="@string/hint_main_topic"
                     style="@style/MyEditTextTheme"
+                    android:drawableEnd="@drawable/icon_search"
+                    android:drawablePadding="@dimen/text_padding_small"
                     android:focusableInTouchMode="true"
                     android:focusable="true"
                     android:imeOptions="actionNext"/>
@@ -84,6 +95,8 @@
                     style="@style/MyEditTextTheme"
                     android:focusableInTouchMode="true"
                     android:focusable="true"
+                    android:drawableEnd="@drawable/icon_search"
+                    android:drawablePadding="@dimen/text_padding_small"
                     android:imeOptions="actionDone"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
@@ -154,11 +167,26 @@
                         android:focusable="true"
                         android:imeOptions="actionDone"/>
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/inputLayoutComment"
+                    style="@style/MyTextInputLayout"
+                    android:layout_marginTop="@dimen/app_margin_top">
+                    <EditText
+                        android:id="@+id/editTextComment"
+                        style="@style/MyEditTextTheme"
+                        android:hint="@string/hint_comment"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionDone"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"/>
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

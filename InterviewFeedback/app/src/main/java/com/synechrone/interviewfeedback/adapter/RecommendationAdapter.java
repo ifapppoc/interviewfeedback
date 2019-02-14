@@ -3,9 +3,11 @@ package com.synechrone.interviewfeedback.adapter;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.domain.RecommendationRow;
+import com.synechrone.interviewfeedback.ws.response.EmailId;
 import com.synechrone.interviewfeedback.ws.response.Recommendation;
 
 import java.util.List;
@@ -53,26 +56,32 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position){
+    public void onBindViewHolder(final ViewHolder holder, int position){
         RecommendationRow recommendationRow = recommendations.get(position);
         String label = recommendationRow != null ? recommendationRow.getRecommendation() : null;
         holder.recommendation.setText(label);
         holder.icon.setImageResource(R.drawable.arrow_down);
-        holder.llCommentSection.setVisibility(View.GONE);
-        holder.comment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        holder.comment.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                String comments = holder.comment.getText().toString();
-                RecommendationRow recommendationRow = recommendations.get(position);
-                if (!hasFocus && !comments.isEmpty()) {
-                    recommendationRow.setComment(comments);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String comments = holder.comment.getText().toString();
+                    RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
+                    if (!comments.isEmpty()) {
+                        recommendationRow.setComment(comments);
+                        holder.rlRecommendationSection.callOnClick();
+                    }
+                    return true;
                 }
+                return false;
             }
         });
+
         holder.rlRecommendationSection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RecommendationRow recommendationRow = recommendations.get(position);
+                RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
                 boolean isCollapsed = recommendationRow.isCollapsed();
                 holder.icon.setImageResource(isCollapsed ? R.drawable.arrow_up : R.drawable.arrow_down);
                 holder.llCommentSection.setVisibility(isCollapsed ? View.VISIBLE : View.GONE);

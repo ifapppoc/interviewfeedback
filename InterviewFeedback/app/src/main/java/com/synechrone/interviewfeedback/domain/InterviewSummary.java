@@ -21,6 +21,7 @@ public class InterviewSummary implements Parcelable {
 
     private InterviewSummary(Parcel in) {
         topic = in.readString();
+        subTopic = in.readString();
         modeOfDiscussion = in.readString();
         outcomeAndComments = in.readString();
         in.readList(discussionModes, List.class.getClassLoader());
@@ -33,6 +34,14 @@ public class InterviewSummary implements Parcelable {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public String getSubTopic() {
+        return subTopic;
+    }
+
+    public void setSubTopic(String subTopic) {
+        this.subTopic = subTopic;
     }
 
     public String getModeOfDiscussion() {
@@ -75,6 +84,7 @@ public class InterviewSummary implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(topic);
+        dest.writeString(subTopic);
         dest.writeString(modeOfDiscussion);
         dest.writeString(outcomeAndComments);
         dest.writeList(discussionModes);

@@ -39,14 +39,12 @@ public class CandidateDetailsActivity extends BaseActivity {
     private EditText candidateFirstName;
     private EditText candidateEmailId;
     private AutoCompleteTextView technology;
-    private AutoCompleteTextView panelistName;
     private AutoCompleteTextView recruiterName;
     private AutoCompleteTextView level;
     private AutoCompleteTextView mode;
     private TextInputLayout inputCandidateFirstName;
     private TextInputLayout inputCandidateEmail;
     private TextInputLayout inputTechnology;
-    private TextInputLayout inputPanelName;
     private TextInputLayout inputRecruiter;
     private TextInputLayout inputLevel;
     private TextInputLayout inputMode;
@@ -73,7 +71,6 @@ public class CandidateDetailsActivity extends BaseActivity {
         inputCandidateFirstName = findViewById(R.id.inputLayoutCandidateFirstName);
         inputCandidateEmail = findViewById(R.id.inputLayoutCandidateEmail);
         inputTechnology = findViewById(R.id.inputLayoutTechnologyTested);
-        inputPanelName = findViewById(R.id.inputLayoutPanelName);
         inputRecruiter = findViewById(R.id.inputLayoutRecruiterName);
         inputLevel = findViewById(R.id.inputLayoutLevel);
         inputMode = findViewById(R.id.inputLayoutMode);
@@ -140,38 +137,6 @@ public class CandidateDetailsActivity extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event){
                 technology.showDropDown();
-                return false;
-            }
-        });
-
-        panelistName = findViewById(R.id.interviewerName);
-        panelistName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                String panel = panelistName.getText().toString();
-                if (!hasFocus) {
-                    ListAdapter listAdapter = panelistName.getAdapter();
-                    for(int i = 0; i < listAdapter.getCount(); i++) {
-                        String temp = listAdapter.getItem(i).toString();
-                        if(panel.compareTo(temp) == 0) {
-                            return;
-                        }
-                    }
-                    panelistName.setText("");
-                    String message = getString(R.string.error_panel_name);
-                    inputPanelName.setError(message);
-                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_error);
-                } else {
-                    inputPanelName.setError(null);
-                    panelistName.setBackgroundResource(R.drawable.edit_text_bg_selector);
-                    inputPanelName.setErrorEnabled(false);
-                }
-            }
-        });
-        panelistName.setOnTouchListener(new View.OnTouchListener(){
-            @Override
-            public boolean onTouch(View v, MotionEvent event){
-                panelistName.showDropDown();
                 return false;
             }
         });
@@ -273,7 +238,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
 
         TextView interviewTime = findViewById(R.id.interviewDate);
-        interviewTime.setText("Interview Date: " + formatDate());
+        interviewTime.setText(formatDate());
 
         Button submitButton = findViewById(R.id.submit_Button);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -282,6 +247,16 @@ public class CandidateDetailsActivity extends BaseActivity {
                 submitCandidateDetails();
             }
         });
+
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            Employee panelist = extras.getParcelable(AppConstants.KEY_EMPLOYEE);
+            if (panelist != null) {
+                selectedPanelId = panelist.getEmployeeId();
+                setToolbarTitle("Welcome, "+ panelist.getFirstName() + " " + panelist.getLastName());
+            }
+        }
     }
 
     private String formatDate() {
@@ -304,25 +279,6 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Technology>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
-            }
-        });
-    }
-
-    public void getPanelists(int selectedTechnologyId) {
-        APIService apiService = APIClient.getInstance();
-        Call<List<Employee>> call = apiService.getPanelist(selectedTechnologyId);
-        call.enqueue(new Callback<List<Employee>>() {
-            @Override
-            public void onResponse(Call<List<Employee>> call, Response<List<Employee>> response) {
-                List<Employee> interviewPanelists = response.body();
-                if (interviewPanelists != null && interviewPanelists.size() > 0) {
-                    enablePanelistAutoSuggestion(interviewPanelists);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Employee>> call, Throwable throwable) {
                 Log.e(AppConstants.TAG, throwable.toString());
             }
         });
@@ -395,21 +351,6 @@ public class CandidateDetailsActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Technology selectedTechnology = parent != null ? (Technology) parent.getItemAtPosition(position) : null;
                 selectedTechnologyId = selectedTechnology != null ? selectedTechnology.getTechId() : -1;
-                getPanelists(selectedTechnologyId);
-            }
-        });
-    }
-
-    private void enablePanelistAutoSuggestion(List<Employee> interviewPanelists) {
-        SuggestionAdapter<Employee> adapter = new SuggestionAdapter<>(this, interviewPanelists);
-        panelistName.setThreshold(0);
-        panelistName.setAdapter(adapter);
-
-        panelistName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Employee selectedPanelist = parent != null ? (Employee) parent.getItemAtPosition(position) : null;
-                selectedPanelId = selectedPanelist != null ? selectedPanelist.getEmployeeId() : null;
             }
         });
     }

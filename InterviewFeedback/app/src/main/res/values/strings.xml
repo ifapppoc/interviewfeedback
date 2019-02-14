@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Synechron</string>
+    <string name="app_name">SYNEhire</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="button_text_login">Login</string>
@@ -15,17 +15,17 @@
     <string name="button_text_continue_for_topics">Save &amp; Next</string>
     <string name="button_text_finish">End Discussion</string>
     <string name="activity_title_discussion">Discussion Details</string>
-    <string name="text_outcome_comment">Outcome &amp; Comments</string>
+    <string name="text_outcome_comment">Outcomes</string>
+    <string name="hint_comment">Comment</string>
     <string name="button_outcome_comment">Feedback</string>
     <string name="text_mode_of_discussion">Mode of Discussion :</string>
-    <string name="panelist_name">Panelist Name</string>
-    <string name="recruiter_name">Recruiter Name</string>
-    <string name="level_name">Interview Level</string>
-    <string name="mode_name">Interview Mode</string>
-    <string name="candidate_first_name">Candidate Name</string>
+    <string name="hint_recruiter_name">Recruiter Name</string>
+    <string name="hint_interview_level_name">Interview Level</string>
+    <string name="hint_interview_mode_name">Interview Mode</string>
+    <string name="hint_candidate_name">Candidate Name</string>
     <string name="interview_date">Interview Date(MM/DD/YYYY)</string>
-    <string name="candidate_email">Candidate Email</string>
-    <string name="technologyTested">Technology</string>
+    <string name="hint_candidate_email">Candidate Email</string>
+    <string name="hint_technology_name">Technology</string>
     <string name="button_text_submit">Start</string>
     <string name="error_technology">Enter valid Technology</string>
     <string name="error_panel_name">Enter valid Panelist Name</string>
@@ -41,9 +41,11 @@
     <string name="error_select_mode_of_discussion">Please select atleast one Mode of Discussion</string>
     <string name="submit_assessment">Submit Assesment</string>
     <string name="activity_summary_title">Assesment Summary</string>
+    <string name="activity_recruiter_title">Recruiter</string>
+    <string name="panelist_welcome_text">Please enter following details to set-up the interview</string>
+    <string name="recruiter_welcome_text">Please enter candidate email IDs to obtain feedback (You may enter multiple candidate and recipient IDs)</string>
+    <string name="button_text_send_email">Send Email</string>
+    <string name="hint_recipients_email">Recipient Email</string>
     <string name="activity_recommendation_title">Recommendation</string>
-    <string-array name="technology">
-        <item>Java</item>
-        <item>Angular</item>
-    </string-array>
+    <string name="hint_email">Email</string>
 </resources>

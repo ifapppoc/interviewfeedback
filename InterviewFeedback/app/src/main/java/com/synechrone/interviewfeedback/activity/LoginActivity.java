@@ -14,13 +14,21 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.synechrone.interviewfeedback.R;
 import com.synechrone.interviewfeedback.constants.AppConstants;
+import com.synechrone.interviewfeedback.domain.EmployeeRole;
 import com.synechrone.interviewfeedback.domain.UserAuthDomain;
 import com.synechrone.interviewfeedback.services.UserAuthenticationService;
 import com.synechrone.interviewfeedback.utility.PrefManager;
-import com.crashlytics.android.Crashlytics;
+import com.synechrone.interviewfeedback.ws.APIClient;
+import com.synechrone.interviewfeedback.ws.APIService;
+import com.synechrone.interviewfeedback.ws.response.Employee;
+
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private TextView textViewError;
     private ProgressBar progressBarLogin;
-    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,36 +62,39 @@ public class LoginActivity extends AppCompatActivity {
                 authenticateUser();
             }
         });
-        prefManager=new PrefManager(this);
-        if ( prefManager.isVerified()) {
-            Log.d("58Login",Boolean.toString(prefManager.isVerified()));
-            Log.d("59LoginUserPassword",prefManager.getUserId()+" "+prefManager.getUserPassword());
-            progressBarLogin.setVisibility(View.VISIBLE);
-            Intent intent = new Intent(this, UserAuthenticationService.class);
-            intent.putExtra(AppConstants.KEY_USER_NAME, prefManager.getUserId());
-            intent.putExtra(AppConstants.KEY_USER_PASSWORD, prefManager.getUserPassword());
-            startService(intent);
-        }
-
     }
 
     private void authenticateUser() {
         String username = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
-        prefManager.saveLoginData(username,password);
-        boolean isValidCredentials=false;
-        isValidCredentials = validateCredentials(username, password);
-        //code change
-        if (isValidCredentials || prefManager.isVerified()) {
-            Log.d("67Login",Boolean.toString(prefManager.isVerified()));
-            prefManager.saveVerificationData(isValidCredentials);
+        boolean isValidCredentials = validateCredentials(username, password);
+        if (isValidCredentials) {
             progressBarLogin.setVisibility(View.VISIBLE);
+            PrefManager.saveLoginData(this, username, password);
             Intent intent = new Intent(this, UserAuthenticationService.class);
             intent.putExtra(AppConstants.KEY_USER_NAME, username);
             intent.putExtra(AppConstants.KEY_USER_PASSWORD, password);
             startService(intent);
-
         }
+    }
+
+    private void getEmployeeRole(String emailId) {
+        APIService apiService = APIClient.getInstance();
+        Call<Employee> call = apiService.getEmployee(emailId);
+        call.enqueue(new Callback<Employee>() {
+            @Override
+            public void onResponse(Call<Employee> call, Response<Employee> response) {
+                Employee employee = response.body();
+                if (employee != null) {
+                    navigateToNextScreen(employee);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Employee> call, Throwable throwable) {
+                Log.e(AppConstants.TAG, throwable.toString());
+            }
+        });
     }
 
     private boolean validateCredentials(String username, String password) {
@@ -126,9 +136,13 @@ public class LoginActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             progressBarLogin.setVisibility(View.GONE);
             UserAuthDomain authDomain = (UserAuthDomain)intent.getSerializableExtra(AppConstants.KEY_AUTH_RESPONSE);
-            Log.i("MY_APP", "Success: "+ authDomain.isAuthenticated());
             if (authDomain.isAuthenticated()) {
-                navigateToNextScreen();
+                String loginId = PrefManager.getUserId(LoginActivity.this);
+                if (!loginId.isEmpty()) {
+                    getEmployeeRole(loginId);
+                } else {
+                    getEmployeeRole(editTextUsername.getText().toString());
+                }
             } else {
                 showError(authDomain);
             }
@@ -156,8 +170,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void navigateToNextScreen() {
-        Intent intent = new Intent(this, CandidateDetailsActivity.class);
+    private void navigateToNextScreen(Employee employee) {
+        Intent intent;
+        String employeeRole = employee.getRole();
+        if (EmployeeRole.RECRUITER.getRole().equalsIgnoreCase(employeeRole)) {
+            intent = new Intent(this, RecruiterActionActivity.class);
+        } else {
+            intent = new Intent(this, CandidateDetailsActivity.class);
+        }
+        intent.putExtra(AppConstants.KEY_EMPLOYEE, employee);
         startActivity(intent);
         LoginActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);

@@ -6,12 +6,6 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_summary"
-        android:orderInCategory="200"
-        android:title="Summary"
-        android:icon="@drawable/ic_content_paste_black_24dp"
-        app:showAsAction="always"/>
-    <item
         android:id="@+id/action_logout"
         android:orderInCategory="200"
         android:title="Logout"

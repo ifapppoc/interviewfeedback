@@ -1,15 +1,16 @@
 package com.synechrone.interviewfeedback.ws;
 
 import com.synechrone.interviewfeedback.ws.request.DiscussionDetails;
+import com.synechrone.interviewfeedback.ws.request.DiscussionDetailsSummary;
+import com.synechrone.interviewfeedback.ws.request.EmailRequest;
 import com.synechrone.interviewfeedback.ws.request.InterviewPostRequest;
 import com.synechrone.interviewfeedback.ws.request.InterviewRecommendation;
-import com.synechrone.interviewfeedback.ws.response.Candidate;
 import com.synechrone.interviewfeedback.ws.response.DiscussionMode;
 import com.synechrone.interviewfeedback.ws.response.DiscussionOutcome;
-import com.synechrone.interviewfeedback.ws.response.InterviewDetail;
+import com.synechrone.interviewfeedback.ws.response.EmailId;
+import com.synechrone.interviewfeedback.ws.response.Employee;
 import com.synechrone.interviewfeedback.ws.response.InterviewLevel;
 import com.synechrone.interviewfeedback.ws.response.InterviewMode;
-import com.synechrone.interviewfeedback.ws.response.Employee;
 import com.synechrone.interviewfeedback.ws.response.InterviewSummary;
 import com.synechrone.interviewfeedback.ws.response.Recommendation;
 import com.synechrone.interviewfeedback.ws.response.SubTopic;
@@ -25,16 +26,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface APIService {
-
-    @GET("/candidates/candidature/{emailId}")
-    Call<List<Candidate>> getCandidates(@Path("emailId") String emailId);
-
-    @GET("/interviews/interview/{emailId}")
-    Call<List<InterviewDetail>> getInterviews(@Path("emailId") String emailId);
-
-    @POST("/candidates/candidature/saveCandidate")
-    void saveCandidate(@Body Candidate candidate);
-
     @GET("/discussions/discussionoutcomes/all")
     Call<List<DiscussionOutcome>> getDiscussionsOutcome();
 
@@ -53,6 +44,9 @@ public interface APIService {
     @GET("/employees/allRecruiters")
     Call<List<Employee>> getRecruiters();
 
+    @GET("/employees/employee/{emailId}")
+    Call<Employee> getEmployee(@Path("emailId") String emailId);
+
     @GET("/technologies/all")
     Call<List<Technology>> getTechnologies();
 
@@ -68,15 +62,24 @@ public interface APIService {
     @GET("/interviewService/interviewSummaries/{interviewId}")
     Call<List<InterviewSummary>> getInterviewSummaries(@Path("interviewId") Long interviewId);
 
+    @GET("/candidates/allEmailIds")
+    Call<List<EmailId>> getCandidateEmailIds();
+
     @POST("/interviews/register/new")
     Call<Long> saveInterviewDetails(@Body InterviewPostRequest interviewPostRequest);
 
     @POST("/discussions/new")
-    Call<Long> saveDiscussions(@Body DiscussionDetails discussionDetails);
+    Call<Void> saveDiscussions(@Body DiscussionDetails discussionDetails);
 
-    @POST("/interviewService/register/new")
-    Call<Boolean> saveInterviewSummary(@Path("interviewId") Long interviewId);
+    @POST("/discussions/update")
+    Call<Void> updateDiscussions(@Body DiscussionDetailsSummary discussionDetailsSummary);
+
+    @POST("/interviewService/update/{interviewId}")
+    Call<Void> saveInterviewSummary(@Path("interviewId") Long interviewId);
 
     @POST("/recommendations/new")
-    Call<Boolean> saveInterviewRecommendations(@Body InterviewRecommendation interviewRecommendation);
+    Call<Void> saveInterviewRecommendations(@Body InterviewRecommendation interviewRecommendation);
+
+    @POST("/interviewService/sendEmail")
+    Call<Void> sendEmail(@Body EmailRequest emailIds);
 }

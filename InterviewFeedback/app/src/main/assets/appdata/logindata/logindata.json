@@ -2,29 +2,13 @@
   "credentials": [{
     "userName": "ujjaval.gupta@synechron.com",
     "password": "syne@1234"
-  },
-    {
-      "userName": "wilky.kumar@synechron.com",
-      "password": "syne@1234"
-    },
-    {
-      "userName": "amitabh.sharma@synechron.com",
-      "password": "syne@1234"
     },
     {
       "userName": "roly.sharma@synechron.com",
       "password": "syne@1234"
     },
     {
-      "userName": "priya.singh@synechron.com",
-      "password": "syne@1234"
-    },
-    {
-      "userName": "chandramani.soni@synechron.com",
-      "password": "syne@1234"
-    },
-    {
-      "userName": "nishant.kumar1@synechron.com",
+      "userName": "ashwini.yd@synechron.com",
       "password": "syne@1234"
     }
   ]
