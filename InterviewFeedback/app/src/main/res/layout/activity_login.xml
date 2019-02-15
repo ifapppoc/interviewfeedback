@@ -13,14 +13,14 @@
         android:background="@color/colorPrimary"
         >
 
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/logo"
-        />
+        <ImageView
+            android:id="@+id/img_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/logo"
+            />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,14 +54,6 @@
                 style="@style/MyEditTextTheme" />
 
         </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/textViewError"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/app_margin_top"
-            android:visibility="gone"
-            android:textColor="@color/color_red"/>
 
         <Button
             android:id="@+id/sign_in_button"

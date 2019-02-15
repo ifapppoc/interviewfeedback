@@ -1,25 +1,19 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.domain.EmployeeRole;
-import com.synechrone.synehire.domain.UserAuthDomain;
-import com.synechrone.synehire.services.UserAuthenticationService;
-import com.synechrone.synehire.utility.PrefManager;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.response.Employee;
+import com.synechron.synehire.R;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.domain.EmployeeRole;
+import com.synechron.synehire.utility.PrefManager;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.response.Employee;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +29,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         progressBarSplash = findViewById(R.id.progress_circular_splash);
-        registerAuthenticationListener();
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
@@ -46,10 +39,12 @@ public class SplashActivity extends AppCompatActivity {
 
     private void handleAuthentication() {
         progressBarSplash.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, UserAuthenticationService.class);
-        intent.putExtra(AppConstants.KEY_USER_NAME, PrefManager.getUserId(SplashActivity.this));
-        intent.putExtra(AppConstants.KEY_USER_PASSWORD, PrefManager.getUserPassword(SplashActivity.this));
-        startService(intent);
+        String loginId = PrefManager.getUserId(SplashActivity.this);
+        if (!loginId.isEmpty()) {
+            getEmployeeRole(loginId);
+        } else {
+            navigateToLoginScreen();
+        }
     }
 
     private void navigateToNextScreen(Employee employee) {
@@ -73,36 +68,13 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 
-    private void registerAuthenticationListener() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AppConstants.KEY_LOGIN_BROADCAST_ACTION);
-        registerReceiver(authenticationListener, filter);
-    }
-
-    BroadcastReceiver authenticationListener = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            progressBarSplash.setVisibility(View.GONE);
-            UserAuthDomain authDomain = (UserAuthDomain)intent.getSerializableExtra(AppConstants.KEY_AUTH_RESPONSE);
-            if (authDomain.isAuthenticated()) {
-                String loginId = PrefManager.getUserId(SplashActivity.this);
-                if (!loginId.isEmpty()) {
-                    getEmployeeRole(loginId);
-                } else {
-                    navigateToLoginScreen();
-                }
-            } else {
-                navigateToLoginScreen();
-            }
-        }
-    };
-
     private void getEmployeeRole(String emailId) {
         APIService apiService = APIClient.getInstance();
         Call<Employee> call = apiService.getEmployee(emailId);
         call.enqueue(new Callback<Employee>() {
             @Override
             public void onResponse(Call<Employee> call, Response<Employee> response) {
+                progressBarSplash.setVisibility(View.GONE);
                 Employee employee = response.body();
                 if (employee != null) {
                     navigateToNextScreen(employee);
@@ -111,17 +83,8 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Employee> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                progressBarSplash.setVisibility(View.GONE);
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (authenticationListener != null) {
-            unregisterReceiver(authenticationListener);
-            authenticationListener = null;
-        }
-        super.onDestroy();
     }
 }

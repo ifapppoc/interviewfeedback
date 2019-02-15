@@ -1,8 +1,8 @@
-package com.synechrone.synehire.logger;
+package com.synechron.synehire.logger;
 
 import android.util.Log;
 
-import com.synechrone.synehire.constants.AppConstants;
+import com.synechron.synehire.constants.AppConstants;
 
 public class AppLogger {
     public static void logError(String message) {

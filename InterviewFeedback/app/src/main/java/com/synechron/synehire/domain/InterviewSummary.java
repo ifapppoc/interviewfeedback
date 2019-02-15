@@ -1,10 +1,10 @@
-package com.synechrone.synehire.domain;
+package com.synechron.synehire.domain;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.synechrone.synehire.ws.response.DiscussionMode;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.DiscussionMode;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
 
 import java.util.List;
 

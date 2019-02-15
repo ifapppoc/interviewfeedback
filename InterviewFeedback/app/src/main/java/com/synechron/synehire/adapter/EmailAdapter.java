@@ -1,4 +1,4 @@
-package com.synechrone.synehire.adapter;
+package com.synechron.synehire.adapter;
 
 import android.content.Context;
 import android.support.v4.app.ActivityCompat;
@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.activity.RecruiterActionActivity;
-import com.synechrone.synehire.ws.response.EmailId;
+import com.synechron.synehire.R;
+import com.synechron.synehire.activity.RecruiterActionActivity;
+import com.synechron.synehire.ws.response.EmailId;
 
 import java.util.List;
 

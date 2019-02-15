@@ -1,4 +1,4 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.utility.PrefManager;
+import com.synechron.synehire.R;
+import com.synechron.synehire.utility.PrefManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -78,5 +79,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivity(intent);
         this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+    }
+
+    protected void showError(String message) {
+        if (message.isEmpty()) {
+            message = getString(R.string.error_message);
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    protected void showSuccess(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

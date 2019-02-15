@@ -1,4 +1,4 @@
-package com.synechrone.synehire.adapter;
+package com.synechron.synehire.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,15 +7,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
-import com.synechrone.synehire.ws.response.EmailId;
-import com.synechrone.synehire.ws.response.InterviewLevel;
-import com.synechrone.synehire.ws.response.InterviewMode;
-import com.synechrone.synehire.ws.response.Employee;
-import com.synechrone.synehire.ws.response.SubTopic;
-import com.synechrone.synehire.ws.response.Technology;
-import com.synechrone.synehire.ws.response.Topic;
+import com.synechron.synehire.R;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.EmailId;
+import com.synechron.synehire.ws.response.InterviewLevel;
+import com.synechron.synehire.ws.response.InterviewMode;
+import com.synechron.synehire.ws.response.Employee;
+import com.synechron.synehire.ws.response.SubTopic;
+import com.synechron.synehire.ws.response.Technology;
+import com.synechron.synehire.ws.response.Topic;
 
 import java.util.List;
 

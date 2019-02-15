@@ -1,6 +1,7 @@
-package com.synechrone.synehire.adapter;
+package com.synechron.synehire.adapter;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.domain.RecommendationRow;
+import com.synechron.synehire.R;
+import com.synechron.synehire.domain.RecommendationRow;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         private TextView recommendation;
         private ImageView icon;
         private LinearLayout llCommentSection;
+        private TextInputLayout inputLayoutComment;
         private EditText comment;
 
         ViewHolder(View v){
@@ -40,6 +42,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             recommendation = v.findViewById(R.id.textView);
             icon = v.findViewById(R.id.imageViewCollapseIcon);
             llCommentSection = v.findViewById(R.id.llCommentSection);
+            inputLayoutComment = v.findViewById(R.id.inputLayoutComment);
             comment = v.findViewById(R.id.editTextComment);
         }
     }
@@ -65,9 +68,16 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String comments = holder.comment.getText().toString();
                     RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
+                    recommendationRow.setComment(comments);
                     if (!comments.isEmpty()) {
-                        recommendationRow.setComment(comments);
-                        holder.rlRecommendationSection.callOnClick();
+                        holder.inputLayoutComment.setError(null);
+                        holder.inputLayoutComment.setErrorEnabled(false);
+                        holder.comment.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                        holder.comment.clearFocus();
+                    } else {
+                        String message = context.getString(R.string.error_enter_recommendation_comments);
+                        holder.inputLayoutComment.setError(message);
+                        holder.comment.setBackgroundResource(R.drawable.edit_text_bg_error);
                     }
                     return true;
                 }

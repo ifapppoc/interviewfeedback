@@ -1,4 +1,4 @@
-package com.synechrone.synehire.ws.request;
+package com.synechron.synehire.ws.request;
 
 import com.google.gson.annotations.SerializedName;
 

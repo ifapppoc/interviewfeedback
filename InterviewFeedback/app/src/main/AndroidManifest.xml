@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.synechrone.synehire">
+    package="com.synechron.synehire">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +13,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.synechrone.synehire.activity.SplashActivity"
+        <activity android:name="com.synechron.synehire.activity.SplashActivity"
             android:theme="@style/AppFullScreenTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
@@ -23,26 +23,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.synechrone.synehire.activity.LoginActivity"
+            android:name="com.synechron.synehire.activity.LoginActivity"
             android:theme="@style/AppFullScreenTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
-            android:name="com.synechrone.synehire.activity.CandidateDetailsActivity"
+            android:name="com.synechron.synehire.activity.CandidateDetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.synechrone.synehire.activity.DiscussionDetailsActivity"
+            android:name="com.synechron.synehire.activity.DiscussionDetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.synechrone.synehire.activity.InterviewSummaryActivity"
+            android:name="com.synechron.synehire.activity.InterviewSummaryActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name="com.synechrone.synehire.activity.RecommendationActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:name="com.synechron.synehire.activity.RecommendationActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
         <activity
-            android:name="com.synechrone.synehire.activity.RecruiterActionActivity"
+            android:name="com.synechron.synehire.activity.RecruiterActionActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <service android:name="com.synechrone.synehire.services.UserAuthenticationService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

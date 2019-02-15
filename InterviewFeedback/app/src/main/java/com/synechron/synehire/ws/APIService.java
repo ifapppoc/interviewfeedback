@@ -1,21 +1,22 @@
-package com.synechrone.synehire.ws;
+package com.synechron.synehire.ws;
 
-import com.synechrone.synehire.ws.request.DiscussionDetails;
-import com.synechrone.synehire.ws.request.DiscussionDetailsSummary;
-import com.synechrone.synehire.ws.request.EmailRequest;
-import com.synechrone.synehire.ws.request.InterviewPostRequest;
-import com.synechrone.synehire.ws.request.InterviewRecommendation;
-import com.synechrone.synehire.ws.response.DiscussionMode;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
-import com.synechrone.synehire.ws.response.EmailId;
-import com.synechrone.synehire.ws.response.Employee;
-import com.synechrone.synehire.ws.response.InterviewLevel;
-import com.synechrone.synehire.ws.response.InterviewMode;
-import com.synechrone.synehire.ws.response.InterviewSummary;
-import com.synechrone.synehire.ws.response.Recommendation;
-import com.synechrone.synehire.ws.response.SubTopic;
-import com.synechrone.synehire.ws.response.Technology;
-import com.synechrone.synehire.ws.response.Topic;
+import com.google.gson.JsonObject;
+import com.synechron.synehire.ws.request.DiscussionDetails;
+import com.synechron.synehire.ws.request.DiscussionDetailsSummary;
+import com.synechron.synehire.ws.request.EmailRequest;
+import com.synechron.synehire.ws.request.InterviewPostRequest;
+import com.synechron.synehire.ws.request.InterviewRecommendation;
+import com.synechron.synehire.ws.response.DiscussionMode;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.EmailId;
+import com.synechron.synehire.ws.response.Employee;
+import com.synechron.synehire.ws.response.InterviewLevel;
+import com.synechron.synehire.ws.response.InterviewMode;
+import com.synechron.synehire.ws.response.InterviewSummary;
+import com.synechron.synehire.ws.response.Recommendation;
+import com.synechron.synehire.ws.response.SubTopic;
+import com.synechron.synehire.ws.response.Technology;
+import com.synechron.synehire.ws.response.Topic;
 
 import java.util.List;
 
@@ -26,60 +27,60 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface APIService {
-    @GET("/discussions/discussionoutcomes/all")
+    @GET("/candidates/candidateEmail/all")
+    Call<List<EmailId>> getCandidateEmailIds();
+
+    @GET("/discussions/discussionOutcome/all")
     Call<List<DiscussionOutcome>> getDiscussionsOutcome();
 
     @GET("/discussions/discussionMode/all")
     Call<List<DiscussionMode>> getDiscussionsModes();
 
-    @GET("/interviews/interviewMode/all")
-    Call<List<InterviewMode>> getInterviewModes();
+    @POST("/discussions/new")
+    Call<JsonObject> saveDiscussionDetails(@Body DiscussionDetails discussionDetails);
 
-    @GET("/interviewLevels/all")
-    Call<List<InterviewLevel>> getInterviewLevels();
+    @POST("/discussions/update")
+    Call<JsonObject> updateDiscussions(@Body DiscussionDetailsSummary discussionDetailsSummary);
 
-    @GET("/employees/allPanelists/{techId}")
+    @GET("/employees/panel/all/{techId}")
     Call<List<Employee>> getPanelist(@Path("techId") Integer techId);
 
-    @GET("/employees/allRecruiters")
+    @GET("/employees/recruiter/all")
     Call<List<Employee>> getRecruiters();
 
     @GET("/employees/employee/{emailId}")
     Call<Employee> getEmployee(@Path("emailId") String emailId);
 
-    @GET("/technologies/all")
-    Call<List<Technology>> getTechnologies();
+    @GET("/interviews/interviewMode/all")
+    Call<List<InterviewMode>> getInterviewModes();
 
-    @GET("/topics/list/{techId}")
-    Call<List<Topic>> getTopics(@Path("techId") Integer techId);
+    @POST("/interviews/register/new")
+    Call<JsonObject> saveInterviewDetails(@Body InterviewPostRequest interviewPostRequest);
 
-    @GET("/subTopics/list/{topicId}")
-    Call<List<SubTopic>> getSubTopics(@Path("topicId") Integer topicId);
+    @GET("/interviewLevels/all")
+    Call<List<InterviewLevel>> getInterviewLevels();
+
+    @GET("/interviewService/interviewSummary/all/{interviewId}")
+    Call<List<InterviewSummary>> getInterviewSummaries(@Path("interviewId") Long interviewId);
+
+    @POST("/interviewService/update/{interviewId}")
+    Call<JsonObject> saveInterviewSummary(@Path("interviewId") Long interviewId);
+
+    @POST("/interviewService/sendEmail")
+    Call<JsonObject> sendEmail(@Body EmailRequest emailIds);
 
     @GET("/recommendations/all/{levelId}")
     Call<List<Recommendation>> getRecommendations(@Path("levelId") Integer levelId);
 
-    @GET("/interviewService/interviewSummaries/{interviewId}")
-    Call<List<InterviewSummary>> getInterviewSummaries(@Path("interviewId") Long interviewId);
-
-    @GET("/candidates/allEmailIds")
-    Call<List<EmailId>> getCandidateEmailIds();
-
-    @POST("/interviews/register/new")
-    Call<Long> saveInterviewDetails(@Body InterviewPostRequest interviewPostRequest);
-
-    @POST("/discussions/new")
-    Call<Void> saveDiscussions(@Body DiscussionDetails discussionDetails);
-
-    @POST("/discussions/update")
-    Call<Void> updateDiscussions(@Body DiscussionDetailsSummary discussionDetailsSummary);
-
-    @POST("/interviewService/update/{interviewId}")
-    Call<Void> saveInterviewSummary(@Path("interviewId") Long interviewId);
-
     @POST("/recommendations/new")
-    Call<Void> saveInterviewRecommendations(@Body InterviewRecommendation interviewRecommendation);
+    Call<JsonObject> saveInterviewRecommendations(@Body InterviewRecommendation interviewRecommendation);
 
-    @POST("/interviewService/sendEmail")
-    Call<Void> sendEmail(@Body EmailRequest emailIds);
+    @GET("/technologies/all")
+    Call<List<Technology>> getTechnologies();
+
+    @GET("/topics/all/{techId}")
+    Call<List<Topic>> getTopics(@Path("techId") Integer techId);
+
+    @GET("/subTopics/all/{topicId}")
+    Call<List<SubTopic>> getSubTopics(@Path("topicId") Integer topicId);
 }

@@ -1,29 +1,22 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.domain.EmployeeRole;
-import com.synechrone.synehire.domain.UserAuthDomain;
-import com.synechrone.synehire.services.UserAuthenticationService;
-import com.synechrone.synehire.utility.PrefManager;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.response.Employee;
+import com.synechron.synehire.R;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.domain.EmployeeRole;
+import com.synechron.synehire.utility.PrefManager;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.response.Employee;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -36,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout inputPassword;
     private EditText editTextUsername;
     private EditText editTextPassword;
-    private TextView textViewError;
     private ProgressBar progressBarLogin;
 
     @Override
@@ -45,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
         initializeView();
-        registerAuthenticationListener();
     }
 
     private void initializeView() {
@@ -54,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputLayoutPassword);
         editTextPassword = findViewById(R.id.password);
         progressBarLogin = findViewById(R.id.progress_circular_login);
-        textViewError = findViewById(R.id.textViewError);
         Button loginButton = findViewById(R.id.sign_in_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,10 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         if (isValidCredentials) {
             progressBarLogin.setVisibility(View.VISIBLE);
             PrefManager.saveLoginData(this, username, password);
-            Intent intent = new Intent(this, UserAuthenticationService.class);
-            intent.putExtra(AppConstants.KEY_USER_NAME, username);
-            intent.putExtra(AppConstants.KEY_USER_PASSWORD, password);
-            startService(intent);
+            getEmployeeRole(username);
         }
     }
 
@@ -84,15 +71,19 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<Employee>() {
             @Override
             public void onResponse(Call<Employee> call, Response<Employee> response) {
+                progressBarLogin.setVisibility(View.GONE);
                 Employee employee = response.body();
                 if (employee != null) {
                     navigateToNextScreen(employee);
+                } else {
+                    showError();
                 }
             }
 
             @Override
             public void onFailure(Call<Employee> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                progressBarLogin.setVisibility(View.GONE);
+                showError();
             }
         });
     }
@@ -111,10 +102,17 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (password != null && !password.isEmpty()) {
-            inputPassword.setError(null);
-            editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_selector);
-            inputPassword.setErrorEnabled(false);
-            editTextPassword.clearFocus();
+            if (AppConstants.GLOBAL_USER_PASSWORD.equalsIgnoreCase(password)) {
+                inputPassword.setError(null);
+                editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                inputPassword.setErrorEnabled(false);
+                editTextPassword.clearFocus();
+            } else {
+                String message = getString(R.string.error_password);
+                inputPassword.setError(message);
+                editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_error);
+                return false;
+            }
         } else {
             String message = getString(R.string.error_password);
             inputPassword.setError(message);
@@ -125,49 +123,9 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void registerAuthenticationListener() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AppConstants.KEY_LOGIN_BROADCAST_ACTION);
-        registerReceiver(authenticationListener, filter);
-    }
-
-    BroadcastReceiver authenticationListener = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            progressBarLogin.setVisibility(View.GONE);
-            UserAuthDomain authDomain = (UserAuthDomain)intent.getSerializableExtra(AppConstants.KEY_AUTH_RESPONSE);
-            if (authDomain.isAuthenticated()) {
-                String loginId = PrefManager.getUserId(LoginActivity.this);
-                if (!loginId.isEmpty()) {
-                    getEmployeeRole(loginId);
-                } else {
-                    getEmployeeRole(editTextUsername.getText().toString());
-                }
-            } else {
-                showError(authDomain);
-            }
-        }
-    };
-
-    private void showError(UserAuthDomain authDomain) {
-        String error = authDomain.getErrorMessage();
-        switch (authDomain.getErrorCode()) {
-            case 1: {
-                inputUsername.setError(error);
-                editTextUsername.setBackgroundResource(R.drawable.edit_text_bg_error);
-            }
-            break;
-            case 2: {
-                inputPassword.setError(error);
-                editTextPassword.setBackgroundResource(R.drawable.edit_text_bg_error);
-            }
-            break;
-            case 3: {
-                textViewError.setVisibility(View.VISIBLE);
-                textViewError.setText(error);
-            }
-            break;
-        }
+    private void showError() {
+        inputUsername.setError("UserName is not valid!!!");
+        editTextUsername.setBackgroundResource(R.drawable.edit_text_bg_error);
     }
 
     private void navigateToNextScreen(Employee employee) {
@@ -182,19 +140,5 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         LoginActivity.this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (authenticationListener != null) {
-            unregisterReceiver(authenticationListener);
-            authenticationListener = null;
-        }
-        super.onDestroy();
     }
 }

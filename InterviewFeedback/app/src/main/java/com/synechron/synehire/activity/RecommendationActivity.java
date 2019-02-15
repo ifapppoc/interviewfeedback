@@ -1,4 +1,4 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -16,19 +16,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.adapter.InterviewSummaryAdaptor;
-import com.synechrone.synehire.adapter.RecommendationAdapter;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.domain.RecommendationRow;
-import com.synechrone.synehire.utility.PrefManager;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.request.InterviewRecommendation;
-import com.synechrone.synehire.ws.request.RecommendationDetails;
-import com.synechrone.synehire.ws.response.InterviewSummary;
-import com.synechrone.synehire.ws.response.Recommendation;
+import com.google.gson.JsonObject;
+import com.synechron.synehire.R;
+import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
+import com.synechron.synehire.adapter.RecommendationAdapter;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.domain.RecommendationRow;
+import com.synechron.synehire.utility.PrefManager;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.request.InterviewRecommendation;
+import com.synechron.synehire.ws.request.RecommendationDetails;
+import com.synechron.synehire.ws.response.InterviewSummary;
+import com.synechron.synehire.ws.response.Recommendation;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +55,9 @@ public class RecommendationActivity extends BaseActivity {
         setContentView(R.layout.activity_recommendation);
         setToolbar(getString(R.string.activity_recommendation_title), true);
         initializeView();
-        int levelId = PrefManager.getInterviewLevelId(RecommendationActivity.this);
+        int levelId = 1;//PrefManager.getInterviewLevelId(RecommendationActivity.this);
         getRecommendations(levelId);
-        interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
+        interviewId = 4301038035945800661L;//PrefManager.getInterviewId(RecommendationActivity.this);
         getInterviewSummary();
     }
 
@@ -63,14 +68,32 @@ public class RecommendationActivity extends BaseActivity {
         buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<RecommendationRow> recommendationRows = adapter.getRecommendations();
-                if (recommendationRows != null && recommendationRows.size() > 0) {
-                    long interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
-                    submitInterviewSummary(interviewId);
-                    submitInterviewRecommendations(interviewId, recommendationRows);
-                }
+                handleSubmitAssessment();
             }
         });
+    }
+
+    private void handleSubmitAssessment() {
+        List<RecommendationRow> recommendationRows = adapter.getRecommendations();
+        if (recommendationRows != null && recommendationRows.size() > 0) {
+            boolean isValid = validateComment(recommendationRows);
+            if (isValid) {
+                long interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
+                submitInterviewSummary(interviewId);
+                submitInterviewRecommendations(interviewId, recommendationRows);
+            } else {
+                Toast.makeText(RecommendationActivity.this, getString(R.string.error_enter_recommendation_comments), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private boolean validateComment(List<RecommendationRow> recommendationRows) {
+        for (RecommendationRow recommendationRow : recommendationRows) {
+            if (recommendationRow.getComment() == null || recommendationRow.getComment().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void getRecommendations(int levelId) {
@@ -82,12 +105,14 @@ public class RecommendationActivity extends BaseActivity {
                 List<Recommendation> recommendations = response.body();
                 if (recommendations != null && recommendations.size() > 0) {
                     updateRecommendation(recommendations);
+                } else {
+                    showError("");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Recommendation>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
@@ -111,28 +136,49 @@ public class RecommendationActivity extends BaseActivity {
         call.enqueue(new Callback<List<InterviewSummary>>() {
             @Override
             public void onResponse(Call<List<InterviewSummary>> call, Response<List<InterviewSummary>> response) {
-                interviewSummaries = response.body();
+                List<InterviewSummary> interviewSummaryList = response.body();
+                if (interviewSummaryList != null && interviewSummaryList.size() > 0) {
+                    interviewSummaries = interviewSummaryList;
+                } else {
+                    showError("");
+                }
             }
 
             @Override
             public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
 
     private void submitInterviewSummary(long interviewId) {
         APIService apiService = APIClient.getInstance();
-        Call<Void> call = apiService.saveInterviewSummary(interviewId);
-        call.enqueue(new Callback<Void>() {
+        Call<JsonObject> call = apiService.saveInterviewSummary(interviewId);
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.e(AppConstants.TAG, "saved successfully");
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.body() != null) {
+                    try {
+                        JsonObject json = response.body();
+                        JSONObject jsonObject = new JSONObject(json.toString());
+                        String status = jsonObject.getString(AppConstants.STATUS);
+                        if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                            showSuccess("Interview has been successfully submitted");
+                        } else {
+                            String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                            showError(message);
+                        }
+                    } catch (JSONException e) {
+                        showError("");
+                    }
+                } else {
+                    showError("");
+                }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                showError("");
             }
         });
     }
@@ -142,16 +188,32 @@ public class RecommendationActivity extends BaseActivity {
         InterviewRecommendation interviewRecommendation = new InterviewRecommendation();
         interviewRecommendation.setInterviewId(interviewId);
         enrichWithInterviewRecommendation(interviewRecommendation, recommendationRows);
-        Call<Void> call = apiService.saveInterviewRecommendations(interviewRecommendation);
-        call.enqueue(new Callback<Void>() {
+        Call<JsonObject> call = apiService.saveInterviewRecommendations(interviewRecommendation);
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.body() != null) {
+                    try {
+                        JsonObject json = response.body();
+                        JSONObject jsonObject = new JSONObject(json.toString());
+                        String status = jsonObject.getString(AppConstants.STATUS);
+                        if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                            showSuccess("Your recommendation has been successfully submitted");
+                        } else {
+                            String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                            showError(message);
+                        }
+                    } catch (JSONException e) {
+                        showError("");
+                    }
+                } else {
+                    showError("");
+                }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                showError("");
             }
         });
     }

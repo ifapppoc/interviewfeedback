@@ -1,4 +1,4 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,16 +8,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.adapter.InterviewSummaryAdaptor;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.utility.PrefManager;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.request.DiscussionDetails;
-import com.synechrone.synehire.ws.request.DiscussionDetailsSummary;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
-import com.synechrone.synehire.ws.response.InterviewSummary;
+import com.google.gson.JsonObject;
+import com.synechron.synehire.R;
+import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.utility.PrefManager;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.request.DiscussionDetails;
+import com.synechron.synehire.ws.request.DiscussionDetailsSummary;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.InterviewSummary;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,16 +81,32 @@ public class InterviewSummaryActivity extends BaseActivity {
 
             summary.setDiscussions(discussionDetails);
 
-            Call<Void> call = apiService.updateDiscussions(summary);
-            call.enqueue(new Callback<Void>() {
+            Call<JsonObject> call = apiService.updateDiscussions(summary);
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    navigateToRecommendation();
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.body() != null) {
+                        try {
+                            JsonObject json = response.body();
+                            JSONObject jsonObject = new JSONObject(json.toString());
+                            String status = jsonObject.getString(AppConstants.STATUS);
+                            if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                                navigateToRecommendation();
+                            } else {
+                                String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                                showError(message);
+                            }
+                        } catch (JSONException e) {
+                            showError("");
+                        }
+                    } else {
+                        showError("");
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable throwable) {
-                    Log.e(AppConstants.TAG, throwable.toString());
+                public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                    showError("");
                 }
             });
         }
@@ -102,12 +122,14 @@ public class InterviewSummaryActivity extends BaseActivity {
                 List<InterviewSummary> interviewSummaries = response.body();
                 if (interviewSummaries != null && interviewSummaries.size() > 0) {
                     updateInterviewSummaries(interviewSummaries);
+                } else {
+                    showError("");
                 }
             }
 
             @Override
             public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
@@ -118,12 +140,17 @@ public class InterviewSummaryActivity extends BaseActivity {
         call.enqueue(new Callback<List<DiscussionOutcome>>() {
             @Override
             public void onResponse(Call<List<DiscussionOutcome>> call, Response<List<DiscussionOutcome>> response) {
-                outcomes = new ArrayList<>(response.body());
+                List<DiscussionOutcome> outcomeList = response.body();
+                if (outcomeList != null && outcomeList.size() > 0) {
+                    outcomes = outcomeList;
+                } else {
+                    showError("");
+                }
             }
 
             @Override
             public void onFailure(Call<List<DiscussionOutcome>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }

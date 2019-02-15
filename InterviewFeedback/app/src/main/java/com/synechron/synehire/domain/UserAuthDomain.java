@@ -1,4 +1,4 @@
-package com.synechrone.synehire.domain;
+package com.synechron.synehire.domain;
 
 import java.io.Serializable;
 

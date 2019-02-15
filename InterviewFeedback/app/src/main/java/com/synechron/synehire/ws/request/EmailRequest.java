@@ -1,7 +1,7 @@
-package com.synechrone.synehire.ws.request;
+package com.synechron.synehire.ws.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.synechrone.synehire.ws.response.EmailId;
+import com.synechron.synehire.ws.response.EmailId;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.synechrone.synehire.ws.response;
+package com.synechron.synehire.ws.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;

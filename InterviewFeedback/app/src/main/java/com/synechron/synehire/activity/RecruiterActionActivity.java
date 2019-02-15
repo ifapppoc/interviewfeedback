@@ -1,4 +1,4 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,15 +18,19 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.adapter.EmailAdapter;
-import com.synechrone.synehire.adapter.SuggestionAdapter;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.request.EmailRequest;
-import com.synechrone.synehire.ws.response.EmailId;
-import com.synechrone.synehire.ws.response.Employee;
+import com.google.gson.JsonObject;
+import com.synechron.synehire.R;
+import com.synechron.synehire.adapter.EmailAdapter;
+import com.synechron.synehire.adapter.SuggestionAdapter;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.request.EmailRequest;
+import com.synechron.synehire.ws.response.EmailId;
+import com.synechron.synehire.ws.response.Employee;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,16 +143,32 @@ public class RecruiterActionActivity extends BaseActivity {
             emailIds.setRecipientEmailIds(selectedRecipientEmailIds);
 
             APIService apiService = APIClient.getInstance();
-            Call<Void> call = apiService.sendEmail(emailIds);
-            call.enqueue(new Callback<Void>() {
+            Call<JsonObject> call = apiService.sendEmail(emailIds);
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    handleSuccess();
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.body() != null) {
+                        try {
+                            JsonObject json = response.body();
+                            JSONObject jsonObject = new JSONObject(json.toString());
+                            String status = jsonObject.getString(AppConstants.STATUS);
+                            if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                                showSuccess("Report has been successfully sent");
+                            } else {
+                                String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                                showError(message);
+                            }
+                        } catch (JSONException e) {
+                            showError("");
+                        }
+                    } else {
+                        showError("");
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable throwable) {
-                    Log.e(AppConstants.TAG, throwable.toString());
+                public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                    showError("");
                 }
             });  
         }
@@ -169,10 +189,6 @@ public class RecruiterActionActivity extends BaseActivity {
             return false;
         }
         return true;
-    }
-
-    private void handleSuccess() {
-        Toast.makeText(this, "Report has been successfully sent.", Toast.LENGTH_LONG).show();
     }
 
     private void getCandidateEmails() {

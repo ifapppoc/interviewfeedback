@@ -1,4 +1,4 @@
-package com.synechrone.synehire.adapter;
+package com.synechron.synehire.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,11 +18,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.domain.DiscussionOutcomesRow;
-import com.synechrone.synehire.ws.response.DiscussionMode;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
-import com.synechrone.synehire.ws.response.InterviewSummary;
+import com.synechron.synehire.R;
+import com.synechron.synehire.domain.DiscussionOutcomesRow;
+import com.synechron.synehire.ws.response.DiscussionMode;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.InterviewSummary;
 
 import java.util.ArrayList;
 import java.util.List;

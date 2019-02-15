@@ -1,4 +1,4 @@
-package com.synechrone.synehire.activity;
+package com.synechron.synehire.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,20 +27,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.synechrone.synehire.R;
-import com.synechrone.synehire.adapter.InterviewSummaryAdaptor;
-import com.synechrone.synehire.adapter.OutcomeAdapter;
-import com.synechrone.synehire.adapter.SuggestionAdapter;
-import com.synechrone.synehire.constants.AppConstants;
-import com.synechrone.synehire.utility.PrefManager;
-import com.synechrone.synehire.ws.APIClient;
-import com.synechrone.synehire.ws.APIService;
-import com.synechrone.synehire.ws.request.DiscussionDetails;
-import com.synechrone.synehire.ws.response.DiscussionMode;
-import com.synechrone.synehire.ws.response.DiscussionOutcome;
-import com.synechrone.synehire.ws.response.InterviewSummary;
-import com.synechrone.synehire.ws.response.SubTopic;
-import com.synechrone.synehire.ws.response.Topic;
+import com.google.gson.JsonObject;
+import com.synechron.synehire.R;
+import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
+import com.synechron.synehire.adapter.OutcomeAdapter;
+import com.synechron.synehire.adapter.SuggestionAdapter;
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.utility.PrefManager;
+import com.synechron.synehire.ws.APIClient;
+import com.synechron.synehire.ws.APIService;
+import com.synechron.synehire.ws.request.DiscussionDetails;
+import com.synechron.synehire.ws.response.DiscussionMode;
+import com.synechron.synehire.ws.response.DiscussionOutcome;
+import com.synechron.synehire.ws.response.InterviewSummary;
+import com.synechron.synehire.ws.response.SubTopic;
+import com.synechron.synehire.ws.response.Topic;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +61,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     private CheckBox checkbox1;
     private CheckBox checkbox2;
     private CheckBox checkbox3;
+    private TextInputLayout inputLayoutOutcome;
     private AutoCompleteTextView autoTextOutcome;
     private TextInputLayout inputLayoutMainTopic;
     private AutoCompleteTextView autoMainTopic;
@@ -155,6 +160,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         checkbox1 = findViewById(R.id.checkbox_1);
         checkbox2 = findViewById(R.id.checkbox_2);
         checkbox3 = findViewById(R.id.checkbox_3);
+        inputLayoutOutcome = findViewById(R.id.inputLayoutOutcome);
         autoTextOutcome = findViewById(R.id.autoTextOutcome);
         autoTextOutcome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -243,13 +249,13 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 if (topics != null && topics.size() > 0) {
                     updateUIForTopics(topics);
                 } else {
-                    showError();
+                    showError("");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Topic>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
@@ -263,18 +269,16 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 List<SubTopic> subTopics = response.body();
                 if (subTopics != null && subTopics.size() > 0) {
                     updateUIForSubTopics(subTopics);
+                } else {
+                    showError("");
                 }
             }
 
             @Override
             public void onFailure(Call<List<SubTopic>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
-    }
-
-    private void showError() {
-        Toast.makeText(this, "Something went wrong...", Toast.LENGTH_LONG).show();
     }
 
     private void updateUIForTopics(List<Topic> topics) {
@@ -337,7 +341,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<DiscussionMode>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
@@ -351,12 +355,14 @@ public class DiscussionDetailsActivity extends BaseActivity {
                 List<DiscussionOutcome> discussionOutcomes = response.body();
                 if (discussionOutcomes != null && discussionOutcomes.size() > 0) {
                     updateCommentsAndOutcomes(discussionOutcomes);
+                } else {
+                    showError("");
                 }
             }
 
             @Override
             public void onFailure(Call<List<DiscussionOutcome>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                showError("");
             }
         });
     }
@@ -427,16 +433,32 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
     private void submitDiscussionDetails(DiscussionDetails request, final int requestCode) {
         APIService apiService = APIClient.getInstance();
-        Call<Void> call = apiService.saveDiscussions(request);
-        call.enqueue(new Callback<Void>() {
+        Call<JsonObject> call = apiService.saveDiscussionDetails(request);
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                handleNavigation(requestCode);
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.body() != null) {
+                    try {
+                        JsonObject json = response.body();
+                        JSONObject jsonObject = new JSONObject(json.toString());
+                        String status = jsonObject.getString(AppConstants.STATUS);
+                        if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                            handleNavigation(requestCode);
+                        } else {
+                            String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                            showError(message);
+                        }
+                    } catch (JSONException e) {
+                        showError("");
+                    }
+                } else {
+                    showError("");
+                }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                showError("");
             }
         });
     }
@@ -456,8 +478,46 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private boolean validateInterviewSummary() {
+        String mainTopic = autoMainTopic.getText().toString();
+        if (!mainTopic.isEmpty()) {
+            inputLayoutMainTopic.setError(null);
+            inputLayoutMainTopic.setErrorEnabled(false);
+            autoMainTopic.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            autoMainTopic.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_ta);
+            inputLayoutMainTopic.setError(message);
+            autoMainTopic.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
+        String subTopic = autoSubTopic.getText().toString();
+        if (!subTopic.isEmpty()) {
+            inputLayoutSubTopic.setError(null);
+            inputLayoutSubTopic.setErrorEnabled(false);
+            autoSubTopic.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            autoSubTopic.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_ct);
+            inputLayoutSubTopic.setError(message);
+            autoSubTopic.setBackgroundResource(R.drawable.edit_text_bg_error);
+            return false;
+        }
+
         if (!(checkbox1.isChecked() || checkbox2.isChecked() || checkbox3.isChecked())) {
             Toast.makeText(this, getString(R.string.error_select_mode_of_discussion), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (selectedOutcomes != null && selectedOutcomes.size() > 0) {
+            inputLayoutOutcome.setError(null);
+            inputLayoutOutcome.setErrorEnabled(false);
+            autoTextOutcome.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            autoTextOutcome.clearFocus();
+        } else {
+            String message = getString(R.string.error_enter_comments);
+            inputLayoutOutcome.setError(message);
+            autoTextOutcome.setBackgroundResource(R.drawable.edit_text_bg_error);
             return false;
         }
 

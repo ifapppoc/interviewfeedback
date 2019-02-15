@@ -37,7 +37,9 @@
     <string name="error_candidate_primary_contact">Enter valid Mobile Number</string>
     <string name="error_enter_ta">Enter Technology Area</string>
     <string name="error_enter_ct">Enter Concept Tested</string>
+    <string name="error_message">Something went wrong. Please try again.</string>
     <string name="error_enter_comments">Enter your Outcome/Comments</string>
+    <string name="error_enter_recommendation_comments">Enter your recommendation comments</string>
     <string name="error_select_mode_of_discussion">Please select atleast one Mode of Discussion</string>
     <string name="submit_assessment">Submit Assesment</string>
     <string name="activity_summary_title">Assesment Summary</string>

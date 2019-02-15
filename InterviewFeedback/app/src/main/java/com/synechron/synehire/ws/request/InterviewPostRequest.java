@@ -1,7 +1,7 @@
-package com.synechrone.synehire.ws.request;
+package com.synechron.synehire.ws.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.synechrone.synehire.ws.response.Candidate;
+import com.synechron.synehire.ws.response.Candidate;
 
 public class InterviewPostRequest {
     @SerializedName("techId")
