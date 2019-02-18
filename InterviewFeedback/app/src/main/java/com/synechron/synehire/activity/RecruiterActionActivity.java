@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,13 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.synechron.synehire.R;
 import com.synechron.synehire.adapter.EmailAdapter;
 import com.synechron.synehire.adapter.SuggestionAdapter;
 import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
 import com.synechron.synehire.ws.request.EmailRequest;
@@ -142,7 +141,7 @@ public class RecruiterActionActivity extends BaseActivity {
             emailIds.setCandidateEmailIds(selectedCandidateEmailIds);
             emailIds.setRecipientEmailIds(selectedRecipientEmailIds);
 
-            APIService apiService = APIClient.getInstance();
+            APIService apiService = APIClient.getInstance(RecruiterActionActivity.this);
             Call<JsonObject> call = apiService.sendEmail(emailIds);
             call.enqueue(new Callback<JsonObject>() {
                 @Override
@@ -168,7 +167,11 @@ public class RecruiterActionActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                    showError("");
+                    if (throwable instanceof NoConnectivityException) {
+                        showError(throwable.getMessage());
+                    } else {
+                        showError("");
+                    }
                 }
             });  
         }
@@ -192,7 +195,7 @@ public class RecruiterActionActivity extends BaseActivity {
     }
 
     private void getCandidateEmails() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(RecruiterActionActivity.this);
         Call<List<EmailId>> call = apiService.getCandidateEmailIds();
         call.enqueue(new Callback<List<EmailId>>() {
             @Override
@@ -205,7 +208,11 @@ public class RecruiterActionActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<EmailId>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }

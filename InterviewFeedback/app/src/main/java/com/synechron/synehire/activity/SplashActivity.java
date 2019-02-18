@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import com.synechron.synehire.R;
 import com.synechron.synehire.constants.AppConstants;
 import com.synechron.synehire.domain.EmployeeRole;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -19,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 1000;
     private ProgressBar progressBarSplash;
@@ -69,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getEmployeeRole(String emailId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(SplashActivity.this);
         Call<Employee> call = apiService.getEmployee(emailId);
         call.enqueue(new Callback<Employee>() {
             @Override
@@ -84,6 +85,11 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Employee> call, Throwable throwable) {
                 progressBarSplash.setVisibility(View.GONE);
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }

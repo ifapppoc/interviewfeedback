@@ -2,7 +2,7 @@ package com.synechron.synehire.constants;
 
 public class AppConstants {
     private AppConstants (){}
-    public static final String GLOBAL_USER_PASSWORD = "synehire@12345";
+    public static final String GLOBAL_USER_PASSWORD = "synehire@2019";
     public static final String KEY_TECHNOLOGY = "technology";
     public static final String LOG_TAG = "InterviewFeedback";
     public static final String VALID_EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";

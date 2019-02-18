@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.synechron.synehire.R;
 import com.synechron.synehire.adapter.SuggestionAdapter;
 import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -31,6 +32,7 @@ import com.synechron.synehire.ws.response.Technology;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -271,7 +273,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     }
 
     public void getTechnologies() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<List<Technology>> call = apiService.getTechnologies();
         call.enqueue(new Callback<List<Technology>>() {
             @Override
@@ -284,13 +286,17 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Technology>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getRecruiters() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<List<Employee>> call = apiService.getRecruiters();
         call.enqueue(new Callback<List<Employee>>() {
             @Override
@@ -303,13 +309,17 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Employee>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getInterviewLevels() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<List<InterviewLevel>> call = apiService.getInterviewLevels();
         call.enqueue(new Callback<List<InterviewLevel>>() {
             @Override
@@ -322,13 +332,17 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<InterviewLevel>> call, Throwable throwable) {
-                Log.e(AppConstants.TAG, throwable.toString());
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getInterviewModes() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<List<InterviewMode>> call = apiService.getInterviewModes();
         call.enqueue(new Callback<List<InterviewMode>>() {
             @Override
@@ -509,7 +523,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     }
 
     private void submitInterview(final InterviewPostRequest request) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<JsonObject> call = apiService.saveInterviewDetails(request);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -540,7 +554,11 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }

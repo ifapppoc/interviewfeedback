@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.synechron.synehire.R;
 import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
 import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -58,7 +59,7 @@ public class InterviewSummaryActivity extends BaseActivity {
     }
 
     private void updateDiscussionDetails() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(InterviewSummaryActivity.this);
         DiscussionDetailsSummary summary = new DiscussionDetailsSummary();
         if (interviewSummaries != null && interviewSummaries.size()> 0) {
             List<DiscussionDetails> discussionDetails = new ArrayList<>();
@@ -106,7 +107,11 @@ public class InterviewSummaryActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                    showError("");
+                    if (throwable instanceof NoConnectivityException) {
+                        showError(throwable.getMessage());
+                    } else {
+                        showError("");
+                    }
                 }
             });
         }
@@ -114,7 +119,7 @@ public class InterviewSummaryActivity extends BaseActivity {
 
     private void getInterviewSummary() {
         long interviewId = PrefManager.getInterviewId(InterviewSummaryActivity.this);
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(InterviewSummaryActivity.this);
         Call<List<InterviewSummary>> call = apiService.getInterviewSummaries(interviewId);
         call.enqueue(new Callback<List<InterviewSummary>>() {
             @Override
@@ -129,13 +134,17 @@ public class InterviewSummaryActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getDiscussionsOutcome() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(InterviewSummaryActivity.this);
         Call<List<DiscussionOutcome>> call = apiService.getDiscussionsOutcome();
         call.enqueue(new Callback<List<DiscussionOutcome>>() {
             @Override
@@ -150,7 +159,11 @@ public class InterviewSummaryActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<DiscussionOutcome>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }

@@ -3,7 +3,7 @@
     package="com.synechron.synehire">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,11 +16,6 @@
         <activity android:name="com.synechron.synehire.activity.SplashActivity"
             android:theme="@style/AppFullScreenTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.synechron.synehire.activity.LoginActivity"
@@ -38,6 +33,11 @@
         <activity
             android:name="com.synechron.synehire.activity.RecommendationActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.synechron.synehire.activity.RecruiterActionActivity"

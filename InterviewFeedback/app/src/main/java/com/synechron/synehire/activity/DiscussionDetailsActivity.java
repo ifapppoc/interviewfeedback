@@ -33,10 +33,12 @@ import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
 import com.synechron.synehire.adapter.OutcomeAdapter;
 import com.synechron.synehire.adapter.SuggestionAdapter;
 import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
 import com.synechron.synehire.ws.request.DiscussionDetails;
+import com.synechron.synehire.ws.request.DiscussionDetailsSummary;
 import com.synechron.synehire.ws.response.DiscussionMode;
 import com.synechron.synehire.ws.response.DiscussionOutcome;
 import com.synechron.synehire.ws.response.InterviewSummary;
@@ -240,7 +242,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private void getTopics(int techId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<List<Topic>> call = apiService.getTopics(techId);
         call.enqueue(new Callback<List<Topic>>() {
             @Override
@@ -255,13 +257,17 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Topic>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getSubTopics(int selectedTopicId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<List<SubTopic>> call = apiService.getSubTopics(selectedTopicId);
         call.enqueue(new Callback<List<SubTopic>>() {
             @Override
@@ -276,7 +282,11 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<SubTopic>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
@@ -312,7 +322,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     public void getDiscussionModes() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<List<DiscussionMode>> call = apiService.getDiscussionsModes();
         call.enqueue(new Callback<List<DiscussionMode>>() {
             @Override
@@ -341,13 +351,17 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<DiscussionMode>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     public void getDiscussionsOutcome() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<List<DiscussionOutcome>> call = apiService.getDiscussionsOutcome();
         call.enqueue(new Callback<List<DiscussionOutcome>>() {
             @Override
@@ -362,7 +376,11 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<DiscussionOutcome>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
@@ -432,7 +450,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private void submitDiscussionDetails(DiscussionDetails request, final int requestCode) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<JsonObject> call = apiService.saveDiscussionDetails(request);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -458,7 +476,11 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }

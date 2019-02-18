@@ -74,6 +74,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                         holder.inputLayoutComment.setErrorEnabled(false);
                         holder.comment.setBackgroundResource(R.drawable.edit_text_bg_selector);
                         holder.comment.clearFocus();
+                        holder.rlRecommendationSection.performClick();
                     } else {
                         String message = context.getString(R.string.error_enter_recommendation_comments);
                         holder.inputLayoutComment.setError(message);
@@ -82,6 +83,17 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                     return true;
                 }
                 return false;
+            }
+        });
+
+        holder.comment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String comments = holder.comment.getText().toString();
+                    RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
+                    recommendationRow.setComment(comments);
+                }
             }
         });
 

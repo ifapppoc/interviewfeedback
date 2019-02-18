@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import com.synechron.synehire.adapter.InterviewSummaryAdaptor;
 import com.synechron.synehire.adapter.RecommendationAdapter;
 import com.synechron.synehire.constants.AppConstants;
 import com.synechron.synehire.domain.RecommendationRow;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -55,9 +55,9 @@ public class RecommendationActivity extends BaseActivity {
         setContentView(R.layout.activity_recommendation);
         setToolbar(getString(R.string.activity_recommendation_title), true);
         initializeView();
-        int levelId = 1;//PrefManager.getInterviewLevelId(RecommendationActivity.this);
+        int levelId = PrefManager.getInterviewLevelId(RecommendationActivity.this);
         getRecommendations(levelId);
-        interviewId = 4301038035945800661L;//PrefManager.getInterviewId(RecommendationActivity.this);
+        interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
         getInterviewSummary();
     }
 
@@ -78,8 +78,6 @@ public class RecommendationActivity extends BaseActivity {
         if (recommendationRows != null && recommendationRows.size() > 0) {
             boolean isValid = validateComment(recommendationRows);
             if (isValid) {
-                long interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
-                submitInterviewSummary(interviewId);
                 submitInterviewRecommendations(interviewId, recommendationRows);
             } else {
                 Toast.makeText(RecommendationActivity.this, getString(R.string.error_enter_recommendation_comments), Toast.LENGTH_LONG).show();
@@ -97,7 +95,7 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void getRecommendations(int levelId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         Call<List<Recommendation>> call = apiService.getRecommendations(levelId);
         call.enqueue(new Callback<List<Recommendation>>() {
             @Override
@@ -112,7 +110,11 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Recommendation>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
@@ -131,7 +133,7 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void getInterviewSummary() {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         Call<List<InterviewSummary>> call = apiService.getInterviewSummaries(interviewId);
         call.enqueue(new Callback<List<InterviewSummary>>() {
             @Override
@@ -146,13 +148,17 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
 
     private void submitInterviewSummary(long interviewId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         Call<JsonObject> call = apiService.saveInterviewSummary(interviewId);
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -184,7 +190,7 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void submitInterviewRecommendations(long interviewId, List<RecommendationRow> recommendationRows) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         InterviewRecommendation interviewRecommendation = new InterviewRecommendation();
         interviewRecommendation.setInterviewId(interviewId);
         enrichWithInterviewRecommendation(interviewRecommendation, recommendationRows);
@@ -198,6 +204,7 @@ public class RecommendationActivity extends BaseActivity {
                         JSONObject jsonObject = new JSONObject(json.toString());
                         String status = jsonObject.getString(AppConstants.STATUS);
                         if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                            submitInterview();
                             showSuccess("Your recommendation has been successfully submitted");
                         } else {
                             String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
@@ -213,9 +220,17 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                showError("");
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
+    }
+
+    private void submitInterview() {
+        submitInterviewSummary(interviewId);
     }
 
     private InterviewRecommendation enrichWithInterviewRecommendation(InterviewRecommendation interviewRecommendation, List<RecommendationRow> recommendationRows) {

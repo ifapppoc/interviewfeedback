@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -13,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.synechron.synehire.R;
 import com.synechron.synehire.constants.AppConstants;
 import com.synechron.synehire.domain.EmployeeRole;
+import com.synechron.synehire.exception.NoConnectivityException;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -23,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private TextInputLayout inputUsername;
     private TextInputLayout inputPassword;
@@ -66,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getEmployeeRole(String emailId) {
-        APIService apiService = APIClient.getInstance();
+        APIService apiService = APIClient.getInstance(LoginActivity.this);
         Call<Employee> call = apiService.getEmployee(emailId);
         call.enqueue(new Callback<Employee>() {
             @Override
@@ -83,7 +85,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Employee> call, Throwable throwable) {
                 progressBarLogin.setVisibility(View.GONE);
-                showError();
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
             }
         });
     }
