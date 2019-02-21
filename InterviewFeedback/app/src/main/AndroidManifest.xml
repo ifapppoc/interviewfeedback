@@ -16,6 +16,11 @@
         <activity android:name="com.synechron.synehire.activity.SplashActivity"
             android:theme="@style/AppFullScreenTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.synechron.synehire.activity.LoginActivity"
@@ -32,20 +37,10 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name="com.synechron.synehire.activity.RecommendationActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name="com.synechron.synehire.activity.RecruiterActionActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f28caca17b22d66d66df584c8d448673155dc62b" />
     </application>
 
 </manifest>

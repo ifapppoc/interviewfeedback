@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "932030152103",
+    "firebase_url": "https://synehire-513d5.firebaseio.com",
+    "project_id": "synehire-513d5",
+    "storage_bucket": "synehire-513d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932030152103:android:7ad7642bf9c2a5cf",
+        "android_client_info": {
+          "package_name": "com.synechron.synehire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "932030152103-0i7bsvksjsvr5t12mgunp5d87nu5bc0s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWTkDxFBFObvebsyiN2lxC5suICCb2G3U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
