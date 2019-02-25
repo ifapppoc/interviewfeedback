@@ -127,4 +127,11 @@
                 android:textSize="@dimen/login_button_text_size" />
         </LinearLayout>
     </ScrollView>
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminateTint="@color/colorPrimary"/>
 </RelativeLayout>

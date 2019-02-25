@@ -14,6 +14,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -43,6 +44,7 @@ public class RecruiterActionActivity extends BaseActivity {
     private AutoCompleteTextView autoTextEmail;
     private TextInputLayout inputLayoutRecipientEmails;
     private EditText recipientEmail;
+    private ProgressBar progressBar;
 
     private List<EmailId> selectedCandidateEmailIds = new ArrayList<>();
     private List<EmailId> selectedRecipientEmailIds = new ArrayList<>();
@@ -59,6 +61,7 @@ public class RecruiterActionActivity extends BaseActivity {
     }
 
     private void initializeView() {
+        progressBar = findViewById(R.id.progress_circular);
         inputLayoutCandidateEmails = findViewById(R.id.inputLayoutCandidateEmails);
         autoTextEmail = findViewById(R.id.autoTextEmail);
         inputLayoutRecipientEmails = findViewById(R.id.inputLayoutRecipientEmails);
@@ -136,6 +139,7 @@ public class RecruiterActionActivity extends BaseActivity {
     private void handleSendEmail() {
         boolean isValidRequest = validateRequest();
         if (isValidRequest) {
+            progressBar.setVisibility(View.VISIBLE);
             EmailRequest emailIds = new EmailRequest();
             emailIds.setSenderEmailId(recruiterEmailId);
             emailIds.setCandidateEmailIds(selectedCandidateEmailIds);
@@ -146,6 +150,7 @@ public class RecruiterActionActivity extends BaseActivity {
             call.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    progressBar.setVisibility(View.GONE);
                     if (response.body() != null) {
                         try {
                             JsonObject json = response.body();
@@ -167,6 +172,7 @@ public class RecruiterActionActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                    progressBar.setVisibility(View.GONE);
                     if (throwable instanceof NoConnectivityException) {
                         showError(throwable.getMessage());
                     } else {
@@ -195,11 +201,13 @@ public class RecruiterActionActivity extends BaseActivity {
     }
 
     private void getCandidateEmails() {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(RecruiterActionActivity.this);
         Call<List<EmailId>> call = apiService.getCandidateEmailIds();
         call.enqueue(new Callback<List<EmailId>>() {
             @Override
             public void onResponse(Call<List<EmailId>> call, Response<List<EmailId>> response) {
+                progressBar.setVisibility(View.GONE);
                 List<EmailId> emailIds = response.body();
                 if (emailIds != null && emailIds.size() > 0) {
                     updateCandidateEmails(emailIds);
@@ -208,6 +216,7 @@ public class RecruiterActionActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<EmailId>> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {

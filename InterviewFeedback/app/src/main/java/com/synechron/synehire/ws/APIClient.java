@@ -2,9 +2,16 @@ package com.synechron.synehire.ws;
 
 import android.content.Context;
 
+import com.synechron.synehire.constants.AppConstants;
+import com.synechron.synehire.utility.BasicAuthInterceptor;
 import com.synechron.synehire.utility.ConnectivityInterceptor;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -17,7 +24,7 @@ public class APIClient {
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(new ConnectivityInterceptor(context))
-                    .build();
+                    .addInterceptor(new BasicAuthInterceptor("synehr", AppConstants.GLOBAL_USER_PASSWORD)).build();
 
             retrofit = new Retrofit.Builder()
                     .client(client)
@@ -32,7 +39,7 @@ public class APIClient {
         if (apiService == null) {
             synchronized (APIClient.class) {
                 if (apiService == null) {
-                   new APIClient(context);
+                    new APIClient(context);
                 }
             }
         }

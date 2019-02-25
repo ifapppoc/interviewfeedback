@@ -11,9 +11,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synechron.synehire.R;
 import com.synechron.synehire.adapter.SuggestionAdapter;
@@ -32,7 +32,6 @@ import com.synechron.synehire.ws.response.Technology;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +54,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     private TextInputLayout inputRecruiter;
     private TextInputLayout inputLevel;
     private TextInputLayout inputMode;
+    private ProgressBar progressBar;
 
     private int selectedTechnologyId = -1;
     private String selectedPanelId = null;
@@ -75,6 +75,7 @@ public class CandidateDetailsActivity extends BaseActivity {
     }
 
     private void initializeView() {
+        progressBar = findViewById(R.id.progress_circular);
         inputCandidateFirstName = findViewById(R.id.inputLayoutCandidateFirstName);
         inputCandidateEmail = findViewById(R.id.inputLayoutCandidateEmail);
         inputTechnology = findViewById(R.id.inputLayoutTechnologyTested);
@@ -523,11 +524,13 @@ public class CandidateDetailsActivity extends BaseActivity {
     }
 
     private void submitInterview(final InterviewPostRequest request) {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(CandidateDetailsActivity.this);
         Call<JsonObject> call = apiService.saveInterviewDetails(request);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE);
                 if (response.body() != null) {
                     try {
                         JsonObject json = response.body();
@@ -554,6 +557,7 @@ public class CandidateDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {

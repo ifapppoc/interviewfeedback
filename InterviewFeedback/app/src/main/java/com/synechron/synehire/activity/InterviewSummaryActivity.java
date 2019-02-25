@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.gson.JsonObject;
 import com.synechron.synehire.R;
@@ -36,6 +37,7 @@ public class InterviewSummaryActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private List<DiscussionOutcome> outcomes;
     private List<InterviewSummary> interviewSummaries;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class InterviewSummaryActivity extends BaseActivity {
     }
 
     private void initializeView() {
+        progressBar = findViewById(R.id.progress_circular);
         recyclerView = findViewById(R.id.recycler_view);
         Button buttonSave = findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +62,7 @@ public class InterviewSummaryActivity extends BaseActivity {
     }
 
     private void updateDiscussionDetails() {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(InterviewSummaryActivity.this);
         DiscussionDetailsSummary summary = new DiscussionDetailsSummary();
         if (interviewSummaries != null && interviewSummaries.size()> 0) {
@@ -86,6 +90,7 @@ public class InterviewSummaryActivity extends BaseActivity {
             call.enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    progressBar.setVisibility(View.GONE);
                     if (response.body() != null) {
                         try {
                             JsonObject json = response.body();
@@ -107,6 +112,7 @@ public class InterviewSummaryActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                    progressBar.setVisibility(View.GONE);
                     if (throwable instanceof NoConnectivityException) {
                         showError(throwable.getMessage());
                     } else {
@@ -118,12 +124,14 @@ public class InterviewSummaryActivity extends BaseActivity {
     }
 
     private void getInterviewSummary() {
+        progressBar.setVisibility(View.VISIBLE);
         long interviewId = PrefManager.getInterviewId(InterviewSummaryActivity.this);
         APIService apiService = APIClient.getInstance(InterviewSummaryActivity.this);
         Call<List<InterviewSummary>> call = apiService.getInterviewSummaries(interviewId);
         call.enqueue(new Callback<List<InterviewSummary>>() {
             @Override
             public void onResponse(Call<List<InterviewSummary>> call, Response<List<InterviewSummary>> response) {
+                progressBar.setVisibility(View.GONE);
                 List<InterviewSummary> interviewSummaries = response.body();
                 if (interviewSummaries != null && interviewSummaries.size() > 0) {
                     updateInterviewSummaries(interviewSummaries);
@@ -134,6 +142,7 @@ public class InterviewSummaryActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<InterviewSummary>> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {

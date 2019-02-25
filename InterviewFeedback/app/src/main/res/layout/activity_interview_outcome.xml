@@ -192,9 +192,10 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/progress_circular_topics"
+        android:id="@+id/progress_circular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:indeterminateTint="@color/colorPrimary"/>
 </RelativeLayout>

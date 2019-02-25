@@ -3,6 +3,7 @@ package com.synechron.synehire.activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ import retrofit2.Response;
 public class RecommendationActivity extends BaseActivity {
     private RelativeLayout rlParent;
     private RecyclerView recyclerViewRecommendation;
+    private ProgressBar progressBar;
+
     private RecommendationAdapter adapter;
     private List<InterviewSummary> interviewSummaries;
     private long interviewId;
@@ -63,6 +67,7 @@ public class RecommendationActivity extends BaseActivity {
 
     private void initializeView() {
         rlParent = findViewById(R.id.rlParent);
+        progressBar = findViewById(R.id.progress_circular);
         recyclerViewRecommendation = findViewById(R.id.recycler_view_recommendation);
         Button buttonSubmitAssessment = findViewById(R.id.submit_assessment);
         buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +100,13 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void getRecommendations(int levelId) {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         Call<List<Recommendation>> call = apiService.getRecommendations(levelId);
         call.enqueue(new Callback<List<Recommendation>>() {
             @Override
             public void onResponse(Call<List<Recommendation>> call, Response<List<Recommendation>> response) {
+                progressBar.setVisibility(View.GONE);
                 List<Recommendation> recommendations = response.body();
                 if (recommendations != null && recommendations.size() > 0) {
                     updateRecommendation(recommendations);
@@ -110,6 +117,7 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<Recommendation>> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {
@@ -190,6 +198,7 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void submitInterviewRecommendations(long interviewId, List<RecommendationRow> recommendationRows) {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(RecommendationActivity.this);
         InterviewRecommendation interviewRecommendation = new InterviewRecommendation();
         interviewRecommendation.setInterviewId(interviewId);
@@ -198,6 +207,7 @@ public class RecommendationActivity extends BaseActivity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE);
                 if (response.body() != null) {
                     try {
                         JsonObject json = response.body();
@@ -220,6 +230,7 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {
@@ -270,6 +281,8 @@ public class RecommendationActivity extends BaseActivity {
     private void showSummary(){
         LayoutInflater inflater = (LayoutInflater) RecommendationActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_summary_layout,null);
+        RelativeLayout rlParentBg = layout.findViewById(R.id.rlParent);
+        rlParentBg.setBackground(ActivityCompat.getDrawable(RecommendationActivity.this, R.drawable.summary_dialog_white_bg));
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
         InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

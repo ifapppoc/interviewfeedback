@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     private TextInputLayout inputLayoutSubTopic;
     private AutoCompleteTextView autoSubTopic;
     private EditText editTextComment;
+    private ProgressBar progressBar;
 
     private int selectedSubTopicId = -1;
     private ArrayList<InterviewSummary> interviewSummaries = new ArrayList<>();
@@ -90,6 +92,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
     private void initializeView() {
         rlParent = findViewById(R.id.rlParent);
+        progressBar = findViewById(R.id.progress_circular);
         llTopicAndSubtopicSection = findViewById(R.id.llTopicAndSubtopicSection);
         llDiscussionDetailsSection = findViewById(R.id.llDiscussionDetailsSection);
         inputLayoutMainTopic = findViewById(R.id.inputLayoutMainTopic);
@@ -226,13 +229,13 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private void hideDiscussionDetailSection() {
+        checkbox1.setChecked(false);
+        checkbox2.setChecked(false);
+        checkbox3.setChecked(false);
         autoMainTopic.setText("");
         autoSubTopic.setText("");
         autoTextOutcome.setText("");
         editTextComment.setText("");
-        checkbox1.setChecked(false);
-        checkbox2.setChecked(false);
-        checkbox3.setChecked(false);
         selectedOutcomes.clear();
         suggestionOutcomes.clear();
         suggestionOutcomes.addAll(outcomes);
@@ -422,7 +425,8 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
     private InterviewSummary prepareInterviewSummary() {
         InterviewSummary interviewSummary = new InterviewSummary();
-        interviewSummary.setTopic(autoMainTopic.getText().toString() + ": " + autoSubTopic.getText().toString());
+        interviewSummary.setTopic(autoMainTopic.getText().toString());
+        interviewSummary.setSubTopic(autoSubTopic.getText().toString());
         List<DiscussionMode> discussionModes = new ArrayList<>();
         if (checkbox1.isChecked()) {
             discussionModes.add((DiscussionMode) checkbox1.getTag());
@@ -450,11 +454,13 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private void submitDiscussionDetails(DiscussionDetails request, final int requestCode) {
+        progressBar.setVisibility(View.VISIBLE);
         APIService apiService = APIClient.getInstance(DiscussionDetailsActivity.this);
         Call<JsonObject> call = apiService.saveDiscussionDetails(request);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE);
                 if (response.body() != null) {
                     try {
                         JsonObject json = response.body();
@@ -476,6 +482,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 if (throwable instanceof NoConnectivityException) {
                     showError(throwable.getMessage());
                 } else {
