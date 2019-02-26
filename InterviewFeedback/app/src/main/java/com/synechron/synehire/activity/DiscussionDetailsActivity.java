@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +39,6 @@ import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
 import com.synechron.synehire.ws.request.DiscussionDetails;
-import com.synechron.synehire.ws.request.DiscussionDetailsSummary;
 import com.synechron.synehire.ws.response.DiscussionMode;
 import com.synechron.synehire.ws.response.DiscussionOutcome;
 import com.synechron.synehire.ws.response.InterviewSummary;
@@ -79,6 +78,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     private List<DiscussionOutcome> suggestionOutcomes = new ArrayList<>();
     private List<DiscussionOutcome> outcomes;
     private SuggestionAdapter<DiscussionOutcome> adapter;
+    private OutcomeAdapter outcomeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +97,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         llDiscussionDetailsSection = findViewById(R.id.llDiscussionDetailsSection);
         inputLayoutMainTopic = findViewById(R.id.inputLayoutMainTopic);
         autoMainTopic = findViewById(R.id.autoTextMainTopic);
+        autoMainTopic.setInputType(InputType.TYPE_NULL);
         autoMainTopic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -130,6 +131,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         });
         inputLayoutSubTopic = findViewById(R.id.inputLayoutSubTopic);
         autoSubTopic = findViewById(R.id.autoTextSubTopic);
+        autoSubTopic.setInputType(InputType.TYPE_NULL);
         autoSubTopic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -167,6 +169,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         checkbox3 = findViewById(R.id.checkbox_3);
         inputLayoutOutcome = findViewById(R.id.inputLayoutOutcome);
         autoTextOutcome = findViewById(R.id.autoTextOutcome);
+        autoTextOutcome.setInputType(InputType.TYPE_NULL);
         autoTextOutcome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -191,10 +194,10 @@ public class DiscussionDetailsActivity extends BaseActivity {
             }
         });
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        OutcomeAdapter adapter = new OutcomeAdapter(this, selectedOutcomes);
+        outcomeAdapter = new OutcomeAdapter(this, selectedOutcomes);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(outcomeAdapter);
         editTextComment = findViewById(R.id.editTextComment);
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +242,10 @@ public class DiscussionDetailsActivity extends BaseActivity {
         selectedOutcomes.clear();
         suggestionOutcomes.clear();
         suggestionOutcomes.addAll(outcomes);
+        adapter.clear();
+        adapter.addAll(outcomes);
         adapter.notifyDataSetChanged();
+        outcomeAdapter.notifyDataSetChanged();
         llDiscussionDetailsSection.setVisibility(View.GONE);
         llTopicAndSubtopicSection.setVisibility(View.VISIBLE);
     }
@@ -403,6 +409,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                     selectedOutcomes.add(discussionOutcome);
                     autoTextOutcome.setText("");
+                    outcomeAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -440,7 +447,8 @@ public class DiscussionDetailsActivity extends BaseActivity {
             discussionModes.add((DiscussionMode) checkbox3.getTag());
         }
         interviewSummary.setDiscussionModes(discussionModes);
-        interviewSummary.setDiscussionOutcomes(selectedOutcomes);
+        List<DiscussionOutcome> discussionOutcomes = new ArrayList<>(selectedOutcomes);
+        interviewSummary.setDiscussionOutcomes(discussionOutcomes);
         String comment = editTextComment.getText() != null ? editTextComment.getText().toString() : "";
         interviewSummary.setComment(comment);
         return interviewSummary;
@@ -608,7 +616,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         LayoutInflater inflater = (LayoutInflater) DiscussionDetailsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_summary_layout,null);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
-        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null);
+        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null, false);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(tAdapter);
@@ -617,7 +625,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int displayWidth = displayMetrics.widthPixels;
         int displayHeight = displayMetrics.heightPixels;
-        int dialogWindowWidth = (int) (displayWidth * 0.80f);
+        int dialogWindowWidth = (int) (displayWidth * 0.90f);
         int dialogWindowHeight = (int) (displayHeight * 0.50f);
 
         final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, dialogWindowHeight, true);

@@ -13,4 +13,7 @@ public class AppConstants {
     public static final String ERROR_MESSAGE = "error_message";
     public static final String STATUS = "status";
     public static final String INTERVIEW_ID = "interviewId";
+    public static final String SYNEHIRE_ID = "synehire@synechron.com";
+    public static final String KEY_LEVEL_4 = "level";
+
 }

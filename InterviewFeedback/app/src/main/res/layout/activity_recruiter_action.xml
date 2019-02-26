@@ -63,17 +63,13 @@
                             android:id="@+id/autoTextEmail"
                             android:hint="@string/hint_candidate_email"
                             style="@style/MyEditTextTheme"
-                            android:focusableInTouchMode="true"
-                            android:focusable="true"
-                            android:drawableEnd="@drawable/icon_search"
-                            android:imeOptions="actionDone"/>
+                            android:drawableEnd="@drawable/icon_search" />
                     </android.support.design.widget.TextInputLayout>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="vertical"
-                        />
+                        android:scrollbars="vertical"/>
                 </LinearLayout>
 
                 <LinearLayout

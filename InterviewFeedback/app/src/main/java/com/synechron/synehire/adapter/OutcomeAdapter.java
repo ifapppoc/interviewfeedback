@@ -26,12 +26,10 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
         private TextView textViewKeyword;
 
         ViewHolder(View v){
             super(v);
-            cardView = v.findViewById(R.id.card_view);
             textViewKeyword = v.findViewById(R.id.text_view_keyword);
         }
     }
@@ -47,10 +45,8 @@ public class OutcomeAdapter extends RecyclerView.Adapter<OutcomeAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position){
         DiscussionOutcome keyword = discussionOutcomes.get(position);
-        holder.textViewKeyword.setText(keyword.getOutcome() + " ");
-        holder.cardView.setCardBackgroundColor(ActivityCompat.getColor(context, R.color.color_gray));
-        holder.textViewKeyword.setTextColor(ActivityCompat.getColor(context, R.color.color_black));
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewKeyword.setText(keyword.getOutcome());
+        holder.textViewKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleCommentRemoval(position);

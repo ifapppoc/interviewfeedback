@@ -2,16 +2,19 @@
 <resources>
     <dimen name="app_margin">20dp</dimen>
     <dimen name="logo_height">60dp</dimen>
-    <dimen name="app_margin_top">15dp</dimen>
-    <dimen name="text_padding_normal">10dp</dimen>
+    <dimen name="app_margin_top">10dp</dimen>
+    <dimen name="text_padding_normal">5dp</dimen>
+    <dimen name="text_padding_large">7dp</dimen>
     <dimen name="login_button_width">250dp</dimen>
-    <dimen name="login_button_text_size">16sp</dimen>
-    <dimen name="text_size_primary">15sp</dimen>
+    <dimen name="login_button_text_size">13sp</dimen>
+    <dimen name="text_size_primary">13sp</dimen>
+    <dimen name="text_size_secondary">11sp</dimen>
     <dimen name="line_size">1dp</dimen>
-    <dimen name="text_padding_small">5dp</dimen>
-    <dimen name="text_size_secondary">13sp</dimen>
+    <dimen name="text_padding_small">2dp</dimen>
     <dimen name="login_button_radius">20dp</dimen>
     <dimen name="card_radius">10dp</dimen>
-    <dimen name="card_margin">6dp</dimen>
+    <dimen name="card_margin_horizontal">6dp</dimen>
+    <dimen name="card_margin_vertical">3dp</dimen>
     <dimen name="margin_bottom">40dp</dimen>
+    <dimen name="text_size_splash">40sp</dimen>
 </resources>

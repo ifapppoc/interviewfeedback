@@ -26,12 +26,10 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
         private TextView textViewKeyword;
 
         ViewHolder(View v){
             super(v);
-            cardView = v.findViewById(R.id.card_view);
             textViewKeyword = v.findViewById(R.id.text_view_keyword);
         }
     }
@@ -48,9 +46,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, final int position){
         EmailId emailId = emailIds.get(position);
         holder.textViewKeyword.setText(emailId.getEmailId());
-        holder.cardView.setCardBackgroundColor(ActivityCompat.getColor(context, R.color.color_gray));
-        holder.textViewKeyword.setTextColor(ActivityCompat.getColor(context, R.color.color_black));
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleCommentRemoval(position);

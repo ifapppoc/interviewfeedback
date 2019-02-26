@@ -74,8 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void logout() {
         PrefManager.logout(this);
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         this.finish();
         overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);

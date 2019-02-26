@@ -3,9 +3,12 @@ package com.synechron.synehire.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.text.HtmlCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,6 +35,7 @@ public class InterviewSummaryAdaptor extends RecyclerView.Adapter<InterviewSumma
     private List<DiscussionOutcome> outcomes;
     private Context context;
     private boolean isEditable;
+    private boolean comingFromRecommendation;
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private LinearLayout parent;
@@ -52,11 +56,12 @@ public class InterviewSummaryAdaptor extends RecyclerView.Adapter<InterviewSumma
         }
     }
 
-    public InterviewSummaryAdaptor(Context  context, List<InterviewSummary> summaryModelList, List<DiscussionOutcome> outcomes) {
+    public InterviewSummaryAdaptor(Context  context, List<InterviewSummary> summaryModelList, List<DiscussionOutcome> outcomes, boolean comingFromRecommendation) {
         this.interviewSummaries = summaryModelList;
         this.outcomes = outcomes;
         this.context = context;
         isEditable = outcomes != null && outcomes.size() > 0;
+        this.comingFromRecommendation = comingFromRecommendation;
     }
 
     @Override
@@ -68,18 +73,29 @@ public class InterviewSummaryAdaptor extends RecyclerView.Adapter<InterviewSumma
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         InterviewSummary interviewSummary = interviewSummaries.get(position);
-        holder.parent.setBackgroundColor(isEditable ? ActivityCompat.getColor(context, R.color.color_white) : ActivityCompat.getColor(context, R.color.color_gray));
+        holder.parent.setBackgroundColor(isEditable ? ActivityCompat.getColor(context, R.color.color_white) : (comingFromRecommendation ? ActivityCompat.getColor(context, R.color.color_white) : ActivityCompat.getColor(context, R.color.color_gray)));
         holder.topics.setText(interviewSummary.getTopic() + ": " + interviewSummary.getSubTopic());
-        holder.comments.setText("Comment: " + interviewSummary.getComment());
+        String commentStr = interviewSummary.getComment();
+        if (commentStr != null && !commentStr.isEmpty()) {
+            holder.comments.setVisibility(View.VISIBLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                holder.comments.setText(HtmlCompat.fromHtml("<b>Comment: </b>" + commentStr, HtmlCompat.FROM_HTML_MODE_LEGACY));
+            } else {
+                holder.comments.setText(Html.fromHtml("<b>Comment: </b>" + commentStr));
+            }
+        } else {
+            holder.comments.setVisibility(View.GONE);
+        }
+
         List<DiscussionMode> discussionModes = interviewSummary.getDiscussionModes();
-        String mode = "Mode: ";
+        String mode = "<b>Mode: </b>";
         if (discussionModes != null && discussionModes.size() > 0) {
             for (DiscussionMode discussionMode : discussionModes) {
                 mode += discussionMode.getModeName() + ", ";
             }
         }
         List<DiscussionOutcome> discussionOutcomes = interviewSummary.getDiscussionOutcomes();
-        String feedback = "Feedback: ";
+        String feedback = "<b>Feedback: </b>";
         if (discussionOutcomes != null && discussionOutcomes.size() > 0) {
             for (DiscussionOutcome discussionOutcome : discussionOutcomes) {
                 feedback += discussionOutcome.getOutcome() + ", ";
@@ -87,11 +103,22 @@ public class InterviewSummaryAdaptor extends RecyclerView.Adapter<InterviewSumma
         }
 
         holder.modeOfDiscussion.setText(mode.substring(0, mode.length()-2));
-        holder.outcomes.setText(feedback.substring(0, feedback.length()-2));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            holder.modeOfDiscussion.setText(HtmlCompat.fromHtml(mode.substring(0, mode.length()-2), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        } else {
+            holder.modeOfDiscussion.setText(Html.fromHtml(mode.substring(0, mode.length()-2)));
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            holder.outcomes.setText(HtmlCompat.fromHtml(feedback.substring(0, feedback.length()-2), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        } else {
+            holder.outcomes.setText(Html.fromHtml(feedback.substring(0, feedback.length()-2)));
+        }
         holder.outcomes.setCompoundDrawablesWithIntrinsicBounds(0, 0, (isEditable ? R.drawable.icon_edit : 0), 0);
         holder.outcomes.setOnClickListener(isEditable ? new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.parent.setBackgroundColor(ActivityCompat.getColor(context, R.color.color_light_yellow));
                 handleCommentEditing(holder.outcomes, position);
             }
         } : null);

@@ -1,6 +1,7 @@
 package com.synechron.synehire.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -31,6 +32,7 @@ import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
 import com.synechron.synehire.ws.request.InterviewRecommendation;
 import com.synechron.synehire.ws.request.RecommendationDetails;
+import com.synechron.synehire.ws.response.Employee;
 import com.synechron.synehire.ws.response.InterviewSummary;
 import com.synechron.synehire.ws.response.Recommendation;
 
@@ -48,32 +50,46 @@ public class RecommendationActivity extends BaseActivity {
     private RelativeLayout rlParent;
     private RecyclerView recyclerViewRecommendation;
     private ProgressBar progressBar;
+    private Button buttonSubmitAssessment;
 
     private RecommendationAdapter adapter;
     private List<InterviewSummary> interviewSummaries;
     private long interviewId;
+    private boolean isSubmitted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendation);
-        setToolbar(getString(R.string.activity_recommendation_title), true);
+        Intent intent = getIntent();
+        boolean isStakeholder = false;
+        if (intent != null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            isStakeholder = extras.getBoolean(AppConstants.KEY_LEVEL_4);
+        }
+        setToolbar(getString(R.string.activity_recommendation_title), !isStakeholder);
         initializeView();
         int levelId = PrefManager.getInterviewLevelId(RecommendationActivity.this);
         getRecommendations(levelId);
         interviewId = PrefManager.getInterviewId(RecommendationActivity.this);
-        getInterviewSummary();
+        if (!isStakeholder) {
+            getInterviewSummary();
+        }
     }
 
     private void initializeView() {
         rlParent = findViewById(R.id.rlParent);
         progressBar = findViewById(R.id.progress_circular);
         recyclerViewRecommendation = findViewById(R.id.recycler_view_recommendation);
-        Button buttonSubmitAssessment = findViewById(R.id.submit_assessment);
+        buttonSubmitAssessment = findViewById(R.id.submit_assessment);
         buttonSubmitAssessment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleSubmitAssessment();
+                if (!isSubmitted) {
+                    handleSubmitAssessment();
+                } else {
+                    getEmployeeRole();
+                }
             }
         });
     }
@@ -149,8 +165,6 @@ public class RecommendationActivity extends BaseActivity {
                 List<InterviewSummary> interviewSummaryList = response.body();
                 if (interviewSummaryList != null && interviewSummaryList.size() > 0) {
                     interviewSummaries = interviewSummaryList;
-                } else {
-                    showError("");
                 }
             }
 
@@ -171,13 +185,14 @@ public class RecommendationActivity extends BaseActivity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE);
                 if (response.body() != null) {
                     try {
                         JsonObject json = response.body();
                         JSONObject jsonObject = new JSONObject(json.toString());
                         String status = jsonObject.getString(AppConstants.STATUS);
                         if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
-                            showSuccess("Interview has been successfully submitted");
+                            handleSuccess();
                         } else {
                             String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
                             showError(message);
@@ -192,9 +207,16 @@ public class RecommendationActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
                 showError("");
             }
         });
+    }
+
+    private void handleSuccess() {
+        isSubmitted = true;
+        buttonSubmitAssessment.setText(R.string.button_setup_another_interview);
+        showSuccess("Interview has been successfully submitted.");
     }
 
     private void submitInterviewRecommendations(long interviewId, List<RecommendationRow> recommendationRows) {
@@ -207,7 +229,6 @@ public class RecommendationActivity extends BaseActivity {
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                progressBar.setVisibility(View.GONE);
                 if (response.body() != null) {
                     try {
                         JsonObject json = response.body();
@@ -215,15 +236,17 @@ public class RecommendationActivity extends BaseActivity {
                         String status = jsonObject.getString(AppConstants.STATUS);
                         if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
                             submitInterview();
-                            showSuccess("Your recommendation has been successfully submitted");
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
                             showError(message);
                         }
                     } catch (JSONException e) {
+                        progressBar.setVisibility(View.GONE);
                         showError("");
                     }
                 } else {
+                    progressBar.setVisibility(View.GONE);
                     showError("");
                 }
             }
@@ -264,6 +287,8 @@ public class RecommendationActivity extends BaseActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_summary, menu);
+        MenuItem item = menu.findItem(R.id.action_summary);
+        item.setVisible(interviewSummaries != null && interviewSummaries.size() > 0);
         return true;
     }
 
@@ -278,13 +303,13 @@ public class RecommendationActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showSummary(){
+    private void showSummary() {
         LayoutInflater inflater = (LayoutInflater) RecommendationActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_summary_layout,null);
-        RelativeLayout rlParentBg = layout.findViewById(R.id.rlParent);
+        RelativeLayout rlParentBg = layout.findViewById(R.id.rlParentDialog);
         rlParentBg.setBackground(ActivityCompat.getDrawable(RecommendationActivity.this, R.drawable.summary_dialog_white_bg));
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view);
-        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null);
+        InterviewSummaryAdaptor tAdapter = new InterviewSummaryAdaptor(this, interviewSummaries, null, true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(tAdapter);
@@ -293,7 +318,7 @@ public class RecommendationActivity extends BaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int displayWidth = displayMetrics.widthPixels;
         int displayHeight = displayMetrics.heightPixels;
-        int dialogWindowWidth = (int) (displayWidth * 0.80f);
+        int dialogWindowWidth = (int) (displayWidth * 0.90f);
         int dialogWindowHeight = (int) (displayHeight * 0.50f);
 
         final PopupWindow pw = new PopupWindow(layout, dialogWindowWidth, dialogWindowHeight, true);
@@ -311,5 +336,49 @@ public class RecommendationActivity extends BaseActivity {
             }
         });
         pw.showAtLocation(rlParent, Gravity.CENTER, 0, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
+    }
+
+    private void getEmployeeRole() {
+        progressBar.setVisibility(View.VISIBLE);
+        String emailId = PrefManager.getUserId(RecommendationActivity.this);
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
+        Call<Employee> call = apiService.getEmployee(emailId);
+        call.enqueue(new Callback<Employee>() {
+            @Override
+            public void onResponse(Call<Employee> call, Response<Employee> response) {
+                progressBar.setVisibility(View.GONE);
+                Employee employee = response.body();
+                if (employee != null) {
+                    navigateToNextScreen(employee);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Employee> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
+                if (throwable instanceof NoConnectivityException) {
+                    showError(throwable.getMessage());
+                } else {
+                    showError("");
+                }
+            }
+        });
+    }
+
+    private void navigateToNextScreen(Employee employee) {
+        PrefManager.clearInterviewId(RecommendationActivity.this);
+        PrefManager.clearInterviewLevelId(RecommendationActivity.this);
+        Intent intent = new Intent(this, CandidateDetailsActivity.class);
+        intent.putExtra(AppConstants.KEY_EMPLOYEE, employee);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        RecommendationActivity.this.finish();
+        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
     }
 }

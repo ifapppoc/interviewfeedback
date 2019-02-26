@@ -1,11 +1,14 @@
 package com.synechron.synehire.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -117,6 +120,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
 
         technology = findViewById(R.id.technologyTested);
+        technology.setInputType(InputType.TYPE_NULL);
         technology.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -150,6 +154,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
 
         recruiterName = findViewById(R.id.recruiterName);
+        recruiterName.setInputType(InputType.TYPE_NULL);
         recruiterName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -182,6 +187,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
 
         level = findViewById(R.id.interviewLevel);
+        level.setInputType(InputType.TYPE_NULL);
         level.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -214,6 +220,7 @@ public class CandidateDetailsActivity extends BaseActivity {
         });
 
         mode = findViewById(R.id.interviewMode);
+        mode.setInputType(InputType.TYPE_NULL);
         mode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -568,10 +575,18 @@ public class CandidateDetailsActivity extends BaseActivity {
     }
 
     private void navigateToDiscussionDetails() {
-        Intent intent = new Intent(this, DiscussionDetailsActivity.class);
-        intent.putExtra(AppConstants.KEY_TECHNOLOGY, selectedTechnologyId);
-        startActivity(intent);
-        CandidateDetailsActivity.this.finish();
-        overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        if (selectedLevelId == 4) {
+            Intent intent = new Intent(this, RecommendationActivity.class);
+            intent.putExtra(AppConstants.KEY_LEVEL_4, true);
+            startActivity(intent);
+            CandidateDetailsActivity.this.finish();
+            overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        } else {
+            Intent intent = new Intent(this, DiscussionDetailsActivity.class);
+            intent.putExtra(AppConstants.KEY_TECHNOLOGY, selectedTechnologyId);
+            startActivity(intent);
+            CandidateDetailsActivity.this.finish();
+            overridePendingTransition(R.anim.slide_in_forward, R.anim.slide_out_forward);
+        }
     }
 }

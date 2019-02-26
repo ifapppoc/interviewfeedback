@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,8 +49,9 @@ public class RecruiterActionActivity extends BaseActivity {
 
     private List<EmailId> selectedCandidateEmailIds = new ArrayList<>();
     private List<EmailId> selectedRecipientEmailIds = new ArrayList<>();
-    private String recruiterEmailId;
     private SuggestionAdapter<EmailId> adapter;
+    private EmailAdapter emailAdapter;
+    private EmailAdapter adapterRecipient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class RecruiterActionActivity extends BaseActivity {
                     emailId.setEmailId(email);
                     selectedRecipientEmailIds.add(emailId);
                     recipientEmail.setText("");
+                    adapterRecipient.notifyDataSetChanged();
                     return true;
                 }
                 return false;
@@ -106,13 +109,13 @@ public class RecruiterActionActivity extends BaseActivity {
         });
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        EmailAdapter adapter = new EmailAdapter(this, selectedCandidateEmailIds);
+        emailAdapter = new EmailAdapter(this, selectedCandidateEmailIds);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(emailAdapter);
 
         RecyclerView recyclerViewRecipient = findViewById(R.id.recycler_view_recipient_email);
-        EmailAdapter adapterRecipient = new EmailAdapter(this, selectedRecipientEmailIds);
+        adapterRecipient = new EmailAdapter(this, selectedRecipientEmailIds);
         RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewRecipient.setLayoutManager(linearLayoutManager);
         recyclerViewRecipient.setAdapter(adapterRecipient);
@@ -131,7 +134,6 @@ public class RecruiterActionActivity extends BaseActivity {
             Employee employee = extras.getParcelable(AppConstants.KEY_EMPLOYEE);
             if (employee != null) {
                 setToolbarTitle("Welcome, " + employee.getFirstName() + " " + employee.getLastName());
-                recruiterEmailId = employee.getEmailId();
             }
         }
     }
@@ -141,7 +143,7 @@ public class RecruiterActionActivity extends BaseActivity {
         if (isValidRequest) {
             progressBar.setVisibility(View.VISIBLE);
             EmailRequest emailIds = new EmailRequest();
-            emailIds.setSenderEmailId(recruiterEmailId);
+            emailIds.setSenderEmailId(AppConstants.SYNEHIRE_ID);
             emailIds.setCandidateEmailIds(selectedCandidateEmailIds);
             emailIds.setRecipientEmailIds(selectedRecipientEmailIds);
 
@@ -189,13 +191,21 @@ public class RecruiterActionActivity extends BaseActivity {
             inputLayoutCandidateEmails.setError(message);
             autoTextEmail.setBackgroundResource(R.drawable.edit_text_bg_error);
             return false;
+        } else {
+            inputLayoutCandidateEmails.setError(null);
+            autoTextEmail.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputLayoutCandidateEmails.setErrorEnabled(false);
         }
 
         if (selectedRecipientEmailIds.size() == 0) {
-            String message = getString(R.string.error_candidate_name);
+            String message = getString(R.string.error_recipient_email);
             inputLayoutRecipientEmails.setError(message);
             recipientEmail.setBackgroundResource(R.drawable.edit_text_bg_error);
             return false;
+        } else {
+            inputLayoutRecipientEmails.setError(null);
+            recipientEmail.setBackgroundResource(R.drawable.edit_text_bg_selector);
+            inputLayoutRecipientEmails.setErrorEnabled(false);
         }
         return true;
     }
@@ -240,6 +250,7 @@ public class RecruiterActionActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                     selectedCandidateEmailIds.add(emailId);
                     autoTextEmail.setText("");
+                    emailAdapter.notifyDataSetChanged();
                 }
             }
         });

@@ -6,7 +6,7 @@
     <string name="button_text_login">Login</string>
     <string name="error_username">Enter valid username</string>
     <string name="error_password">Enter valid password</string>
-    <string name="activity_title_candidate_details">Create Interview</string>
+    <string name="activity_title_candidate_details">Set-Up Interview</string>
     <string name="activity_title_choose_topics">Choose Area of Discussion</string>
     <string name="hint_main_topic">Topics</string>
     <string name="hint_sub_topic">Sub Topics</string>
@@ -15,10 +15,11 @@
     <string name="button_text_continue_for_topics">Save &amp; Next</string>
     <string name="button_text_finish">End Discussion</string>
     <string name="activity_title_discussion">Discussion Details</string>
-    <string name="text_outcome_comment">Outcomes</string>
+    <string name="text_outcome_comment">Outcomes:</string>
+    <string name="hint_outcome_comment">Start typing outcomes</string>
     <string name="hint_comment">Comment</string>
     <string name="button_outcome_comment">Feedback</string>
-    <string name="text_mode_of_discussion">Mode of Discussion :</string>
+    <string name="text_mode_of_discussion">Mode of Discussion:</string>
     <string name="hint_recruiter_name">Recruiter Name</string>
     <string name="hint_interview_level_name">Interview Level</string>
     <string name="hint_interview_mode_name">Interview Mode</string>
@@ -42,12 +43,14 @@
     <string name="error_enter_recommendation_comments">Enter your recommendation comments</string>
     <string name="error_select_mode_of_discussion">Please select atleast one Mode of Discussion</string>
     <string name="submit_assessment">Submit Assesment</string>
-    <string name="activity_summary_title">Assesment Summary</string>
+    <string name="activity_summary_title">Discussion Summary</string>
     <string name="activity_recruiter_title">Recruiter</string>
     <string name="panelist_welcome_text">Please enter following details to set-up the interview</string>
     <string name="recruiter_welcome_text">Please enter candidate email IDs to obtain feedback (You may enter multiple candidate and recipient IDs)</string>
-    <string name="button_text_send_email">Send Email</string>
+    <string name="button_text_send_email">Email Feedback</string>
     <string name="hint_recipients_email">Recipient Email</string>
     <string name="activity_recommendation_title">Recommendation</string>
     <string name="hint_email">Email</string>
+    <string name="button_setup_another_interview">Set-Up Another Interview</string>
+    <string name="error_recipient_email">Enter valid Recipient Email</string>
 </resources>

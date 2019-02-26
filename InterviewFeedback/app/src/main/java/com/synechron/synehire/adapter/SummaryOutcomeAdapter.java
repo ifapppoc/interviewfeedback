@@ -26,12 +26,10 @@ public class SummaryOutcomeAdapter extends RecyclerView.Adapter<SummaryOutcomeAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
         private TextView textViewKeyword;
 
         ViewHolder(View v){
             super(v);
-            cardView = v.findViewById(R.id.card_view);
             textViewKeyword = v.findViewById(R.id.text_view_keyword);
         }
     }
@@ -47,17 +45,17 @@ public class SummaryOutcomeAdapter extends RecyclerView.Adapter<SummaryOutcomeAd
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position){
         DiscussionOutcomesRow outcomesRow = outcomes.get(position);
-        holder.textViewKeyword.setText(outcomesRow.getOutcome() + " ");
-        holder.cardView.setCardBackgroundColor(ActivityCompat.getColor(context, R.color.color_white));
-        holder.textViewKeyword.setTextColor(ActivityCompat.getColor(context, R.color.color_black));
+        holder.textViewKeyword.setText(outcomesRow.getOutcome());
         boolean isSelected = outcomesRow.isSelected();
+        holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, R.color.color_light_yellow) : ActivityCompat.getColor(context, android.R.color.transparent));
         holder.textViewKeyword.setCompoundDrawablesWithIntrinsicBounds(0, 0, (isSelected ? R.drawable.icon_close : 0), 0);
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.textViewKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DiscussionOutcomesRow discussionOutcome = outcomes.get(position);
                 boolean isSelected = discussionOutcome.isSelected();
                 holder.textViewKeyword.setCompoundDrawablesWithIntrinsicBounds(0, 0, (isSelected ? 0 : R.drawable.icon_close), 0);
+                holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, android.R.color.transparent) : ActivityCompat.getColor(context, R.color.color_light_yellow));
                 discussionOutcome.setSelected(!isSelected);
             }
         });

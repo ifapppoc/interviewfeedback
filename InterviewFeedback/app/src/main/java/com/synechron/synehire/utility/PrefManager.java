@@ -34,6 +34,12 @@ public class PrefManager {
         editor.apply();
     }
 
+    public static void clearInterviewId(Context context){
+        SharedPreferences.Editor editor = context.getSharedPreferences(SYNEHIRE_PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putLong(PREF_KEY_INTERVIEW_ID, 0);
+        editor.apply();
+    }
+
     public static long getInterviewId(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(SYNEHIRE_PREFS_NAME, Context.MODE_PRIVATE);
         return prefs.getLong(PREF_KEY_INTERVIEW_ID, 0);
@@ -42,6 +48,12 @@ public class PrefManager {
     public static void saveInterviewLevelId(Context context, int levelId) {
         SharedPreferences.Editor editor = context.getSharedPreferences(SYNEHIRE_PREFS_NAME, Context.MODE_PRIVATE).edit();
         editor.putInt(PREF_KEY_LEVEL_ID, levelId);
+        editor.apply();
+    }
+
+    public static void clearInterviewLevelId(Context context) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(SYNEHIRE_PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putInt(PREF_KEY_LEVEL_ID, 0);
         editor.apply();
     }
 
