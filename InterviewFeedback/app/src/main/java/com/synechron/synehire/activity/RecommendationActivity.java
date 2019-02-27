@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -214,9 +215,15 @@ public class RecommendationActivity extends BaseActivity {
     }
 
     private void handleSuccess() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
+        }
         isSubmitted = true;
         buttonSubmitAssessment.setText(R.string.button_setup_another_interview);
-        showSuccess("Interview has been successfully submitted.");
+        showSuccess(getString(R.string.interview_feedback_success_msg));
     }
 
     private void submitInterviewRecommendations(long interviewId, List<RecommendationRow> recommendationRows) {

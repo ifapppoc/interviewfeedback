@@ -16,10 +16,10 @@
     <string name="button_text_finish">End Discussion</string>
     <string name="activity_title_discussion">Discussion Details</string>
     <string name="text_outcome_comment">Outcomes:</string>
-    <string name="hint_outcome_comment">Start typing outcomes</string>
+    <string name="hint_outcome_comment">Outcomes</string>
     <string name="hint_comment">Comment</string>
     <string name="button_outcome_comment">Feedback</string>
-    <string name="text_mode_of_discussion">Mode of Discussion:</string>
+    <string name="text_mode_of_discussion">Type of Discussion:</string>
     <string name="hint_recruiter_name">Recruiter Name</string>
     <string name="hint_interview_level_name">Interview Level</string>
     <string name="hint_interview_mode_name">Interview Mode</string>
@@ -53,4 +53,8 @@
     <string name="hint_email">Email</string>
     <string name="button_setup_another_interview">Set-Up Another Interview</string>
     <string name="error_recipient_email">Enter valid Recipient Email</string>
+    <string name="interview_feedback_success_msg">Interview feedback has been successfully submitted</string>
+    <string name="interview_report_success_msg">Report has been successfully sent</string>
+
+
 </resources>

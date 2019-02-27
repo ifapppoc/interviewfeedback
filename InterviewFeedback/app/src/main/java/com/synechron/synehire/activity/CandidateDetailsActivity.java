@@ -1,6 +1,5 @@
 package com.synechron.synehire.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -8,7 +7,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,14 +20,15 @@ import com.synechron.synehire.R;
 import com.synechron.synehire.adapter.SuggestionAdapter;
 import com.synechron.synehire.constants.AppConstants;
 import com.synechron.synehire.exception.NoConnectivityException;
+import com.synechron.synehire.listener.DoneOnEditorActionListener;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
 import com.synechron.synehire.ws.request.InterviewPostRequest;
 import com.synechron.synehire.ws.response.Candidate;
+import com.synechron.synehire.ws.response.Employee;
 import com.synechron.synehire.ws.response.InterviewLevel;
 import com.synechron.synehire.ws.response.InterviewMode;
-import com.synechron.synehire.ws.response.Employee;
 import com.synechron.synehire.ws.response.Technology;
 
 import org.json.JSONException;
@@ -118,6 +117,7 @@ public class CandidateDetailsActivity extends BaseActivity {
                 }
             }
         });
+        candidateEmailId.setOnEditorActionListener(new DoneOnEditorActionListener());
 
         technology = findViewById(R.id.technologyTested);
         technology.setInputType(InputType.TYPE_NULL);

@@ -35,6 +35,7 @@ import com.synechron.synehire.adapter.OutcomeAdapter;
 import com.synechron.synehire.adapter.SuggestionAdapter;
 import com.synechron.synehire.constants.AppConstants;
 import com.synechron.synehire.exception.NoConnectivityException;
+import com.synechron.synehire.listener.DoneOnEditorActionListener;
 import com.synechron.synehire.utility.PrefManager;
 import com.synechron.synehire.ws.APIClient;
 import com.synechron.synehire.ws.APIService;
@@ -79,6 +80,8 @@ public class DiscussionDetailsActivity extends BaseActivity {
     private List<DiscussionOutcome> outcomes;
     private SuggestionAdapter<DiscussionOutcome> adapter;
     private OutcomeAdapter outcomeAdapter;
+    private boolean isDiscussionSubmitted = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +202,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(outcomeAdapter);
         editTextComment = findViewById(R.id.editTextComment);
+        editTextComment.setOnEditorActionListener(new DoneOnEditorActionListener());
         Button buttonContinue = findViewById(R.id.button_continue);
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +215,11 @@ public class DiscussionDetailsActivity extends BaseActivity {
         buttonFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveInterviewSummary(2);
+                if (isDiscussionSubmitted) {
+                    navigateToInterviewSummary();
+                } else {
+                    saveInterviewSummary(2);
+                }
             }
         });
 
@@ -501,6 +509,7 @@ public class DiscussionDetailsActivity extends BaseActivity {
     }
 
     private void handleNavigation(int requestCode) {
+        isDiscussionSubmitted = true;
         switch (requestCode) {
             case 1:
                 if (interviewSummaries.size() == 1) {

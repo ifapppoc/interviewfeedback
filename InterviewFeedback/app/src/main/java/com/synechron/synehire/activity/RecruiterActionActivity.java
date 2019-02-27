@@ -1,5 +1,6 @@
 package com.synechron.synehire.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -10,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -73,6 +75,8 @@ public class RecruiterActionActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     String email = recipientEmail.getText().toString();
                     EmailId emailId = new EmailId();
                     emailId.setEmailId(email);
@@ -159,7 +163,7 @@ public class RecruiterActionActivity extends BaseActivity {
                             JSONObject jsonObject = new JSONObject(json.toString());
                             String status = jsonObject.getString(AppConstants.STATUS);
                             if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
-                                showSuccess("Report has been successfully sent");
+                                showSuccess(getString(R.string.interview_report_success_msg));
                             } else {
                                 String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
                                 showError(message);
