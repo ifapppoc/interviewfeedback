@@ -3,6 +3,8 @@ package com.synechron.synehire.adapter;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +38,9 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         private LinearLayout llCommentSection;
         private TextInputLayout inputLayoutComment;
         private EditText comment;
+        public CommentEditTextListener addTextChangedListener;
 
-        ViewHolder(View v){
+        ViewHolder(View v, CommentEditTextListener addTextChangedListener){
             super(v);
             rlRecommendationSection = v.findViewById(R.id.rlRecommendationSection);
             recommendation = v.findViewById(R.id.textView);
@@ -45,6 +48,8 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             llCommentSection = v.findViewById(R.id.llCommentSection);
             inputLayoutComment = v.findViewById(R.id.inputLayoutComment);
             comment = v.findViewById(R.id.editTextComment);
+            this.addTextChangedListener = addTextChangedListener;
+            comment.addTextChangedListener(addTextChangedListener);
         }
     }
 
@@ -52,8 +57,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         // Create a new View
         View v = LayoutInflater.from(context).inflate(R.layout.recommendation_list_item, parent,false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        return new ViewHolder(v, new CommentEditTextListener());
     }
 
     @Override
@@ -70,8 +74,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                     InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     String comments = holder.comment.getText().toString();
-                    RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
-                    recommendationRow.setComment(comments);
                     if (!comments.isEmpty()) {
                         holder.inputLayoutComment.setError(null);
                         holder.inputLayoutComment.setErrorEnabled(false);
@@ -89,17 +91,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             }
         });
 
-        holder.comment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String comments = holder.comment.getText().toString();
-                    RecommendationRow recommendationRow = recommendations.get(holder.getAdapterPosition());
-                    recommendationRow.setComment(comments);
-                }
-            }
-        });
-
+        holder.addTextChangedListener.updatePosition(holder.getAdapterPosition());
         holder.rlRecommendationSection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,5 +111,31 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     public List<RecommendationRow> getRecommendations() {
         return recommendations;
+    }
+
+    private class CommentEditTextListener implements TextWatcher {
+        private int position;
+
+        public void updatePosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            // no op
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            RecommendationRow recommendationRow = recommendations.get(position);
+            if (recommendationRow != null) {
+                recommendationRow.setComment(charSequence.toString());
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            // no op
+        }
     }
 }

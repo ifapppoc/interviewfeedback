@@ -32,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         android:layout_above="@id/submit_assessment"
-        android:layout_margin="@dimen/app_margin"
         android:scrollbars="vertical"/>
 
     <ProgressBar

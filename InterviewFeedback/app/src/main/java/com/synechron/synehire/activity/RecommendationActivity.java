@@ -166,6 +166,7 @@ public class RecommendationActivity extends BaseActivity {
                 List<InterviewSummary> interviewSummaryList = response.body();
                 if (interviewSummaryList != null && interviewSummaryList.size() > 0) {
                     interviewSummaries = interviewSummaryList;
+                    invalidateOptionsMenu();
                 }
             }
 
@@ -178,52 +179,6 @@ public class RecommendationActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void submitInterviewSummary(long interviewId) {
-        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
-        Call<JsonObject> call = apiService.saveInterviewSummary(interviewId);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                progressBar.setVisibility(View.GONE);
-                if (response.body() != null) {
-                    try {
-                        JsonObject json = response.body();
-                        JSONObject jsonObject = new JSONObject(json.toString());
-                        String status = jsonObject.getString(AppConstants.STATUS);
-                        if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
-                            handleSuccess();
-                        } else {
-                            String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
-                            showError(message);
-                        }
-                    } catch (JSONException e) {
-                        showError("");
-                    }
-                } else {
-                    showError("");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                progressBar.setVisibility(View.GONE);
-                showError("");
-            }
-        });
-    }
-
-    private void handleSuccess() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
-            getSupportActionBar().setHomeButtonEnabled(false);
-        }
-        isSubmitted = true;
-        buttonSubmitAssessment.setText(R.string.button_setup_another_interview);
-        showSuccess(getString(R.string.interview_feedback_success_msg));
     }
 
     private void submitInterviewRecommendations(long interviewId, List<RecommendationRow> recommendationRows) {
@@ -290,6 +245,52 @@ public class RecommendationActivity extends BaseActivity {
         }
 
         return  interviewRecommendation;
+    }
+
+    private void submitInterviewSummary(long interviewId) {
+        APIService apiService = APIClient.getInstance(RecommendationActivity.this);
+        Call<JsonObject> call = apiService.saveInterviewSummary(interviewId);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressBar.setVisibility(View.GONE);
+                if (response.body() != null) {
+                    try {
+                        JsonObject json = response.body();
+                        JSONObject jsonObject = new JSONObject(json.toString());
+                        String status = jsonObject.getString(AppConstants.STATUS);
+                        if (AppConstants.SUCCESS.equalsIgnoreCase(status)) {
+                            handleSuccess();
+                        } else {
+                            String message = jsonObject.getString(AppConstants.ERROR_MESSAGE);
+                            showError(message);
+                        }
+                    } catch (JSONException e) {
+                        showError("");
+                    }
+                } else {
+                    showError("");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
+                showError("");
+            }
+        });
+    }
+
+    private void handleSuccess() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
+        }
+        isSubmitted = true;
+        buttonSubmitAssessment.setText(R.string.button_setup_another_interview);
+        showSuccess(getString(R.string.interview_feedback_success_msg));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

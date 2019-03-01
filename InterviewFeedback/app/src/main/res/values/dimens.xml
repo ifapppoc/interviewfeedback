@@ -5,7 +5,7 @@
     <dimen name="app_margin_top">10dp</dimen>
     <dimen name="text_padding_normal">5dp</dimen>
     <dimen name="text_padding_large">7dp</dimen>
-    <dimen name="login_button_width">250dp</dimen>
+    <dimen name="login_button_width">165dp</dimen>
     <dimen name="login_button_text_size">13sp</dimen>
     <dimen name="text_size_primary">13sp</dimen>
     <dimen name="text_size_secondary">12sp</dimen>

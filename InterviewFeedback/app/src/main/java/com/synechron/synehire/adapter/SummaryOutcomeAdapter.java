@@ -47,7 +47,7 @@ public class SummaryOutcomeAdapter extends RecyclerView.Adapter<SummaryOutcomeAd
         DiscussionOutcomesRow outcomesRow = outcomes.get(position);
         holder.textViewKeyword.setText(outcomesRow.getOutcome());
         boolean isSelected = outcomesRow.isSelected();
-        holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, R.color.color_light_yellow) : ActivityCompat.getColor(context, android.R.color.transparent));
+        holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, R.color.color_white) : ActivityCompat.getColor(context, android.R.color.transparent));
         holder.textViewKeyword.setCompoundDrawablesWithIntrinsicBounds(0, 0, (isSelected ? R.drawable.icon_close : 0), 0);
         holder.textViewKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class SummaryOutcomeAdapter extends RecyclerView.Adapter<SummaryOutcomeAd
                 DiscussionOutcomesRow discussionOutcome = outcomes.get(position);
                 boolean isSelected = discussionOutcome.isSelected();
                 holder.textViewKeyword.setCompoundDrawablesWithIntrinsicBounds(0, 0, (isSelected ? 0 : R.drawable.icon_close), 0);
-                holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, android.R.color.transparent) : ActivityCompat.getColor(context, R.color.color_light_yellow));
+                holder.textViewKeyword.setBackgroundColor(isSelected ? ActivityCompat.getColor(context, android.R.color.transparent) : ActivityCompat.getColor(context, R.color.color_white));
                 discussionOutcome.setSelected(!isSelected);
             }
         });

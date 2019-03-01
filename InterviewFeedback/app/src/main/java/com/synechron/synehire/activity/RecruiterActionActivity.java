@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,16 +77,27 @@ public class RecruiterActionActivity extends BaseActivity {
                     InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     String email = recipientEmail.getText().toString();
-                    EmailId emailId = new EmailId();
-                    emailId.setEmailId(email);
-                    selectedRecipientEmailIds.add(emailId);
-                    recipientEmail.setText("");
-                    adapterRecipient.notifyDataSetChanged();
+                    if (!email.matches(AppConstants.VALID_EMAIL_PATTERN)) {
+                        String message = getString(R.string.error_recipient_email);
+                        inputLayoutRecipientEmails.setError(message);
+                        recipientEmail.setBackgroundResource(R.drawable.edit_text_bg_error);
+                    } else {
+                        inputLayoutRecipientEmails.setError(null);
+                        recipientEmail.setBackgroundResource(R.drawable.edit_text_bg_selector);
+                        inputLayoutRecipientEmails.setErrorEnabled(false);
+                        EmailId emailId = new EmailId();
+                        emailId.setEmailId(email);
+                        selectedRecipientEmailIds.add(emailId);
+                        recipientEmail.setText("");
+                        adapterRecipient.notifyDataSetChanged();
+                    }
+
                     return true;
                 }
                 return false;
             }
         });
+
         autoTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
